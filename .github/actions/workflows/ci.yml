@@ -1,0 +1,28 @@
+﻿name: CI
+
+on:
+  push:
+    branches: [ "main" , "develop" ]
+    paths-ignore:
+      - "README.md"
+  pull_request:
+    branches: [ "main" , "develop" ]
+    paths-ignore:
+      - "README.md"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Api
+        uses: ./.github/actions/build
+        if: success()
+        id: build-api-step
+        with:
+          project-path: 'RestaurantReservation.Api'
