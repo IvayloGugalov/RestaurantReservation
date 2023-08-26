@@ -1,7 +1,6 @@
 ﻿using RestaurantReservation.Core.Exceptions;
-using RestaurantReservation.Domain.Common;
 
-namespace RestaurantReservation.Domain.TableAggregate.Exceptions;
+namespace RestaurantReservation.Domain.ReservationAggregate.Exceptions;
 
 public class TableNotFoundException : CustomException
 {

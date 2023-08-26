@@ -1,22 +1,20 @@
-﻿using RestaurantReservation.Core.Model;
-using RestaurantReservation.Domain.Common.ValueObjects;
-using RestaurantReservation.Domain.CustomerAggregate.Events;
-using RestaurantReservation.Domain.CustomerAggregate.ValueObjects;
-using RestaurantReservation.Domain.RestaurantAggregate.ValueObjects;
-
-namespace RestaurantReservation.Domain.CustomerAggregate;
+﻿namespace RestaurantReservation.Domain.CustomerAggregate;
 
 public class Customer : AggregateRoot<CustomerId>
 {
-    public CustomerName CustomerName { get; private set;}
-    public Email Email { get; private set;}
+    public CustomerName FullName { get; private init; } = null!;
+    public Email Email { get; private init; } = null!;
 
-    private readonly List<RestaurantId> favoriteRestaurants;
-    public IReadOnlyCollection<RestaurantId> FavoriteRestaurants => this.favoriteRestaurants.AsReadOnly();
+    private readonly List<Guid> favouriteRestaurants;
+    public IReadOnlyCollection<Guid> FavouriteRestaurants => this.favouriteRestaurants.AsReadOnly();
+
+    private readonly List<Reservation> reservations;
+    public IReadOnlyCollection<Reservation> Reservations => this.reservations.AsReadOnly();
 
     private Customer()
     {
-        this.favoriteRestaurants = new List<RestaurantId>();
+        this.favouriteRestaurants = new List<Guid>();
+        this.reservations = new List<Reservation>();
     }
 
     public static Customer Create(
@@ -28,7 +26,7 @@ public class Customer : AggregateRoot<CustomerId>
         var customer = new Customer
         {
             Id = id,
-            CustomerName = new CustomerName(FirstName: firstName, LastName: lastName),
+            FullName = new CustomerName(FirstName: firstName, LastName: lastName),
             Email = new Email(emailValue)
         };
 
@@ -40,9 +38,9 @@ public class Customer : AggregateRoot<CustomerId>
 
     public void AddRestaurantToFavorites(RestaurantId restaurantId)
     {
-        if (this.favoriteRestaurants.Contains(restaurantId)) return;
+        if (this.favouriteRestaurants.Contains(restaurantId)) return;
 
-        this.favoriteRestaurants.Add(restaurantId);
+        this.favouriteRestaurants.Add(restaurantId);
 
         var @event = new RestaurantAddedToFavoritesDomainEvent(restaurantId);
         this.AddDomainEvent(@event);

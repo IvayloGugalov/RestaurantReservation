@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace RestaurantReservation.Core.Model;
 
@@ -7,7 +6,7 @@ public static class Mapper
 {
     private static readonly Dictionary<(Type, Type), List<(MethodInfo Get, MethodInfo Set)>> _cache = new();
 
-    public static T Map<T>(object from) where T : class, new ()
+    public static T Map<T>(object from) where T : class, new()
     {
         var key = (from: from.GetType(), to: typeof(T));
         if (!_cache.ContainsKey(key))
@@ -40,8 +39,10 @@ public static class Mapper
             {
                 continue;
             }
+
             entry.Add((from.GetMethod, to.GetMethod));
         }
+
         _cache[key] = entry;
     }
 }

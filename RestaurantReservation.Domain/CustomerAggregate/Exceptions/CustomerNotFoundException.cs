@@ -1,5 +1,4 @@
 ﻿using RestaurantReservation.Core.Exceptions;
-using RestaurantReservation.Domain.Common;
 
 namespace RestaurantReservation.Domain.CustomerAggregate.Exceptions;
 
@@ -10,4 +9,3 @@ public class CustomerNotFoundException : CustomException
     {
     }
 }
-

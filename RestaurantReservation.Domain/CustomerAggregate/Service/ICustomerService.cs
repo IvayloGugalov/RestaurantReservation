@@ -1,7 +1,4 @@
-﻿using RestaurantReservation.Domain.CustomerAggregate.ValueObjects;
-using RestaurantReservation.Domain.RestaurantAggregate.ValueObjects;
-
-namespace RestaurantReservation.Domain.CustomerAggregate.Service;
+﻿namespace RestaurantReservation.Domain.CustomerAggregate.Service;
 
 public interface ICustomerService
 {

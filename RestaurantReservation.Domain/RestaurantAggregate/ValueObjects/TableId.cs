@@ -1,4 +1,4 @@
-﻿namespace RestaurantReservation.Domain.TableAggregate.ValueObjects;
+﻿namespace RestaurantReservation.Domain.RestaurantAggregate.ValueObjects;
 
 public record TableId(Guid Value)
 {

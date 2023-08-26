@@ -1,12 +1,4 @@
-﻿using MediatR;
-using RestaurantReservation.Core.CQRS;
-using RestaurantReservation.Core.Repository;
-using RestaurantReservation.Domain.Common;
-using RestaurantReservation.Domain.RestaurantAggregate.Events;
-using RestaurantReservation.Domain.RestaurantAggregate.Exceptions;
-using RestaurantReservation.Domain.RestaurantAggregate.ValueObjects;
-
-namespace RestaurantReservation.Domain.RestaurantAggregate.Handlers;
+﻿namespace RestaurantReservation.Domain.RestaurantAggregate.Handlers;
 
 public class CreateRestaurantHandler : ICommandHandler<CreateRestaurantEvent, CreateRestaurantResult>
 {
@@ -19,7 +11,8 @@ public class CreateRestaurantHandler : ICommandHandler<CreateRestaurantEvent, Cr
 
     public async Task<CreateRestaurantResult> Handle(CreateRestaurantEvent request, CancellationToken cancellationToken)
     {
-        var restaurant = await this.restaurantRepository.FirstOrDefaultAsync(x => x.Name == request.Name, cancellationToken);
+        var restaurant =
+            await this.restaurantRepository.FirstOrDefaultAsync(x => x.Name == request.Name, cancellationToken);
         if (restaurant != null) throw new RestaurantAlreadyExistsException();
 
         var restaurantEntity = Restaurant.Create(

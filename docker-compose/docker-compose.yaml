@@ -1,0 +1,40 @@
+﻿version: "3.3"
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
+      - "-c"
+      - "max_prepared_transactions=10"
+    networks:
+      - reservations
+
+  api:
+    image: api
+    build:
+      args:
+        Version: "1"
+      dockerfile: RestaurantReservation.Api/Dockerfile
+    container_name: restaurant-api
+    ports:
+      - "5147:80"
+      - "7257:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+;https://+
+      - ASPNETCORE_HTTPS_PORT=7257
+      - ASPNETCORE_HTTP_PORT=5147
+    networks:
+      - reservations
+
+networks:
+  booking:

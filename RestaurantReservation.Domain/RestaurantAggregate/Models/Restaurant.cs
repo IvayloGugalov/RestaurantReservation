@@ -1,26 +1,24 @@
-﻿using RestaurantReservation.Core.Model;
-using RestaurantReservation.Domain.Common;
-using RestaurantReservation.Domain.CustomerAggregate.ValueObjects;
-using RestaurantReservation.Domain.RestaurantAggregate.Events;
-using RestaurantReservation.Domain.RestaurantAggregate.ValueObjects;
-
-namespace RestaurantReservation.Domain.RestaurantAggregate;
+﻿namespace RestaurantReservation.Domain.RestaurantAggregate.Models;
 
 public class Restaurant : AggregateRoot<RestaurantId>
 {
-    public string Name { get; private set; } = null!;
-    public string Phone { get; private set; } = null!;
-    public string Description { get; private set; } = null!;
-    public string Url { get; private set; } = null!;
-    public string WebSite { get; private set; } = null!;
-    public WorkTime? WorkTime { get; private set; }
+    public string Name { get; private init; } = null!;
+    public string Phone { get; private init; } = null!;
+    public string Description { get; private init; } = null!;
+    public string Url { get; private init; } = null!;
+    public string WebSite { get; private init; } = null!;
+    public WorkTime WorkTime { get; private init; } = null!;
 
     private readonly List<Review> reviews;
     public IReadOnlyCollection<Review> Reviews => this.reviews.AsReadOnly();
 
+    private readonly List<Reservation> reservations;
+    public IReadOnlyCollection<Reservation> Reservations => this.reservations.AsReadOnly();
+
     private Restaurant()
     {
         this.reviews = new List<Review>();
+        this.reservations = new List<Reservation>();
     }
 
     public static Restaurant Create(
@@ -55,22 +53,24 @@ public class Restaurant : AggregateRoot<RestaurantId>
 
     public Review AddReview(
         ReviewId id,
+        Guid customerId,
         int ratingValue,
         string comment,
-        CustomerId customerId,
         string customerName)
     {
+        // if (this.Status != ReservationStatus.Completed || this.Status != ReservationStatus.Canceled) return null;
+
+        // Create a review associated with this reservation
         var review = Review.Create(
             id,
             ratingValue,
             comment,
-            DateTime.UtcNow,
             this.Id,
             customerId,
-            customerName);
+            customerName,
+            this.Id);
 
-        this.reviews.Add(review);
-
+        // Raise domain events or perform other actions related to review creation
         var @event = new ReviewCreatedDomainEvent(review);
         this.AddDomainEvent(@event);
 

@@ -1,6 +1,4 @@
-﻿using RestaurantReservation.Domain.CustomerAggregate.Events;
-
-namespace RestaurantReservation.Domain.CustomerAggregate.Mappings;
+﻿namespace RestaurantReservation.Domain.CustomerAggregate.Mappings;
 
 public static class CustomerMappings
 {

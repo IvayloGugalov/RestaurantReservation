@@ -1,8 +1,4 @@
 ﻿using MassTransit;
-using RestaurantReservation.Core.CQRS;
-using RestaurantReservation.Core.Event;
-using RestaurantReservation.Domain.Common;
-using RestaurantReservation.Domain.RestaurantAggregate.ValueObjects;
 
 namespace RestaurantReservation.Domain.RestaurantAggregate.Events;
 
