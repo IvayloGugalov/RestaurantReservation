@@ -23,7 +23,7 @@ services:
     build:
       args:
         Version: "1"
-      dockerfile: RestaurantReservation.Api/Dockerfile
+      dockerfile: ../RestaurantReservation.Api/Dockerfile
     container_name: restaurant-api
     ports:
       - "5147:80"
