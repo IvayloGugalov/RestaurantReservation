@@ -5,7 +5,7 @@ public class Reservation : AggregateRoot<ReservationId>
     public static readonly TimeSpan MIN_STAY = TimeSpan.FromMinutes(90);
 
     public RestaurantId RestaurantId { get; set; } = null!;
-    public CustomerId CustomerId { get; private init; } = null!;
+    public Guid CustomerId { get; private init; }
     public Guid TableId { get; private init; }
     public DateTime ReservationDate { get; private init; }
     public ushort Occupants { get; private init; }
@@ -20,7 +20,7 @@ public class Reservation : AggregateRoot<ReservationId>
         ReservationId reservationId,
         RestaurantId restaurantId,
         Table table,
-        CustomerId customerId,
+        Guid customerId,
         DateTime reservationDate,
         ushort occupants)
     {

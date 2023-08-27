@@ -8,13 +8,9 @@ public class Customer : AggregateRoot<CustomerId>
     private readonly List<Guid> favouriteRestaurants;
     public IReadOnlyCollection<Guid> FavouriteRestaurants => this.favouriteRestaurants.AsReadOnly();
 
-    private readonly List<Reservation> reservations;
-    public IReadOnlyCollection<Reservation> Reservations => this.reservations.AsReadOnly();
-
     private Customer()
     {
         this.favouriteRestaurants = new List<Guid>();
-        this.reservations = new List<Reservation>();
     }
 
     public static Customer Create(
