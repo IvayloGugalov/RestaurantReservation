@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using RestaurantReservation.Core.Repository;
 
-namespace RestaurantReservation.Core.Repository;
+namespace RestaurantReservation.Infrastructure.EF.Data.Repository;
 
 public static class RegisterRepositories
 {

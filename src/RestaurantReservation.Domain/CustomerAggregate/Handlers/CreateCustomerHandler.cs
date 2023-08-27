@@ -12,7 +12,7 @@ public class CreateCustomerHandler : ICommandHandler<CreateCustomer, CreateCusto
     public async Task<CreateCustomerResult> Handle(CreateCustomer request, CancellationToken cancellationToken)
     {
         var customer =
-            await this.customerRepository.FirstOrDefaultAsync(x => request.Email == x.Email.Value, cancellationToken);
+            await this.customerRepository.SingleOrDefaultAsync(x => request.Email == x.Email.Value, cancellationToken);
         if (customer != null) throw new CustomerAlreadyExistsException();
 
         var customerEntity = Customer.Create(
@@ -22,6 +22,8 @@ public class CreateCustomerHandler : ICommandHandler<CreateCustomer, CreateCusto
             emailValue: request.Email);
 
         var newCustomer = await this.customerRepository.AddAsync(customerEntity, cancellationToken);
+        await this.customerRepository.SaveChangesAsync(cancellationToken);
+
         return new CreateCustomerResult(newCustomer.Id);
     }
 }

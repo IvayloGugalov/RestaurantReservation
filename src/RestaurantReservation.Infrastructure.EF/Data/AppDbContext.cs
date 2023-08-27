@@ -17,11 +17,10 @@ public class AppDbContext : DbContext, IDbContext
 
     public IExecutionStrategy CreateExecutionStrategy() => this.Database.CreateExecutionStrategy();
 
-    public DbSet<Restaurant> Restaurants { get; set; }
-
-    // public DbSet<Reservation> Reservations { get; set; }
-    public DbSet<Customer> Customers { get; set; }
-    public DbSet<Review> Reviews { get; set; }
+    public DbSet<Restaurant> Restaurants { get; set; } = null!;
+    public DbSet<Reservation> Reservations { get; set; } = null!;
+    public DbSet<Customer> Customers { get; set; } = null!;
+    public DbSet<Review> Reviews { get; set; } = null!;
 
     public AppDbContext(DbContextOptions options, ILogger<AppDbContext>? logger = null)
         : base(options)
@@ -38,10 +37,10 @@ public class AppDbContext : DbContext, IDbContext
     }
 
     // TODO: If going to have a base DbContext and split the aggregates into separate Microservices
-    // public DbSet<TEntity> Set<TEntity, TId>()
-    //     where TEntity : Entity<TId>
-    //     where TId : IEquatable<TId> =>
-    //     base.Set<TEntity>();
+    public DbSet<TEntity> Set<TEntity, TId>()
+        where TEntity : class, IEntity<TId>
+        where TId : IEquatable<TId> =>
+        base.Set<TEntity>();
 
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
@@ -55,12 +54,12 @@ public class AppDbContext : DbContext, IDbContext
     {
         try
         {
-            await SaveChangesAsync(cancellationToken);
+            await this.SaveChangesAsync(cancellationToken);
             await this.currentTransaction?.CommitAsync(cancellationToken)!;
         }
         catch
         {
-            await RollbackTransactionAsync(cancellationToken);
+            await this.RollbackTransactionAsync(cancellationToken);
             throw;
         }
         finally
@@ -85,14 +84,14 @@ public class AppDbContext : DbContext, IDbContext
 
     public Task ExecuteTransactionalAsync(CancellationToken cancellationToken = default)
     {
-        var strategy = CreateExecutionStrategy();
+        var strategy = this.CreateExecutionStrategy();
         return strategy.ExecuteAsync(async () =>
         {
             await using var transaction =
-                await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+                await this.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
             try
             {
-                await SaveChangesAsync(cancellationToken);
+                await this.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
             }
             catch
@@ -155,7 +154,7 @@ public class AppDbContext : DbContext, IDbContext
     {
         try
         {
-            foreach (var entry in ChangeTracker.Entries<IAggregateRoot>())
+            foreach (var entry in this.ChangeTracker.Entries<IAggregateRoot>())
             {
                 var isAuditable = entry.Entity.GetType().IsAssignableTo(typeof(IAggregateRoot));
                 // var userId = _currentUserProvider?.GetCurrentUserId() ?? 0;
@@ -193,9 +192,10 @@ public class AppDbContext : DbContext, IDbContext
 
 public interface IDbContext
 {
-    // DbSet<TEntity> Set<TEntity, TId>()
-    //     where TEntity : Entity<TId>
-    //     where TId : IEquatable<TId>;
+    DbSet<TEntity> Set<TEntity, TId>()
+        where TEntity : class, IEntity<TId>
+        where TId : IEquatable<TId>;
+
     IReadOnlyList<IDomainEvent> GetDomainEvents();
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     Task BeginTransactionAsync(CancellationToken cancellationToken = default);

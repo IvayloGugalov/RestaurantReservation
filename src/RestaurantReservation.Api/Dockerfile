@@ -6,11 +6,11 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /src
-COPY ["RestaurantReservation.Api/RestaurantReservation.Api.csproj", "RestaurantReservation.Api/"]
-COPY ["RestaurantReservation.Core/RestaurantReservation.Core.csproj", "RestaurantReservation.Core/"]
-COPY ["RestaurantReservation.Domain/RestaurantReservation.Domain.csproj", "RestaurantReservation.Domain/"]
-COPY ["RestaurantReservation.Infrastructure.EF/RestaurantReservation.Infrastructure.EF.csproj", "RestaurantReservation.Infrastructure.EF/"]
+WORKDIR /
+COPY ["src/RestaurantReservation.Api/RestaurantReservation.Api.csproj", "RestaurantReservation.Api/"]
+COPY ["src/RestaurantReservation.Core/RestaurantReservation.Core.csproj", "RestaurantReservation.Core/"]
+COPY ["src/RestaurantReservation.Domain/RestaurantReservation.Domain.csproj", "RestaurantReservation.Domain/"]
+COPY ["src/RestaurantReservation.Infrastructure.EF/RestaurantReservation.Infrastructure.EF.csproj", "RestaurantReservation.Infrastructure.EF/"]
 RUN dotnet restore "RestaurantReservation.Api/RestaurantReservation.Api.csproj"
 COPY . .
 WORKDIR "/src/RestaurantReservation.Api"

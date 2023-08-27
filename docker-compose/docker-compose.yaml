@@ -1,9 +1,9 @@
 ﻿version: "3.3"
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:15.3-bullseye
     container_name: postgres
-    restart: unless-stopped
+    #    restart: unless-stopped
     ports:
       - '5432:5432'
     environment:
@@ -20,11 +20,12 @@ services:
 
   api:
     image: api
+    container_name: api
     build:
-      args:
-        Version: "1"
-      dockerfile: ../RestaurantReservation.Api/Dockerfile
-    container_name: restaurant-api
+      context: ../
+      #      args:
+      #        Version: "1"
+      dockerfile: src/RestaurantReservation.Api/Dockerfile
     ports:
       - "5147:80"
       - "7257:443"
@@ -37,4 +38,4 @@ services:
       - reservations
 
 networks:
-  booking:
+  reservations:

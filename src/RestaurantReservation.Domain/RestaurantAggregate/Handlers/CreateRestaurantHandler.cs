@@ -12,7 +12,7 @@ public class CreateRestaurantHandler : ICommandHandler<CreateRestaurantEvent, Cr
     public async Task<CreateRestaurantResult> Handle(CreateRestaurantEvent request, CancellationToken cancellationToken)
     {
         var restaurant =
-            await this.restaurantRepository.FirstOrDefaultAsync(x => x.Name == request.Name, cancellationToken);
+            await this.restaurantRepository.SingleOrDefaultAsync(x => x.Name == request.Name, cancellationToken);
         if (restaurant != null) throw new RestaurantAlreadyExistsException();
 
         var restaurantEntity = Restaurant.Create(

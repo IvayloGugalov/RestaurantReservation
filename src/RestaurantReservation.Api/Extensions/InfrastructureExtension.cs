@@ -1,9 +1,9 @@
 ﻿using RestaurantReservation.Api.Endpoints;
 using RestaurantReservation.Api.Swagger;
 using RestaurantReservation.Core.Logging;
-using RestaurantReservation.Core.Repository;
 using RestaurantReservation.Infrastructure.EF;
 using RestaurantReservation.Infrastructure.EF.Data;
+using RestaurantReservation.Infrastructure.EF.Data.Repository;
 
 namespace RestaurantReservation.Api.Extensions;
 

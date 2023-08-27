@@ -10,7 +10,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<AppDbConte
         var builder = new DbContextOptionsBuilder<AppDbContext>();
 
         builder.UseNpgsql(
-                "Server=localhost;Port=5432;Database=flight;User Id=postgres;Password=postgres;Include Error Detail=true")
+                "Server=localhost;Port=5432;Database=restaurant_reservation;User Id=postgres;Password=postgres;Include Error Detail=true")
             .UseSnakeCaseNamingConvention();
         return new AppDbContext(builder.Options);
     }

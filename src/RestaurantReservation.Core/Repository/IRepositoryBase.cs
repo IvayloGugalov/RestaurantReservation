@@ -4,7 +4,7 @@ using RestaurantReservation.Core.Model;
 namespace RestaurantReservation.Core.Repository;
 
 public interface IRepositoryBase<T, in TId>
-    where T : IEntity<TId>
+    where T : class, IEntity<TId>
     where TId : IEquatable<TId>
 {
     /// <summary>
@@ -20,7 +20,7 @@ public interface IRepositoryBase<T, in TId>
     /// <summary>
     /// Returns the first element of a sequence, or a default value if the sequence contains no elements.
     /// </summary>
-    Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> filter, CancellationToken cancellationToken = default);
+    Task<T?> SingleOrDefaultAsync(Expression<Func<T, bool>> filter, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Adds an entity in the database.
@@ -30,12 +30,12 @@ public interface IRepositoryBase<T, in TId>
     /// <summary>
     /// Adds the given entities in the database
     /// </summary>
-    Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default);
+    // Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Updates an entity in the database
     /// </summary>
-    Task UpdateAsync(T entity, CancellationToken cancellationToken = default);
+    Task<T> UpdateAsync(T entity, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Removes an entity in the database
@@ -45,5 +45,5 @@ public interface IRepositoryBase<T, in TId>
     /// <summary>
     /// Persists changes to the database.
     /// </summary>
-    Task<T> SaveChangesAsync(CancellationToken cancellationToken = default);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
