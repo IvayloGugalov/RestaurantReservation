@@ -1,3 +1,5 @@
+using Serilog;
+
 using RestaurantReservation.Api.Endpoints;
 using RestaurantReservation.Api.Extensions;
 using RestaurantReservation.Api.Swagger;
@@ -5,7 +7,6 @@ using RestaurantReservation.Core.Logging;
 using RestaurantReservation.Core.Web;
 using RestaurantReservation.Infrastructure.EF;
 using RestaurantReservation.Infrastructure.EF.Data;
-using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 

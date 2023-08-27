@@ -12,9 +12,7 @@ public class Reservation : AggregateRoot<ReservationId>
     public ReservationStatus Status { get; private set; }
     public Guid? ReviewId { get; set; }
 
-    private Reservation()
-    {
-    }
+    private Reservation() { }
 
     public static Reservation Create(
         ReservationId reservationId,
@@ -25,7 +23,7 @@ public class Reservation : AggregateRoot<ReservationId>
         ushort occupants)
     {
         if (table.Capacity < occupants) throw new TableLimitOfPeopleBreachedException(table.Capacity, occupants);
-        if (table.Reservations.Any(r => r.ReservationDate.Add(MIN_STAY) < reservationDate))
+        if (table.Reservations.All(r => r.ReservationDate.Add(MIN_STAY) < reservationDate))
             throw new ReservationConflictException();
 
         var reservation = new Reservation
@@ -66,35 +64,4 @@ public class Reservation : AggregateRoot<ReservationId>
     public void CompleteReservation()
     {
     }
-
-    // public Reservation AddReservation(
-    //     ReservationId reservationId,
-    //     Guid customerId,
-    //     DateTime reservationDate,
-    //     ushort occupants)
-    // {
-    //     var reservation = Reservation.Create(
-    //         reservationId,
-    //         this.RestaurantId,
-    //         this,
-    //         customer,
-    //         reservationDate,
-    //         occupants);
-    //
-    //     this.reservations.Add(reservation);
-    //
-    //     var @event = new ReservationCreatedDomainEvent(
-    //         reservation.Id, reservation.Customer.Id, reservation.TableId, reservation.ReservationDate, reservation.Occupants);
-    //     this.AddDomainEvent(@event);
-    //
-    //     return reservation;
-    // }
-    //
-    // public void RemoveReservation(ReservationId reservationId)
-    // {
-    //     var reservation = this.reservations.SingleOrDefault(x => x.Id == reservationId);
-    //     if (reservation == null) return;
-    //
-    //     this.reservations.Remove(reservation);
-    // }
 }

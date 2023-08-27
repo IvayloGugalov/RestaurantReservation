@@ -1,4 +1,6 @@
-﻿namespace RestaurantReservation.Domain.CustomerAggregate.Handlers;
+﻿using RestaurantReservation.Domain.CustomerAggregate.Models;
+
+namespace RestaurantReservation.Domain.CustomerAggregate.Handlers;
 
 public class
     AddRestaurantToFavoritesHandler : ICommandHandler<AddRestaurantToFavoritesEvent, AddRestaurantToFavoritesResult>
@@ -10,12 +12,12 @@ public class
         this.customerRepository = customerRepository;
     }
 
-    public async Task<AddRestaurantToFavoritesResult> Handle(AddRestaurantToFavoritesEvent request,
+    public async Task<AddRestaurantToFavoritesResult> Handle(AddRestaurantToFavoritesEvent command,
         CancellationToken cancellationToken)
     {
-        request.Customer.AddRestaurantToFavorites(request.RestaurantId);
-        await this.customerRepository.UpdateAsync(request.Customer, cancellationToken);
+        command.Customer.AddRestaurantToFavorites(command.RestaurantId);
+        await this.customerRepository.UpdateAsync(command.Customer, cancellationToken);
 
-        return new AddRestaurantToFavoritesResult(request.RestaurantId);
+        return new AddRestaurantToFavoritesResult(command.RestaurantId);
     }
 }

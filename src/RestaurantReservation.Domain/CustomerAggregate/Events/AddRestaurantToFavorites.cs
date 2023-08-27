@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using RestaurantReservation.Domain.CustomerAggregate.Models;
 
 namespace RestaurantReservation.Domain.CustomerAggregate.Events;
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RestaurantReservation.Domain.CustomerAggregate;
+using RestaurantReservation.Domain.CustomerAggregate.Models;
 
 namespace RestaurantReservation.Infrastructure.EF.Data.Configurations;
 

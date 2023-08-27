@@ -1,6 +1,6 @@
 ﻿namespace RestaurantReservation.Domain.ReservationAggregate.Handlers;
 
-public class CreateReservationHandler : ICommandHandler<CreateReservationEvent, CreateReservationResult>
+public class CreateReservationHandler : ICommandHandler<CreateReservation, CreateReservationResult>
 {
     private readonly IRepositoryBase<Table, TableId> tableRepository;
     private readonly IRepositoryBase<Reservation, ReservationId> reservationRepository;
@@ -13,22 +13,21 @@ public class CreateReservationHandler : ICommandHandler<CreateReservationEvent, 
         this.reservationRepository = reservationRepository;
     }
 
-    public async Task<CreateReservationResult> Handle(CreateReservationEvent request,
+    public async Task<CreateReservationResult> Handle(CreateReservation command,
         CancellationToken cancellationToken)
     {
-        // var table = await this.tableRepository.FirstOrDefaultAsync(x => request.TableId == x.Id, cancellationToken);
-        // if (table == null) throw new TableNotFoundException();
-        //
-        // var reservationEntity = table.AddReservation(
-        //     new ReservationId(request.Id),
-        //     request.Customer,
-        //     request.ReservationDate,
-        //     request.Occupants);
-        //
-        // await this.tableRepository.UpdateAsync(table, cancellationToken);
-        // await this.reservationRepository.AddAsync(reservationEntity, cancellationToken);
-        //
-        // return new CreateReservationResult(reservationEntity.Id);
-        throw new NotImplementedException();
+        var table = await this.tableRepository.SingleOrDefaultAsync(x => command.TableId == x.Id, cancellationToken);
+        if (table == null) throw new TableNotFoundException();
+
+        var reservationEntity = table.AddReservation(
+            new ReservationId(command.Id),
+            command.CustomerId,
+            command.ReservationDate,
+            command.Occupants);
+
+        await this.tableRepository.UpdateAsync(table, cancellationToken);
+        await this.reservationRepository.AddAsync(reservationEntity, cancellationToken);
+
+        return new CreateReservationResult(reservationEntity.Id);
     }
 }

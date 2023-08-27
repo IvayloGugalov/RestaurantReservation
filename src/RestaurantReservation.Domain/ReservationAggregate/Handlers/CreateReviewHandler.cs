@@ -13,16 +13,16 @@ public class CreateReviewHandler : ICommandHandler<CreateReviewEvent, CreateRevi
         this.reviewRepository = reviewRepository;
     }
 
-    public async Task<CreateReviewResult> Handle(CreateReviewEvent request, CancellationToken cancellationToken)
+    public async Task<CreateReviewResult> Handle(CreateReviewEvent command, CancellationToken cancellationToken)
     {
-        // var reservation = await this.reservationRepository.FirstOrDefaultAsync(x => x.Id == request.ReservationId, cancellationToken);
+        // var reservation = await this.reservationRepository.FirstOrDefaultAsync(x => x.Id == command.ReservationId, cancellationToken);
         // if (reservation == null) throw new ReservationNotFoundException();
         //
         // var reviewEntity = reservation.AddReview(
-        //     new ReviewId(request.Id),
-        //     request.Rating,
-        //     request.Comment,
-        //     request.CustomerName);
+        //     new ReviewId(command.Id),
+        //     command.Rating,
+        //     command.Comment,
+        //     command.CustomerName);
         //
         // await this.reservationRepository.UpdateAsync(reservation, cancellationToken);
         // var newReview = await this.reviewRepository.AddAsync(reviewEntity, cancellationToken);

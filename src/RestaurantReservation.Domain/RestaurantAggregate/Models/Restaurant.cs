@@ -7,18 +7,20 @@ public class Restaurant : AggregateRoot<RestaurantId>
     public string Description { get; private init; } = null!;
     public string Url { get; private init; } = null!;
     public string WebSite { get; private init; } = null!;
-    public WorkTime WorkTime { get; private init; } = null!;
+    public WorkTime? WorkTime { get; private init; } = null!;
 
     private readonly List<Review> reviews;
     public IReadOnlyCollection<Review> Reviews => this.reviews.AsReadOnly();
 
-    private readonly List<Reservation> reservations;
-    public IReadOnlyCollection<Reservation> Reservations => this.reservations.AsReadOnly();
+    private readonly List<Table> tables;
+    public IReadOnlyCollection<Table> Tables => this.tables.AsReadOnly();
+
+    public IEnumerable<Reservation> Reservations => this.tables.SelectMany(x => x.Reservations);
 
     private Restaurant()
     {
         this.reviews = new List<Review>();
-        this.reservations = new List<Reservation>();
+        this.tables = new List<Table>();
     }
 
     public static Restaurant Create(
@@ -27,7 +29,7 @@ public class Restaurant : AggregateRoot<RestaurantId>
         string description,
         string url,
         string webSite,
-        WorkTime workTime)
+        WorkTime? workTime)
     {
         var restaurant = new Restaurant
         {
@@ -49,6 +51,22 @@ public class Restaurant : AggregateRoot<RestaurantId>
         restaurant.AddDomainEvent(@event);
 
         return restaurant;
+    }
+
+    public Table AddTable(
+        TableId tableId,
+        string number,
+        ushort capacity)
+    {
+        var table = Table.Create(
+            tableId,
+            number,
+            capacity,
+            this);
+
+        this.tables.Add(table);
+
+        return table;
     }
 
     public Review AddReview(
@@ -73,6 +91,7 @@ public class Restaurant : AggregateRoot<RestaurantId>
         // Raise domain events or perform other actions related to review creation
         var @event = new ReviewCreatedDomainEvent(review);
         this.AddDomainEvent(@event);
+        this.reviews.Add(review);
 
         return review;
     }

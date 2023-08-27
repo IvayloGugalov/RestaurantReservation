@@ -30,4 +30,36 @@ public class Table : AggregateRoot<TableId>
 
         return table;
     }
+
+    public Reservation AddReservation(
+        ReservationId reservationId,
+        Guid customerId,
+        DateTime reservationDate,
+        ushort occupants)
+    {
+        var reservation = Reservation.Create(
+            reservationId,
+            this.Restaurant.Id,
+            this,
+            customerId,
+            reservationDate,
+            occupants);
+
+        var @event = new ReservationCreatedDomainEvent(
+            reservation.Id, reservation.CustomerId, reservation.TableId, reservation.ReservationDate, reservation.Occupants);
+        this.AddDomainEvent(@event);
+
+        this.reservations.Add(reservation);
+
+        return reservation;
+    }
+
+    public void RemoveReservation(ReservationId reservationId)
+    {
+        var reservation = this.reservations.SingleOrDefault(x => x.Id == reservationId);
+        if (reservation == null) return;
+
+        // var @event =
+        this.reservations.Remove(reservation);
+    }
 }

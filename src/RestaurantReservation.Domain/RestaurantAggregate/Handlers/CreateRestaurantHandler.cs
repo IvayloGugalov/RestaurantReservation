@@ -1,6 +1,6 @@
 ﻿namespace RestaurantReservation.Domain.RestaurantAggregate.Handlers;
 
-public class CreateRestaurantHandler : ICommandHandler<CreateRestaurantEvent, CreateRestaurantResult>
+public class CreateRestaurantHandler : ICommandHandler<CreateRestaurant, CreateRestaurantResult>
 {
     private readonly IRepositoryBase<Restaurant, RestaurantId> restaurantRepository;
 
@@ -9,19 +9,19 @@ public class CreateRestaurantHandler : ICommandHandler<CreateRestaurantEvent, Cr
         this.restaurantRepository = restaurantRepository;
     }
 
-    public async Task<CreateRestaurantResult> Handle(CreateRestaurantEvent request, CancellationToken cancellationToken)
+    public async Task<CreateRestaurantResult> Handle(CreateRestaurant command, CancellationToken cancellationToken)
     {
         var restaurant =
-            await this.restaurantRepository.SingleOrDefaultAsync(x => x.Name == request.Name, cancellationToken);
+            await this.restaurantRepository.SingleOrDefaultAsync(x => x.Name == command.Name, cancellationToken);
         if (restaurant != null) throw new RestaurantAlreadyExistsException();
 
         var restaurantEntity = Restaurant.Create(
-            name: request.Name,
-            phone: request.Phone,
-            description: request.Description,
-            url: request.Url,
-            webSite: request.WebSite,
-            workTime: request.WorkTime);
+            name: command.Name,
+            phone: command.Phone,
+            description: command.Description,
+            url: command.Url,
+            webSite: command.WebSite,
+            workTime: command.WorkTime);
 
         var newRestaurant = await this.restaurantRepository.AddAsync(restaurantEntity, cancellationToken);
         return new CreateRestaurantResult(newRestaurant.Id);

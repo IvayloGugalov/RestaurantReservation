@@ -1,4 +1,4 @@
-﻿namespace RestaurantReservation.Domain.CustomerAggregate;
+﻿namespace RestaurantReservation.Domain.CustomerAggregate.Models;
 
 public class Customer : AggregateRoot<CustomerId>
 {
