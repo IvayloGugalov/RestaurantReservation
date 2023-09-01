@@ -1,16 +1,16 @@
 ﻿namespace RestaurantReservation.Domain.ReservationAggregate.Models;
 
-public class Reservation : AggregateRoot<ReservationId>
+public class Reservation : AggregateRoot<ReservationId, Guid>
 {
     public static readonly TimeSpan MIN_STAY = TimeSpan.FromMinutes(90);
 
     public RestaurantId RestaurantId { get; set; } = null!;
-    public Guid CustomerId { get; private init; }
-    public Guid TableId { get; private init; }
+    public CustomerId CustomerId { get; private init; } = null!;
+    public TableId TableId { get; private init; } = null!;
     public DateTime ReservationDate { get; private init; }
     public ushort Occupants { get; private init; }
     public ReservationStatus Status { get; private set; }
-    public Guid? ReviewId { get; set; }
+    public ReviewId? ReviewId { get; set; }
 
     private Reservation() { }
 
@@ -18,7 +18,7 @@ public class Reservation : AggregateRoot<ReservationId>
         ReservationId reservationId,
         RestaurantId restaurantId,
         Table table,
-        Guid customerId,
+        CustomerId customerId,
         DateTime reservationDate,
         ushort occupants)
     {

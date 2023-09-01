@@ -4,30 +4,28 @@ public class Review : Entity<ReviewId>
 {
     public Rating Rating { get; private init; } = null!;
     public string Comment { get; private init; } = null!;
-    public RestaurantId RestaurantId { get; private init; } = null!;
-    public Guid CustomerId { get; private init; }
+    public Restaurant Restaurant { get; private init; } = null!;
+    public CustomerId CustomerId { get; private init; } = null!;
     public string CustomerName { get; private init; } = null!;
-    public Guid? ReservationId { get; private init; }
+    public ReservationId? ReservationId { get; private init; }
 
-    private Review()
-    {
-    }
+    private Review() { }
 
     public static Review Create(
         ReviewId id,
         int ratingValue,
         string comment,
-        RestaurantId restaurantId,
-        Guid customerId,
+        Restaurant restaurant,
+        CustomerId customerId,
         string customerName,
-        Guid? reservationId)
+        ReservationId? reservationId)
     {
         var newReview = new Review
         {
             Id = id,
             Rating = new Rating(ratingValue),
             Comment = comment,
-            RestaurantId = restaurantId,
+            Restaurant = restaurant,
             CustomerId = customerId,
             CustomerName = customerName,
             ReservationId = reservationId

@@ -1,6 +1,8 @@
 ﻿using System.Linq.Expressions;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+
 using RestaurantReservation.Core.Model;
 using RestaurantReservation.Core.Repository;
 
@@ -17,21 +19,14 @@ public class RepositoryBase<T, TId> : IRepositoryBase<T, TId>
         this.dbContext = dbContext;
     }
 
-    public Task<T?> GetByIdAsync(TId id, CancellationToken cancellationToken = default)
-    {
-        return this.dbContext.Set<T, TId>().SingleOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
-    }
+    public Task<T?> GetByIdAsync(TId id, CancellationToken cancellationToken = default) =>
+        this.dbContext.Set<T, TId>().SingleOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
 
-    public Task<List<T>> ListAsync(CancellationToken cancellationToken = default)
-    {
-        return this.dbContext.Set<T, TId>().ToListAsync(cancellationToken);
-    }
+    public Task<List<T>> ListAsync(CancellationToken cancellationToken = default) =>
+        this.dbContext.Set<T, TId>().ToListAsync(cancellationToken);
 
-    public Task<T?> SingleOrDefaultAsync(Expression<Func<T, bool>> filter,
-        CancellationToken cancellationToken = default)
-    {
-        return this.dbContext.Set<T, TId>().SingleOrDefaultAsync(filter, cancellationToken);
-    }
+    public Task<T?> SingleOrDefaultAsync(Expression<Func<T, bool>> filter, CancellationToken cancellationToken = default) =>
+        this.dbContext.Set<T, TId>().SingleOrDefaultAsync(filter, cancellationToken);
 
     public async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
     {
@@ -39,11 +34,8 @@ public class RepositoryBase<T, TId> : IRepositoryBase<T, TId>
         return result.Entity;
     }
 
-    // public async Task<IEnumerable<T>> AddRangeAsync(params T[] entities, CancellationToken cancellationToken = default)
-    // {
-    //     var result = this.dbContext.Set<T, TId>().AddRange(entities, cancellationToken);
-    //     return entities;
-    // }
+    public Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default) =>
+        this.dbContext.Set<T, TId>().AddRangeAsync(entities, cancellationToken);
 
     public async Task<T> UpdateAsync(T entity, CancellationToken cancellationToken = default)
     {
@@ -59,14 +51,9 @@ public class RepositoryBase<T, TId> : IRepositoryBase<T, TId>
         return result.Entity;
     }
 
-    public Task DeleteAsync(T entity, CancellationToken cancellationToken = default)
-    {
+    public void DeleteAsync(T entity, CancellationToken cancellationToken = default) =>
         this.dbContext.Set<T, TId>().Remove(entity);
-        return Task.CompletedTask;
-    }
 
-    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        return this.dbContext.SaveChangesAsync(cancellationToken);
-    }
+    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) =>
+        this.dbContext.SaveChangesAsync(cancellationToken);
 }

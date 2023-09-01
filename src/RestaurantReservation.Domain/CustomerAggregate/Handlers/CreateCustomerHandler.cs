@@ -26,6 +26,6 @@ public class CreateCustomerHandler : ICommandHandler<CreateCustomer, CreateCusto
         var newCustomer = await this.customerRepository.AddAsync(customerEntity, cancellationToken);
         await this.customerRepository.SaveChangesAsync(cancellationToken);
 
-        return new CreateCustomerResult(newCustomer.Id);
+        return new CreateCustomerResult(newCustomer.Id.Value);
     }
 }

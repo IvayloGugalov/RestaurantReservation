@@ -2,19 +2,19 @@
 
 public record WorkTime
 {
-    public WorkingHours Monday { get; private set; } = null!;
-    public WorkingHours Tuesday { get; private set; } = null!;
-    public WorkingHours Wednesday { get; private set; } = null!;
-    public WorkingHours Thursday { get; private set; } = null!;
-    public WorkingHours Friday { get; private set; } = null!;
-    public WorkingHours Saturday { get; private set; } = null!;
-    public WorkingHours Sunday { get; private set; } = null!;
+    public WorkingHours Monday { get; private init; } = null!;
+    public WorkingHours Tuesday { get; private init; } = null!;
+    public WorkingHours Wednesday { get; private init; } = null!;
+    public WorkingHours Thursday { get; private init; } = null!;
+    public WorkingHours Friday { get; private init; } = null!;
+    public WorkingHours Saturday { get; private init; } = null!;
+    public WorkingHours Sunday { get; private init; } = null!;
 
-    private WorkTime()
-    {
-    }
+    private WorkTime() { }
 
-    public WorkTime(
+    public static WorkTime? CreateEmpty() => new();
+
+    public static WorkTime Create(
         WorkingHours Monday,
         WorkingHours Tuesday,
         WorkingHours Wednesday,
@@ -23,13 +23,16 @@ public record WorkTime
         WorkingHours Saturday,
         WorkingHours Sunday)
     {
-        this.Monday = Monday;
-        this.Tuesday = Tuesday;
-        this.Wednesday = Wednesday;
-        this.Thursday = Thursday;
-        this.Friday = Friday;
-        this.Saturday = Saturday;
-        this.Sunday = Sunday;
+        return new WorkTime
+        {
+            Monday = Monday,
+            Tuesday = Tuesday,
+            Wednesday = Wednesday,
+            Thursday = Thursday,
+            Friday = Friday,
+            Saturday = Saturday,
+            Sunday = Sunday
+        };
     }
 }
 
@@ -38,11 +41,12 @@ public record WorkingHours
     public TimeSpan OpeningTime { get; private init; }
     public TimeSpan ClosingTime { get; private init; }
 
-    private WorkingHours()
-    {
-    }
+    private WorkingHours() { }
 
-    public static WorkingHours Add(TimeSpan openingTime, TimeSpan closingTime)
+    public static WorkingHours CreateEmpty()
+        => new();
+
+    public static WorkingHours Create(TimeSpan openingTime, TimeSpan closingTime)
     {
         if (openingTime >= closingTime) throw new ArgumentException("Opening time must be before closing time.");
 

@@ -1,16 +1,20 @@
 ﻿namespace RestaurantReservation.Domain.CustomerAggregate.Models;
 
-public class Customer : AggregateRoot<CustomerId>
+public class Customer : AggregateRoot<CustomerId, Guid>
 {
     public CustomerName FullName { get; private init; } = null!;
     public Email Email { get; private init; } = null!;
 
-    private readonly List<Guid> favouriteRestaurants;
-    public IReadOnlyCollection<Guid> FavouriteRestaurants => this.favouriteRestaurants.AsReadOnly();
+    private readonly List<RestaurantId> favouriteRestaurants;
+    public IReadOnlyCollection<RestaurantId> FavouriteRestaurants => this.favouriteRestaurants.AsReadOnly();
+
+    private readonly List<ReservationId> reservations;
+    public IReadOnlyCollection<ReservationId> Reservations => this.reservations.AsReadOnly();
 
     private Customer()
     {
-        this.favouriteRestaurants = new List<Guid>();
+        this.favouriteRestaurants = new List<RestaurantId>();
+        this.reservations = new List<ReservationId>();
     }
 
     public static Customer Create(
@@ -26,19 +30,33 @@ public class Customer : AggregateRoot<CustomerId>
             Email = new Email(emailValue)
         };
 
-        var @event = new CustomerCreatedDomainEvent(customer.Id, firstName, lastName, emailValue);
+        var @event = new CustomerCreatedDomainEvent(customer.Id.Value, firstName, lastName, emailValue);
         customer.AddDomainEvent(@event);
 
         return customer;
     }
 
-    public void AddRestaurantToFavorites(RestaurantId restaurantId)
+    public bool AddRestaurantToFavorites(RestaurantId restaurantId)
     {
-        if (this.favouriteRestaurants.Contains(restaurantId)) return;
+        if (this.favouriteRestaurants.Contains(restaurantId)) return false;
 
         this.favouriteRestaurants.Add(restaurantId);
 
         var @event = new RestaurantAddedToFavoritesDomainEvent(restaurantId);
         this.AddDomainEvent(@event);
+
+        return true;
+    }
+
+    public bool AddReservation(ReservationId reservationId)
+    {
+        if (this.reservations.Contains(reservationId)) return false;
+
+        this.reservations.Add(reservationId);
+
+        // var @event = new RestaurantAddedToFavoritesDomainEvent(reservationId);
+        // this.AddDomainEvent(@event);
+
+        return true;
     }
 }

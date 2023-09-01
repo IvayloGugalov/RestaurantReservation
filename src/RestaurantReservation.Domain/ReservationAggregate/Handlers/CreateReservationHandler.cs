@@ -28,6 +28,6 @@ public class CreateReservationHandler : ICommandHandler<CreateReservation, Creat
         await this.tableRepository.UpdateAsync(table, cancellationToken);
         await this.reservationRepository.AddAsync(reservationEntity, cancellationToken);
 
-        return new CreateReservationResult(reservationEntity.Id);
+        return new CreateReservationResult(reservationEntity.Id.Value);
     }
 }

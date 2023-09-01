@@ -1,6 +1,6 @@
 ﻿namespace RestaurantReservation.Domain.RestaurantAggregate.Models;
 
-public class Table : AggregateRoot<TableId>
+public class Table : Entity<TableId>
 {
     public string Number { get; private init; } = null!;
     public ushort Capacity { get; private init; }
@@ -33,21 +33,21 @@ public class Table : AggregateRoot<TableId>
 
     public Reservation AddReservation(
         ReservationId reservationId,
-        Guid customerId,
+        CustomerId customerId,
         DateTime reservationDate,
         ushort occupants)
     {
         var reservation = Reservation.Create(
             reservationId,
-            this.Restaurant.Id,
+            (RestaurantId)this.Restaurant.Id,
             this,
             customerId,
             reservationDate,
             occupants);
 
-        var @event = new ReservationCreatedDomainEvent(
-            reservation.Id, reservation.CustomerId, reservation.TableId, reservation.ReservationDate, reservation.Occupants);
-        this.AddDomainEvent(@event);
+        // var @event = new ReservationCreatedDomainEvent(
+        //     reservation.Id, reservation.CustomerId, reservation.TableId, reservation.ReservationDate, reservation.Occupants);
+        // this.AddDomainEvent(@event);
 
         this.reservations.Add(reservation);
 
@@ -56,7 +56,7 @@ public class Table : AggregateRoot<TableId>
 
     public void RemoveReservation(ReservationId reservationId)
     {
-        var reservation = this.reservations.SingleOrDefault(x => x.Id == reservationId);
+        var reservation = this.reservations.SingleOrDefault(x => x.Id.Value == reservationId.Value);
         if (reservation == null) return;
 
         // var @event =

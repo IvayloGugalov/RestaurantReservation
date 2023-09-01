@@ -12,8 +12,8 @@ using RestaurantReservation.Infrastructure.EF.Data;
 namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230826191351_initial")]
-    partial class initial
+    [Migration("20230830233114_FixWorkingTimesNaming")]
+    partial class FixWorkingTimesNaming
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("RestaurantReservation.Domain.CustomerAggregate.Customer", b =>
+            modelBuilder.Entity("RestaurantReservation.Domain.CustomerAggregate.Models.Customer", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -115,11 +115,8 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_reservations");
 
-                    b.HasIndex("CustomerId")
-                        .HasDatabaseName("ix_reservations_customer_id");
-
-                    b.HasIndex("RestaurantId")
-                        .HasDatabaseName("ix_reservations_restaurant_id");
+                    b.HasIndex("TableId")
+                        .HasDatabaseName("ix_reservations_table_id");
 
                     b.ToTable("reservations", (string)null);
                 });
@@ -181,6 +178,54 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
                     b.ToTable("restaurants", (string)null);
                 });
 
+            modelBuilder.Entity("RestaurantReservation.Domain.RestaurantAggregate.Models.Table", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("table_id");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("integer")
+                        .HasColumnName("capacity");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<long?>("CreatedBy")
+                        .HasColumnType("bigint")
+                        .HasColumnName("created_by");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modified");
+
+                    b.Property<long?>("LastModifiedBy")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_modified_by");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("number");
+
+                    b.Property<Guid>("RestaurantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("restaurant_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_tables");
+
+                    b.HasIndex("RestaurantId")
+                        .HasDatabaseName("ix_tables_restaurant_id");
+
+                    b.ToTable("tables", (string)null);
+                });
+
             modelBuilder.Entity("RestaurantReservation.Domain.RestaurantAggregate.ValueObjects.Review", b =>
                 {
                     b.Property<Guid>("Id")
@@ -221,7 +266,7 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("last_modified_by");
 
-                    b.Property<Guid>("ReservationId")
+                    b.Property<Guid?>("ReservationId")
                         .HasColumnType("uuid")
                         .HasColumnName("reservation_id");
 
@@ -238,7 +283,7 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
                     b.ToTable("reviews", (string)null);
                 });
 
-            modelBuilder.Entity("RestaurantReservation.Domain.CustomerAggregate.Customer", b =>
+            modelBuilder.Entity("RestaurantReservation.Domain.CustomerAggregate.Models.Customer", b =>
                 {
                     b.OwnsOne("RestaurantReservation.Domain.Common.ValueObjects.Email", "Email", b1 =>
                         {
@@ -290,28 +335,85 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
                                 .HasConstraintName("fk_customers_customers_customer_id");
                         });
 
+                    b.OwnsMany("RestaurantReservation.Domain.ReservationAggregate.ValueObjects.ReservationId", "Reservations", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer")
+                                .HasColumnName("id");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<Guid>("CustomerId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("customer_id");
+
+                            b1.Property<Guid>("Value")
+                                .HasColumnType("uuid")
+                                .HasColumnName("customer_reservation_id");
+
+                            b1.HasKey("Id")
+                                .HasName("pk_customer_reservation_ids");
+
+                            b1.HasIndex("CustomerId")
+                                .HasDatabaseName("ix_customer_reservation_ids_customer_id");
+
+                            b1.ToTable("customer_reservation_ids", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("CustomerId")
+                                .HasConstraintName("fk_customer_reservation_ids_customers_customer_id");
+                        });
+
+                    b.OwnsMany("RestaurantReservation.Domain.RestaurantAggregate.ValueObjects.RestaurantId", "FavouriteRestaurants", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer")
+                                .HasColumnName("id");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<Guid>("CustomerId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("customer_id");
+
+                            b1.Property<Guid>("Value")
+                                .HasColumnType("uuid")
+                                .HasColumnName("customer_favourite_restaurant_id");
+
+                            b1.HasKey("Id")
+                                .HasName("pk_customer_favourite_restaurant_ids");
+
+                            b1.HasIndex("CustomerId")
+                                .HasDatabaseName("ix_customer_favourite_restaurant_ids_customer_id");
+
+                            b1.ToTable("customer_favourite_restaurant_ids", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("CustomerId")
+                                .HasConstraintName("fk_customer_favourite_restaurant_ids_customers_customer_id");
+                        });
+
                     b.Navigation("Email")
                         .IsRequired();
 
+                    b.Navigation("FavouriteRestaurants");
+
                     b.Navigation("FullName")
                         .IsRequired();
+
+                    b.Navigation("Reservations");
                 });
 
             modelBuilder.Entity("RestaurantReservation.Domain.ReservationAggregate.Models.Reservation", b =>
                 {
-                    b.HasOne("RestaurantReservation.Domain.CustomerAggregate.Customer", null)
+                    b.HasOne("RestaurantReservation.Domain.RestaurantAggregate.Models.Table", null)
                         .WithMany("Reservations")
-                        .HasForeignKey("CustomerId")
+                        .HasForeignKey("TableId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_reservations_customers_customer_id");
-
-                    b.HasOne("RestaurantReservation.Domain.RestaurantAggregate.Models.Restaurant", null)
-                        .WithMany("Reservations")
-                        .HasForeignKey("RestaurantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_reservations_restaurants_restaurant_id");
+                        .HasConstraintName("fk_reservations_tables_table_id");
                 });
 
             modelBuilder.Entity("RestaurantReservation.Domain.RestaurantAggregate.Models.Restaurant", b =>
@@ -339,11 +441,11 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
 
                                     b2.Property<TimeSpan>("ClosingTime")
                                         .HasColumnType("interval")
-                                        .HasColumnName("work_time_friday_closing_time");
+                                        .HasColumnName("friday_closing_time");
 
                                     b2.Property<TimeSpan>("OpeningTime")
                                         .HasColumnType("interval")
-                                        .HasColumnName("work_time_friday_opening_time");
+                                        .HasColumnName("friday_opening_time");
 
                                     b2.HasKey("WorkTimeRestaurantId")
                                         .HasName("pk_restaurants");
@@ -363,11 +465,11 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
 
                                     b2.Property<TimeSpan>("ClosingTime")
                                         .HasColumnType("interval")
-                                        .HasColumnName("work_time_monday_closing_time");
+                                        .HasColumnName("monday_closing_time");
 
                                     b2.Property<TimeSpan>("OpeningTime")
                                         .HasColumnType("interval")
-                                        .HasColumnName("work_time_monday_opening_time");
+                                        .HasColumnName("monday_opening_time");
 
                                     b2.HasKey("WorkTimeRestaurantId")
                                         .HasName("pk_restaurants");
@@ -387,11 +489,11 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
 
                                     b2.Property<TimeSpan>("ClosingTime")
                                         .HasColumnType("interval")
-                                        .HasColumnName("work_time_saturday_closing_time");
+                                        .HasColumnName("saturday_closing_time");
 
                                     b2.Property<TimeSpan>("OpeningTime")
                                         .HasColumnType("interval")
-                                        .HasColumnName("work_time_saturday_opening_time");
+                                        .HasColumnName("saturday_opening_time");
 
                                     b2.HasKey("WorkTimeRestaurantId")
                                         .HasName("pk_restaurants");
@@ -411,11 +513,11 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
 
                                     b2.Property<TimeSpan>("ClosingTime")
                                         .HasColumnType("interval")
-                                        .HasColumnName("work_time_sunday_closing_time");
+                                        .HasColumnName("sunday_closing_time");
 
                                     b2.Property<TimeSpan>("OpeningTime")
                                         .HasColumnType("interval")
-                                        .HasColumnName("work_time_sunday_opening_time");
+                                        .HasColumnName("sunday_opening_time");
 
                                     b2.HasKey("WorkTimeRestaurantId")
                                         .HasName("pk_restaurants");
@@ -435,11 +537,11 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
 
                                     b2.Property<TimeSpan>("ClosingTime")
                                         .HasColumnType("interval")
-                                        .HasColumnName("work_time_thursday_closing_time");
+                                        .HasColumnName("thursday_closing_time");
 
                                     b2.Property<TimeSpan>("OpeningTime")
                                         .HasColumnType("interval")
-                                        .HasColumnName("work_time_thursday_opening_time");
+                                        .HasColumnName("thursday_opening_time");
 
                                     b2.HasKey("WorkTimeRestaurantId")
                                         .HasName("pk_restaurants");
@@ -459,11 +561,11 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
 
                                     b2.Property<TimeSpan>("ClosingTime")
                                         .HasColumnType("interval")
-                                        .HasColumnName("work_time_tuesday_closing_time");
+                                        .HasColumnName("tuesday_closing_time");
 
                                     b2.Property<TimeSpan>("OpeningTime")
                                         .HasColumnType("interval")
-                                        .HasColumnName("work_time_tuesday_opening_time");
+                                        .HasColumnName("tuesday_opening_time");
 
                                     b2.HasKey("WorkTimeRestaurantId")
                                         .HasName("pk_restaurants");
@@ -483,11 +585,11 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
 
                                     b2.Property<TimeSpan>("ClosingTime")
                                         .HasColumnType("interval")
-                                        .HasColumnName("work_time_wednesday_closing_time");
+                                        .HasColumnName("wednesday_closing_time");
 
                                     b2.Property<TimeSpan>("OpeningTime")
                                         .HasColumnType("interval")
-                                        .HasColumnName("work_time_wednesday_opening_time");
+                                        .HasColumnName("wednesday_opening_time");
 
                                     b2.HasKey("WorkTimeRestaurantId")
                                         .HasName("pk_restaurants");
@@ -525,9 +627,21 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("RestaurantReservation.Domain.RestaurantAggregate.Models.Table", b =>
+                {
+                    b.HasOne("RestaurantReservation.Domain.RestaurantAggregate.Models.Restaurant", "Restaurant")
+                        .WithMany("Tables")
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_tables_restaurants_restaurant_id");
+
+                    b.Navigation("Restaurant");
+                });
+
             modelBuilder.Entity("RestaurantReservation.Domain.RestaurantAggregate.ValueObjects.Review", b =>
                 {
-                    b.HasOne("RestaurantReservation.Domain.RestaurantAggregate.Models.Restaurant", null)
+                    b.HasOne("RestaurantReservation.Domain.RestaurantAggregate.Models.Restaurant", "Restaurant")
                         .WithMany("Reviews")
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -556,18 +670,20 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
 
                     b.Navigation("Rating")
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("RestaurantReservation.Domain.CustomerAggregate.Customer", b =>
-                {
-                    b.Navigation("Reservations");
+                    b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("RestaurantReservation.Domain.RestaurantAggregate.Models.Restaurant", b =>
                 {
-                    b.Navigation("Reservations");
-
                     b.Navigation("Reviews");
+
+                    b.Navigation("Tables");
+                });
+
+            modelBuilder.Entity("RestaurantReservation.Domain.RestaurantAggregate.Models.Table", b =>
+                {
+                    b.Navigation("Reservations");
                 });
 #pragma warning restore 612, 618
         }

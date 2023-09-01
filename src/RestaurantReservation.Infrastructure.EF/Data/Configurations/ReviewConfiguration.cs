@@ -15,17 +15,16 @@ public class ReviewConfiguration : IEntityTypeConfiguration<Review>
             .ValueGeneratedNever()
             .HasConversion(reviewId => reviewId.Value, dbId => new ReviewId(dbId));
 
-        builder.Property(x => x.CustomerId)
-            .IsRequired();
-
         builder.Property(x => x.ReservationId)
             .HasColumnName(nameof(ReservationId))
-            .ValueGeneratedNever()
-            .HasConversion(reservationId => reservationId.Value, dbId => new ReservationId(dbId));
+            .HasConversion(reservationId => reservationId != null ? reservationId.Value : Guid.Empty, dbId => new ReservationId(dbId))
+            .IsRequired(false);
 
-        // builder.Property(x => x.Restaurant).IsRequired();
-        builder.Property(x => x.CustomerId).IsRequired();
-        builder.Property(x => x.ReservationId).IsRequired();
+        builder.Property(x => x.CustomerId)
+            .HasColumnName(nameof(CustomerId))
+            .HasConversion(customerId => customerId.Value, dbId => new CustomerId(dbId))
+            .IsRequired();
+
         builder.Property(x => x.Comment).IsRequired(false);
         builder.Property(x => x.CustomerName).IsRequired();
         builder.Property(x => x.CreatedAt).IsRequired();

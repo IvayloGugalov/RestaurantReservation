@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using RestaurantReservation.Core.Model;
 using RestaurantReservation.Core.Web;
 using RestaurantReservation.Infrastructure.EF.Data;
+using RestaurantReservation.Infrastructure.EF.Data.Seeders;
 
 namespace RestaurantReservation.Infrastructure.EF;
 
@@ -39,6 +40,9 @@ public static class Extensions
         services.AddScoped<IDbContext>(provider =>
             provider.GetService<TContext>() ?? throw new InvalidOperationException());
 
+        services.AddScoped<IDataSeeder, CustomerSeeder>();
+        services.AddScoped<IDataSeeder, RestaurantSeeder>();
+
         return services;
     }
 
@@ -47,7 +51,7 @@ public static class Extensions
     {
         MigrateDatabaseAsync<TContext>(app.ApplicationServices).GetAwaiter().GetResult();
 
-        if (!env.IsEnvironment("test"))
+        if (env.IsEnvironment("Development"))
         {
             SeedDataAsync(app.ApplicationServices).GetAwaiter().GetResult();
         }
@@ -114,11 +118,11 @@ public static class Extensions
 
     private static async Task SeedDataAsync(IServiceProvider serviceProvider)
     {
-        // using var scope = serviceProvider.CreateScope();
-        // var seeders = scope.ServiceProvider.GetServices<IDataSeeder>();
-        // foreach (var seeder in seeders)
-        // {
-        //     await seeder.SeedAllAsync();
-        // }
+        using var scope = serviceProvider.CreateScope();
+        var seeders = scope.ServiceProvider.GetServices<IDataSeeder>();
+        foreach (var seeder in seeders)
+        {
+            await seeder.SeedAllAsync();
+        }
     }
 }

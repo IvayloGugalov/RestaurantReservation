@@ -13,7 +13,7 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
         builder.Property(x => x.Id)
             .HasColumnName(nameof(ReservationId))
             .ValueGeneratedNever()
-            .HasConversion(customerId => customerId.Value, dbId => new ReservationId(dbId));
+            .HasConversion(reservationId => reservationId.Value, dbId => new ReservationId(dbId));
 
         builder.Property(x => x.ReservationDate)
             .HasColumnType("date")
@@ -25,15 +25,23 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
             .IsRequired();
 
         builder.Property(x => x.RestaurantId)
+            .HasColumnName(nameof(RestaurantId))
+            .HasConversion(restaurantId => restaurantId.Value, dbId => new RestaurantId(dbId))
             .IsRequired();
 
         builder.Property(x => x.CustomerId)
+            .HasColumnName(nameof(CustomerId))
+            .HasConversion(customerId => customerId.Value, dbId => new CustomerId(dbId))
             .IsRequired();
 
         builder.Property(x => x.TableId)
+            .HasColumnName(nameof(TableId))
+            .HasConversion(tableId => tableId.Value, dbId => new TableId(dbId))
             .IsRequired();
 
         builder.Property(x => x.ReviewId)
+            .HasColumnName(nameof(ReviewId))
+            .HasConversion(reviewId => reviewId != null ? reviewId.Value : Guid.Empty , dbId => new ReviewId(dbId))
             .IsRequired(false);
     }
 }

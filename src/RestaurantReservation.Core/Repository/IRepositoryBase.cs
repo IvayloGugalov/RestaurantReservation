@@ -40,7 +40,7 @@ public interface IRepositoryBase<T, in TId>
     /// <summary>
     /// Removes an entity in the database
     /// </summary>
-    Task DeleteAsync(T entity, CancellationToken cancellationToken = default);
+    void DeleteAsync(T entity, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Persists changes to the database.

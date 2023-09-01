@@ -16,6 +16,7 @@ public class CreateRestaurantHandler : ICommandHandler<CreateRestaurant, CreateR
         if (restaurant != null) throw new RestaurantAlreadyExistsException();
 
         var restaurantEntity = Restaurant.Create(
+            new RestaurantId(command.Id),
             name: command.Name,
             phone: command.Phone,
             description: command.Description,
@@ -24,6 +25,6 @@ public class CreateRestaurantHandler : ICommandHandler<CreateRestaurant, CreateR
             workTime: command.WorkTime);
 
         var newRestaurant = await this.restaurantRepository.AddAsync(restaurantEntity, cancellationToken);
-        return new CreateRestaurantResult(newRestaurant.Id);
+        return new CreateRestaurantResult(newRestaurant.Id.Value);
     }
 }
