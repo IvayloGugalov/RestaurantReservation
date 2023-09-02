@@ -15,13 +15,13 @@ public class Create : IMinimalApiEndpoint
                 })
             .WithOpenApi(operation => new OpenApiOperation(operation)
             {
-                Description = "Create Customer",
-                Summary = "Create Customer",
+                Description = "Create Reservation",
+                Summary = "Create Reservation",
             })
-            .WithName("Create Customer")
+            .WithName("Create Reservation")
             .Produces<ResponseCreateReservationDto>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
-            .WithApiVersionSet(builder.NewApiVersionSet("Customer").Build())
+            .WithApiVersionSet(builder.NewApiVersionSet("Reservation").Build())
             .HasApiVersion(new ApiVersion(1, 0));
 
         return builder;

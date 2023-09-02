@@ -1,6 +1,6 @@
 ﻿namespace RestaurantReservation.Domain.ReservationAggregate.Models;
 
-public class Reservation : AggregateRoot<ReservationId, Guid>
+public class Reservation : AggregateRoot<ReservationId>
 {
     public static readonly TimeSpan MIN_STAY = TimeSpan.FromMinutes(90);
 

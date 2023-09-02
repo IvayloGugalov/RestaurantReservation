@@ -5,6 +5,7 @@ public class Table : Entity<TableId>
     public string Number { get; private init; } = null!;
     public ushort Capacity { get; private init; }
     public Restaurant Restaurant { get; private init; } = null!;
+    public RestaurantId RestaurantId { get; private init; } = null!;
 
     private readonly List<Reservation> reservations;
     public IReadOnlyCollection<Reservation> Reservations => this.reservations.AsReadOnly();

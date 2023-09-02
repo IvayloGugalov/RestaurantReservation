@@ -1,6 +1,6 @@
 ﻿namespace RestaurantReservation.Domain.CustomerAggregate.Models;
 
-public class Customer : AggregateRoot<CustomerId, Guid>
+public class Customer : AggregateRoot<CustomerId>
 {
     public CustomerName FullName { get; private init; } = null!;
     public Email Email { get; private init; } = null!;

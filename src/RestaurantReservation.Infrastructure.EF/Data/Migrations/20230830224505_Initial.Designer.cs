@@ -439,15 +439,13 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
                                         .HasColumnType("uuid")
                                         .HasColumnName("restaurant_id");
 
-                                    b2.Property<TimeSpan>("ClosingTime")
-                                        .ValueGeneratedOnUpdateSometimes()
-                                        .HasColumnType("interval")
-                                        .HasColumnName("closing_time");
+                                    b2.Property<long>("ClosingTime")
+                                        .HasColumnType("bigint")
+                                        .HasColumnName("friday_closing_time");
 
-                                    b2.Property<TimeSpan>("OpeningTime")
-                                        .ValueGeneratedOnUpdateSometimes()
-                                        .HasColumnType("interval")
-                                        .HasColumnName("opening_time");
+                                    b2.Property<long>("OpeningTime")
+                                        .HasColumnType("bigint")
+                                        .HasColumnName("friday_opening_time");
 
                                     b2.HasKey("WorkTimeRestaurantId")
                                         .HasName("pk_restaurants");
@@ -465,15 +463,13 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
                                         .HasColumnType("uuid")
                                         .HasColumnName("restaurant_id");
 
-                                    b2.Property<TimeSpan>("ClosingTime")
-                                        .ValueGeneratedOnUpdateSometimes()
-                                        .HasColumnType("interval")
-                                        .HasColumnName("closing_time");
+                                    b2.Property<long>("ClosingTime")
+                                        .HasColumnType("bigint")
+                                        .HasColumnName("monday_closing_time");
 
-                                    b2.Property<TimeSpan>("OpeningTime")
-                                        .ValueGeneratedOnUpdateSometimes()
-                                        .HasColumnType("interval")
-                                        .HasColumnName("opening_time");
+                                    b2.Property<long>("OpeningTime")
+                                        .HasColumnType("bigint")
+                                        .HasColumnName("monday_opening_time");
 
                                     b2.HasKey("WorkTimeRestaurantId")
                                         .HasName("pk_restaurants");
@@ -491,15 +487,13 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
                                         .HasColumnType("uuid")
                                         .HasColumnName("restaurant_id");
 
-                                    b2.Property<TimeSpan>("ClosingTime")
-                                        .ValueGeneratedOnUpdateSometimes()
-                                        .HasColumnType("interval")
-                                        .HasColumnName("closing_time");
+                                    b2.Property<long>("ClosingTime")
+                                        .HasColumnType("bigint")
+                                        .HasColumnName("saturday_closing_time");
 
-                                    b2.Property<TimeSpan>("OpeningTime")
-                                        .ValueGeneratedOnUpdateSometimes()
-                                        .HasColumnType("interval")
-                                        .HasColumnName("opening_time");
+                                    b2.Property<long>("OpeningTime")
+                                        .HasColumnType("bigint")
+                                        .HasColumnName("saturday_opening_time");
 
                                     b2.HasKey("WorkTimeRestaurantId")
                                         .HasName("pk_restaurants");
@@ -512,20 +506,18 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
                                 });
 
                             b1.OwnsOne("RestaurantReservation.Domain.RestaurantAggregate.ValueObjects.WorkingHours", "Sunday", b2 =>
-                                {
+                            {
                                     b2.Property<Guid>("WorkTimeRestaurantId")
                                         .HasColumnType("uuid")
                                         .HasColumnName("restaurant_id");
 
-                                    b2.Property<TimeSpan>("ClosingTime")
-                                        .ValueGeneratedOnUpdateSometimes()
-                                        .HasColumnType("interval")
-                                        .HasColumnName("closing_time");
+                                    b2.Property<long>("ClosingTime")
+                                        .HasColumnType("bigint")
+                                        .HasColumnName("sunday_closing_time");
 
-                                    b2.Property<TimeSpan>("OpeningTime")
-                                        .ValueGeneratedOnUpdateSometimes()
-                                        .HasColumnType("interval")
-                                        .HasColumnName("opening_time");
+                                    b2.Property<long>("OpeningTime")
+                                        .HasColumnType("bigint")
+                                        .HasColumnName("sunday_opening_time");
 
                                     b2.HasKey("WorkTimeRestaurantId")
                                         .HasName("pk_restaurants");
@@ -535,7 +527,7 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
                                     b2.WithOwner()
                                         .HasForeignKey("WorkTimeRestaurantId")
                                         .HasConstraintName("fk_restaurants_restaurants_restaurant_id");
-                                });
+                            });
 
                             b1.OwnsOne("RestaurantReservation.Domain.RestaurantAggregate.ValueObjects.WorkingHours", "Thursday", b2 =>
                                 {
@@ -543,15 +535,13 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
                                         .HasColumnType("uuid")
                                         .HasColumnName("restaurant_id");
 
-                                    b2.Property<TimeSpan>("ClosingTime")
-                                        .ValueGeneratedOnUpdateSometimes()
-                                        .HasColumnType("interval")
-                                        .HasColumnName("closing_time");
+                                    b2.Property<long>("ClosingTime")
+                                        .HasColumnType("bigint")
+                                        .HasColumnName("thursday_closing_time");
 
-                                    b2.Property<TimeSpan>("OpeningTime")
-                                        .ValueGeneratedOnUpdateSometimes()
-                                        .HasColumnType("interval")
-                                        .HasColumnName("opening_time");
+                                    b2.Property<long>("OpeningTime")
+                                        .HasColumnType("bigint")
+                                        .HasColumnName("thursday_opening_time");
 
                                     b2.HasKey("WorkTimeRestaurantId")
                                         .HasName("pk_restaurants");
@@ -569,15 +559,13 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
                                         .HasColumnType("uuid")
                                         .HasColumnName("restaurant_id");
 
-                                    b2.Property<TimeSpan>("ClosingTime")
-                                        .ValueGeneratedOnUpdateSometimes()
-                                        .HasColumnType("interval")
-                                        .HasColumnName("closing_time");
+                                    b2.Property<long>("ClosingTime")
+                                        .HasColumnType("bigint")
+                                        .HasColumnName("tuesday_closing_time");
 
-                                    b2.Property<TimeSpan>("OpeningTime")
-                                        .ValueGeneratedOnUpdateSometimes()
-                                        .HasColumnType("interval")
-                                        .HasColumnName("opening_time");
+                                    b2.Property<long>("OpeningTime")
+                                        .HasColumnType("bigint")
+                                        .HasColumnName("tuesday_opening_time");
 
                                     b2.HasKey("WorkTimeRestaurantId")
                                         .HasName("pk_restaurants");
@@ -590,20 +578,18 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
                                 });
 
                             b1.OwnsOne("RestaurantReservation.Domain.RestaurantAggregate.ValueObjects.WorkingHours", "Wednesday", b2 =>
-                                {
+                            {
                                     b2.Property<Guid>("WorkTimeRestaurantId")
                                         .HasColumnType("uuid")
                                         .HasColumnName("restaurant_id");
 
-                                    b2.Property<TimeSpan>("ClosingTime")
-                                        .ValueGeneratedOnUpdateSometimes()
-                                        .HasColumnType("interval")
-                                        .HasColumnName("closing_time");
+                                    b2.Property<long>("ClosingTime")
+                                        .HasColumnType("bigint")
+                                        .HasColumnName("wednesday_closing_time");
 
-                                    b2.Property<TimeSpan>("OpeningTime")
-                                        .ValueGeneratedOnUpdateSometimes()
-                                        .HasColumnType("interval")
-                                        .HasColumnName("opening_time");
+                                    b2.Property<long>("OpeningTime")
+                                        .HasColumnType("bigint")
+                                        .HasColumnName("wednesday_opening_time");
 
                                     b2.HasKey("WorkTimeRestaurantId")
                                         .HasName("pk_restaurants");
@@ -613,7 +599,7 @@ namespace RestaurantReservation.Infrastructure.EF.Data.Migrations
                                     b2.WithOwner()
                                         .HasForeignKey("WorkTimeRestaurantId")
                                         .HasConstraintName("fk_restaurants_restaurants_restaurant_id");
-                                });
+                            });
 
                             b1.Navigation("Friday")
                                 .IsRequired();

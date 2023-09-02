@@ -1,6 +1,6 @@
 ﻿namespace RestaurantReservation.Domain.RestaurantAggregate.Models;
 
-public class Restaurant : AggregateRoot<RestaurantId, Guid>
+public class Restaurant : AggregateRoot<RestaurantId>
 {
     public string Name { get; private init; } = null!;
     public string Phone { get; private init; } = null!;
@@ -86,7 +86,7 @@ public class Restaurant : AggregateRoot<RestaurantId, Guid>
             this,
             customerId,
             customerName,
-            (ReservationId?)this.Id);
+            new ReservationId(this.Id));
 
         // Raise domain events or perform other actions related to review creation
         var @event = new ReviewCreatedDomainEvent(review);

@@ -22,9 +22,7 @@ public class TableConfiguration : IEntityTypeConfiguration<Table>
         // builder.Navigation(x => x.Reservations)
         //     .UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        builder.HasOne(x => x.Restaurant)
-            .WithMany(x => x.Tables)
-            .HasForeignKey(nameof(RestaurantId))
-            .IsRequired();
+        // builder.ow(x => x.Restaurant)
+        //     .WithMany(x => x.Tables);
     }
 }

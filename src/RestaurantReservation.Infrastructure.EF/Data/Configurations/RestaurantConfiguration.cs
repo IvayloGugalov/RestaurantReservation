@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RestaurantReservation.Infrastructure.EF.Data.Configurations;
 
@@ -17,20 +18,17 @@ public class RestaurantConfiguration : IEntityTypeConfiguration<Restaurant>
 
         builder.OwnsOne(
             x => x.WorkTime,
-            workTimeBuilder =>
+            wt =>
             {
-                workTimeBuilder.WithOwner();
-
-                workTimeBuilder.OwnsOne(wt => wt.Monday, b => ConfigureWorkingHours(b, "Monday"));
-                workTimeBuilder.OwnsOne(wt => wt.Tuesday, b => ConfigureWorkingHours(b, "Tuesday"));
-                workTimeBuilder.OwnsOne(wt => wt.Wednesday, b => ConfigureWorkingHours(b, "Wednesday"));
-                workTimeBuilder.OwnsOne(wt => wt.Thursday, b => ConfigureWorkingHours(b, "Thursday"));
-                workTimeBuilder.OwnsOne(wt => wt.Friday, b => ConfigureWorkingHours(b, "Friday"));
-                workTimeBuilder.OwnsOne(wt => wt.Saturday, b => ConfigureWorkingHours(b, "Saturday"));
-                workTimeBuilder.OwnsOne(wt => wt.Sunday, b => ConfigureWorkingHours(b, "Sunday"));
+                ConfigureWorkingHours(wt.OwnsOne(t => t.Monday), nameof(WorkTime.Monday));
+                ConfigureWorkingHours(wt.OwnsOne(t => t.Tuesday), nameof(WorkTime.Tuesday));
+                ConfigureWorkingHours(wt.OwnsOne(t => t.Wednesday), nameof(WorkTime.Wednesday));
+                ConfigureWorkingHours(wt.OwnsOne(t => t.Thursday), nameof(WorkTime.Thursday));
+                ConfigureWorkingHours(wt.OwnsOne(t => t.Friday), nameof(WorkTime.Friday));
+                ConfigureWorkingHours(wt.OwnsOne(t => t.Saturday), nameof(WorkTime.Saturday));
+                ConfigureWorkingHours(wt.OwnsOne(t => t.Sunday), nameof(WorkTime.Sunday));
             });
-        builder.Navigation(x=>x.WorkTime).IsRequired();
-        // builder.Navigation(x => x.WorkTime).IsRequired();
+        builder.Navigation(x => x.WorkTime).IsRequired();
 
         builder.Property(x => x.Name).IsRequired();
         builder.Property(x => x.Description).IsRequired();
@@ -38,30 +36,28 @@ public class RestaurantConfiguration : IEntityTypeConfiguration<Restaurant>
         builder.Property(x => x.Url).IsRequired();
         builder.Property(x => x.WebSite).IsRequired();
 
-        builder.HasMany(x => x.Reviews).WithOne(x => x.Restaurant);
-        // builder.Navigation(x => x.Reviews).AutoInclude();
+        builder.HasMany(x => x.Reviews)
+            .WithOne(x => x.Restaurant)
+            .HasForeignKey(nameof(RestaurantId));
         builder.Metadata.FindNavigation(nameof(Restaurant.Reviews))
             ?.SetPropertyAccessMode(PropertyAccessMode.Field);
-        // builder.Navigation(x => x.Reviews)
-        //     .UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        builder.HasMany(x => x.Tables).WithOne();
-        // builder.Navigation(x => x.Tables).AutoInclude();
+        builder.HasMany(x => x.Tables)
+            .WithOne(x => x.Restaurant)
+            .HasForeignKey(nameof(RestaurantId));
         builder.Metadata.FindNavigation(nameof(Restaurant.Tables))
             ?.SetPropertyAccessMode(PropertyAccessMode.Field);
-        // builder.Navigation(x => x.Tables)
-            // .UsePropertyAccessMode(PropertyAccessMode.Field);
-
-    }
-
-    private Action<OwnedNavigationBuilder<WorkTime, WorkingHours>> ConfigureWorkingHours()
-    {
-        throw new NotImplementedException();
     }
 
     private static void ConfigureWorkingHours(OwnedNavigationBuilder<WorkTime, WorkingHours> builder, string day)
     {
-        builder.Property(wh => wh.OpeningTime).HasColumnName($"{day}_OpeningTime").IsRequired();
-        builder.Property(wh => wh.ClosingTime).HasColumnName($"{day}_ClosingTime").IsRequired();
+        builder.Property(wh => wh.OpeningTime)
+            .HasColumnName($"{day}_OpeningTime")
+            .HasConversion(new TimeSpanToTicksConverter())
+            .IsRequired();
+        builder.Property(wh => wh.ClosingTime)
+            .HasColumnName($"{day}_ClosingTime")
+            .HasConversion(new TimeSpanToTicksConverter())
+            .IsRequired();
     }
 }
