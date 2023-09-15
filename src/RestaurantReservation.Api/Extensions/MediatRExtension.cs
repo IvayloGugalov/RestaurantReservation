@@ -1,6 +1,4 @@
-﻿using MediatR;
-using RestaurantReservation.Core.Logging;
-using RestaurantReservation.Domain;
+﻿using RestaurantReservation.Core.Logging;
 
 namespace RestaurantReservation.Api.Extensions;
 

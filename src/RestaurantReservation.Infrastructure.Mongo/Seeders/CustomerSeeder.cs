@@ -1,10 +1,4 @@
-﻿using MongoDB.Driver;
-using RestaurantReservation.Domain;
-using RestaurantReservation.Domain.CustomerAggregate.Models;
-using RestaurantReservation.Domain.CustomerAggregate.ValueObjects;
-using RestaurantReservation.Infrastructure.Mongo.Data;
-
-namespace RestaurantReservation.Infrastructure.Mongo.Seeders;
+﻿namespace RestaurantReservation.Infrastructure.Mongo.Seeders;
 
 public class CustomerSeeder : IDataSeeder
 {

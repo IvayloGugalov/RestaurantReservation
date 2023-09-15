@@ -1,9 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using MongoDB.Driver;
-using RestaurantReservation.Domain.CustomerAggregate.Models;
-using RestaurantReservation.Domain.ReservationAggregate.Models;
-using RestaurantReservation.Domain.RestaurantAggregate.Models;
-using RestaurantReservation.Domain.RestaurantAggregate.ValueObjects;
 
 namespace RestaurantReservation.Infrastructure.Mongo.Data;
 

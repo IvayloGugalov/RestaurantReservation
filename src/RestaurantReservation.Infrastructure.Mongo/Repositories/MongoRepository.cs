@@ -1,7 +1,4 @@
 ﻿using System.Linq.Expressions;
-using MongoDB.Driver;
-using RestaurantReservation.Core.Model;
-using RestaurantReservation.Infrastructure.Mongo.Data;
 
 namespace RestaurantReservation.Infrastructure.Mongo.Repositories;
 

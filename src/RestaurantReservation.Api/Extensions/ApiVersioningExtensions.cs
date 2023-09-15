@@ -1,6 +1,4 @@
-﻿using Asp.Versioning;
-
-namespace RestaurantReservation.Api.Extensions;
+﻿namespace RestaurantReservation.Api.Extensions;
 
 public static class ApiVersioningExtensions
 {

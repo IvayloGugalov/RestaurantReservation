@@ -5,7 +5,6 @@ using RestaurantReservation.Api.Extensions;
 using RestaurantReservation.Api.Swagger;
 using RestaurantReservation.Core.Logging;
 using RestaurantReservation.Core.Web;
-using RestaurantReservation.Domain;
 using RestaurantReservation.Infrastructure.Mongo;
 using RestaurantReservation.Infrastructure.Mongo.Data;
 

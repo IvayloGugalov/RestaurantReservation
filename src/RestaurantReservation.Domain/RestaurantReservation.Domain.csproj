@@ -4,6 +4,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -22,7 +23,6 @@
         <Folder Include="Common\Enums" />
         <Folder Include="CustomerAggregate\Handlers" />
         <Folder Include="ReservationAggregate\Handlers" />
-        <Folder Include="RestaurantAggregate\Handlers" />
         <Folder Include="ReservationAggregate\Handlers" />
     </ItemGroup>
 

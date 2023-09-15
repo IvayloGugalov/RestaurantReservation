@@ -1,31 +1,28 @@
-﻿using RestaurantReservation.Core.CQRS;
+﻿using MongoDB.Driver;
+using RestaurantReservation.Core.CQRS;
 using RestaurantReservation.Domain.RestaurantAggregate.Exceptions;
 using RestaurantReservation.Domain.RestaurantAggregate.ValueObjects;
-using RestaurantReservation.Infrastructure.Mongo.Repositories;
+using RestaurantReservation.Infrastructure.Mongo.Data;
 
 namespace RestaurantReservation.Api.Handlers.Restaurant;
 
 public class CreateRestaurantHandler : ICommandHandler<CreateRestaurant, CreateRestaurantResult>
 {
-    // private readonly IRepositoryBase<Restaurant, RestaurantId> restaurantRepository;
-    //
-    // public CreateRestaurantHandler(IRepositoryBase<Restaurant, RestaurantId> restaurantRepository)
-    // {
-    //     this.restaurantRepository = restaurantRepository;
-    // }
+    private readonly AppMongoDbContext dbContext;
 
-    private readonly IMongoRepository<Domain.RestaurantAggregate.Models.Restaurant, RestaurantId> restaurantRepository;
-
-    public CreateRestaurantHandler(IMongoRepository<Domain.RestaurantAggregate.Models.Restaurant, RestaurantId> restaurantRepository)
+    public CreateRestaurantHandler(AppMongoDbContext dbContext)
     {
-        this.restaurantRepository = restaurantRepository;
+        this.dbContext = dbContext;
     }
-
 
     public async Task<CreateRestaurantResult> Handle(CreateRestaurant command, CancellationToken cancellationToken)
     {
         var restaurant =
-            await this.restaurantRepository.SingleOrDefaultAsync(x => x.Name == command.Name, cancellationToken);
+            (await this.dbContext.Restaurants
+                .FindAsync(Builders<Domain.RestaurantAggregate.Models.Restaurant>
+                    .Filter
+                    .Eq(x => x.Name, command.Name), cancellationToken: cancellationToken))
+            .FirstOrDefault(cancellationToken: cancellationToken);
         if (restaurant != null) throw new RestaurantAlreadyExistsException();
 
         var restaurantEntity = Domain.RestaurantAggregate.Models.Restaurant.Create(
@@ -37,8 +34,8 @@ public class CreateRestaurantHandler : ICommandHandler<CreateRestaurant, CreateR
             webSite: command.WebSite);
 
         restaurantEntity.SetWorkTime(command.WorkTime!);
-        var newRestaurant = await this.restaurantRepository.AddAsync(restaurantEntity, cancellationToken);
+        await this.dbContext.Restaurants.InsertOneAsync(restaurantEntity, new InsertOneOptions(), cancellationToken);
 
-        return new CreateRestaurantResult(newRestaurant.Id.Value);
+        return new CreateRestaurantResult(restaurantEntity.Id.Value);
     }
 }

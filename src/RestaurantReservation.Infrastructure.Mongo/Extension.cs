@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using RestaurantReservation.Core.Web;
-using RestaurantReservation.Infrastructure.Mongo.Data;
-using RestaurantReservation.Infrastructure.Mongo.Repositories;
 
 namespace RestaurantReservation.Infrastructure.Mongo;
 

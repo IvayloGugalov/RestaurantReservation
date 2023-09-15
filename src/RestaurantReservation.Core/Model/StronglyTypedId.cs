@@ -1,7 +1,4 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-
-namespace RestaurantReservation.Core.Model;
+﻿namespace RestaurantReservation.Core.Model;
 
 public abstract record StronglyTypedId<TValue>(TValue Value) where TValue : IEquatable<TValue>
 {

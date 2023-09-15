@@ -1,37 +1,39 @@
-﻿using RestaurantReservation.Core.CQRS;
-using RestaurantReservation.Domain.CustomerAggregate.ValueObjects;
+﻿using MongoDB.Driver;
+using RestaurantReservation.Core.CQRS;
+using RestaurantReservation.Domain.CustomerAggregate.Models;
 using RestaurantReservation.Domain.ReservationAggregate.Exceptions;
-using RestaurantReservation.Domain.ReservationAggregate.Models;
 using RestaurantReservation.Domain.ReservationAggregate.ValueObjects;
 using RestaurantReservation.Domain.RestaurantAggregate.Models;
-using RestaurantReservation.Domain.RestaurantAggregate.ValueObjects;
-using RestaurantReservation.Infrastructure.Mongo.Repositories;
+using RestaurantReservation.Infrastructure.Mongo.Data;
 
 namespace RestaurantReservation.Api.Handlers.Reservations;
 
 public class CreateReservationHandler : ICommandHandler<CreateReservation, CreateReservationResult>
 {
-    private readonly IMongoRepository<Table, TableId> tableRepository;
-    private readonly IMongoRepository<Reservation, ReservationId> reservationRepository;
-    private readonly IMongoRepository<Domain.CustomerAggregate.Models.Customer, CustomerId> customerRepository;
+    private readonly AppMongoDbContext dbContext;
 
-    public CreateReservationHandler(
-        IMongoRepository<Table, TableId> tableRepository,
-        IMongoRepository<Reservation, ReservationId> reservationRepository,
-        IMongoRepository<Domain.CustomerAggregate.Models.Customer, CustomerId> customerRepository)
+    public CreateReservationHandler(AppMongoDbContext dbContext)
     {
-        this.tableRepository = tableRepository;
-        this.reservationRepository = reservationRepository;
-        this.customerRepository = customerRepository;
+        this.dbContext = dbContext;
     }
 
     public async Task<CreateReservationResult> Handle(CreateReservation command,
         CancellationToken cancellationToken)
     {
-        var table = await this.tableRepository.SingleOrDefaultAsync(x => command.TableId == x.Id, cancellationToken);
+        var table =
+            (await this.dbContext.Tables
+                .FindAsync(Builders<Table>
+                    .Filter
+                    .Eq("_id", command.Id), cancellationToken: cancellationToken))
+            .FirstOrDefault(cancellationToken: cancellationToken);
+
         if (table == null) throw new TableNotFoundException();
 
-        var customer = await this.customerRepository.SingleOrDefaultAsync(x => command.CustomerId == x.Id, cancellationToken);
+        var customer = (await this.dbContext.Customers
+                .FindAsync(Builders<Customer>
+                    .Filter
+                    .Eq("_id", command.Id), cancellationToken: cancellationToken))
+            .FirstOrDefault(cancellationToken: cancellationToken);
 
         var reservationEntity = table.AddReservation(
             new ReservationId(command.Id),
@@ -39,8 +41,13 @@ public class CreateReservationHandler : ICommandHandler<CreateReservation, Creat
             command.ReservationDate,
             command.Occupants);
 
-        await this.tableRepository.UpdateAsync(table, cancellationToken);
-        await this.reservationRepository.AddAsync(reservationEntity, cancellationToken);
+        await this.dbContext.Tables.UpdateOneAsync(
+            x => x.Id.Value == table.Id,
+            Builders<Table>.Update
+                .Set(x => x.Reservations, table.Reservations),
+            cancellationToken: cancellationToken);
+        await this.dbContext.Reservations
+            .InsertOneAsync(reservationEntity, new InsertOneOptions(), cancellationToken);
 
         return new CreateReservationResult(reservationEntity.Id.Value);
     }

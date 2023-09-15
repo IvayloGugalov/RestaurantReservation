@@ -1,9 +1,7 @@
 ﻿using MongoDB.Driver;
 using RestaurantReservation.Core.CQRS;
 using RestaurantReservation.Domain.RestaurantAggregate.Dtos;
-using RestaurantReservation.Domain.RestaurantAggregate.ValueObjects;
 using RestaurantReservation.Infrastructure.Mongo.Data;
-using RestaurantReservation.Infrastructure.Mongo.Repositories;
 
 namespace RestaurantReservation.Api.Handlers.Restaurant;
 
@@ -19,8 +17,11 @@ public class GetRestaurantByIdHandler : IQueryHandler<GetRestaurantById, GetRest
     public async Task<GetRestaurantByIdResult> Handle(GetRestaurantById request, CancellationToken cancellationToken)
     {
         var restaurant =
-            (await this.dbContext.Restaurants.AsQueryable().ToListAsync(cancellationToken)).SingleOrDefault(x => x.Id.Value == request.Id);
-
+            (await this.dbContext.Restaurants
+                .FindAsync(Builders<Domain.RestaurantAggregate.Models.Restaurant>
+                    .Filter
+                    .Eq("_id", request.Id), cancellationToken: cancellationToken))
+            .FirstOrDefault(cancellationToken: cancellationToken);
 
         // TODO:
         if (restaurant == null) throw new Exception("Restaurant does not exist");
@@ -47,7 +48,7 @@ public class GetRestaurantByIdHandler : IQueryHandler<GetRestaurantById, GetRest
                 restaurant.WorkTime.Saturday.ClosingTime.ToString(),
                 restaurant.WorkTime.Sunday.OpeningTime.ToString(),
                 restaurant.WorkTime.Sunday.ClosingTime.ToString()),
-            Reviews: restaurant.Reviews.Select(r => new ReviewDto(r.Rating.Value, r.Comment, r.CustomerName))
+            Reviews: restaurant.Reviews?.Select(r => new ReviewDto(r.Rating.Value, r.Comment, r.CustomerName))
         );
 
         return new GetRestaurantByIdResult(restaurantDto);

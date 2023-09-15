@@ -1,5 +1,4 @@
-﻿using RestaurantReservation.Core.Model;
-using RestaurantReservation.Core.Repository;
+﻿using RestaurantReservation.Core.Repository;
 
 namespace RestaurantReservation.Infrastructure.Mongo.Repositories;
 

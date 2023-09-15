@@ -1,12 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Conventions;
-using MongoDB.Bson.Serialization.Serializers;
-using MongoDB.Driver;
-using RestaurantReservation.Core.Model;
-using RestaurantReservation.Domain.RestaurantAggregate.ValueObjects;
+using RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
 
 namespace RestaurantReservation.Infrastructure.Mongo.Data;
 
@@ -23,39 +16,10 @@ public class MongoDbContext : IMongoDbContext
         var databaseName = options.Value.DatabaseName;
         Database = MongoClient.GetDatabase(databaseName);
 
-        RegisterSerializers();
+        RegisterSerializers.Register();
         RegisterConventions();
         // Every command will be stored and it'll be processed at SaveChanges
         _commands = new List<Func<Task>>();
-    }
-
-    private static void RegisterSerializers()
-    {
-        // var guidSerializer = BsonSerializer.SerializerRegistry.GetSerializer<Guid>();
-        // // BsonSerializer.RegisterSerializer(new StronglyTypedIdSerializer<Guid>());
-        //
-        // BsonSerializer.RegisterSerializationProvider(new IdSerializationProvider(guidSerializer));
-
-        try
-        {
-            BsonClassMap.RegisterClassMap<StronglyTypedId<Guid>>(
-                map =>
-                {
-                    map.AutoMap();
-                    map.MapProperty(x => x.Value).SetSerializer(new GuidSerializer(BsonType.String));
-                    map.SetIsRootClass(true);
-                });
-
-            BsonClassMap.RegisterClassMap<Entity<RestaurantId>>(
-                map =>
-                {
-                    map.AutoMap();
-                    map.MapProperty(x => x.Id).SetSerializer(new IdSerializer());
-                    map.SetIsRootClass(true);
-                });
-        }
-        catch { }
-
     }
 
     private static void RegisterConventions()
@@ -100,7 +64,7 @@ public class MongoDbContext : IMongoDbContext
 
                 await Session.CommitTransactionAsync(cancellationToken);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 await Session.AbortTransactionAsync(cancellationToken);
                 _commands.Clear();
