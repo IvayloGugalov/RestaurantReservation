@@ -1,6 +1,6 @@
 ﻿namespace RestaurantReservation.Domain.CustomerAggregate.ValueObjects;
 
-public sealed record CustomerId(Guid Value)
+public sealed record CustomerId(Guid Value) : StronglyTypedId<Guid>(Value)
 {
     public static implicit operator Guid(CustomerId customerId)
     {

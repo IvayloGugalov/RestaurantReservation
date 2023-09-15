@@ -4,7 +4,6 @@ public class Table : Entity<TableId>
 {
     public string Number { get; private init; } = null!;
     public ushort Capacity { get; private init; }
-    public Restaurant Restaurant { get; private init; } = null!;
     public RestaurantId RestaurantId { get; private init; } = null!;
 
     private readonly List<Reservation> reservations;
@@ -26,7 +25,7 @@ public class Table : Entity<TableId>
             Id = id,
             Number = number,
             Capacity = capacity,
-            Restaurant = restaurant
+            RestaurantId = restaurant.Id
         };
 
         return table;
@@ -34,15 +33,15 @@ public class Table : Entity<TableId>
 
     public Reservation AddReservation(
         ReservationId reservationId,
-        CustomerId customerId,
+        Customer customer,
         DateTime reservationDate,
         ushort occupants)
     {
         var reservation = Reservation.Create(
             reservationId,
-            (RestaurantId)this.Restaurant.Id,
+            this.RestaurantId,
             this,
-            customerId,
+            customer.Id,
             reservationDate,
             occupants);
 

@@ -1,13 +1,19 @@
-﻿namespace RestaurantReservation.Domain.ReservationAggregate.Handlers;
+﻿using RestaurantReservation.Core.CQRS;
+using RestaurantReservation.Domain.ReservationAggregate.Models;
+using RestaurantReservation.Domain.ReservationAggregate.ValueObjects;
+using RestaurantReservation.Domain.RestaurantAggregate.ValueObjects;
+using RestaurantReservation.Infrastructure.Mongo.Repositories;
+
+namespace RestaurantReservation.Api.Handlers.Reservations;
 
 public class CreateReviewHandler : ICommandHandler<CreateReviewEvent, CreateReviewResult>
 {
-    private readonly IRepositoryBase<Reservation, ReservationId> reservationRepository;
-    private readonly IRepositoryBase<Review, ReviewId> reviewRepository;
+    private readonly IMongoRepository<Reservation, ReservationId> reservationRepository;
+    private readonly IMongoRepository<Review, ReviewId> reviewRepository;
 
     public CreateReviewHandler(
-        IRepositoryBase<Reservation, ReservationId> reservationRepository,
-        IRepositoryBase<Review, ReviewId> reviewRepository)
+        IMongoRepository<Reservation, ReservationId> reservationRepository,
+        IMongoRepository<Review, ReviewId> reviewRepository)
     {
         this.reservationRepository = reservationRepository;
         this.reviewRepository = reviewRepository;

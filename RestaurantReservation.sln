@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantReservation.Api",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantReservation.Infrastructure.EF", "src/RestaurantReservation.Infrastructure.EF\RestaurantReservation.Infrastructure.EF.csproj", "{F2AE807F-BF3C-43E8-AA8C-8F9534F42AB9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantReservation.Infrastructure.Mongo", "src/RestaurantReservation.Infrastructure.Mongo\RestaurantReservation.Infrastructure.Mongo.csproj", "{518AAF08-A2E0-4E4D-A785-D3783837F6C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{F2AE807F-BF3C-43E8-AA8C-8F9534F42AB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2AE807F-BF3C-43E8-AA8C-8F9534F42AB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2AE807F-BF3C-43E8-AA8C-8F9534F42AB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{518AAF08-A2E0-4E4D-A785-D3783837F6C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{518AAF08-A2E0-4E4D-A785-D3783837F6C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{518AAF08-A2E0-4E4D-A785-D3783837F6C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{518AAF08-A2E0-4E4D-A785-D3783837F6C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

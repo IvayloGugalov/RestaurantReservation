@@ -28,6 +28,11 @@ public class RepositoryBase<T, TId> : IRepositoryBase<T, TId>
     public Task<T?> SingleOrDefaultAsync(Expression<Func<T, bool>> filter, CancellationToken cancellationToken = default) =>
         this.dbContext.Set<T, TId>().SingleOrDefaultAsync(filter, cancellationToken);
 
+    public async Task<T> SingleOrDefaultAsync(TId id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
     {
         var result = await this.dbContext.Set<T, TId>().AddAsync(entity, cancellationToken);
@@ -51,8 +56,23 @@ public class RepositoryBase<T, TId> : IRepositoryBase<T, TId>
         return result.Entity;
     }
 
-    public void DeleteAsync(T entity, CancellationToken cancellationToken = default) =>
-        this.dbContext.Set<T, TId>().Remove(entity);
+    public Task DeleteAsync(T entity, CancellationToken cancellationToken = default) =>
+        Task.FromResult(this.dbContext.Set<T, TId>().Remove(entity));
+
+    public Task DeleteByIdAsync(TId id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteRangeAsync(IReadOnlyList<T> entities, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) =>
         this.dbContext.SaveChangesAsync(cancellationToken);

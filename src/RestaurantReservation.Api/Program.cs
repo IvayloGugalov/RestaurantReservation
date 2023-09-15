@@ -5,8 +5,9 @@ using RestaurantReservation.Api.Extensions;
 using RestaurantReservation.Api.Swagger;
 using RestaurantReservation.Core.Logging;
 using RestaurantReservation.Core.Web;
-using RestaurantReservation.Infrastructure.EF;
-using RestaurantReservation.Infrastructure.EF.Data;
+using RestaurantReservation.Domain;
+using RestaurantReservation.Infrastructure.Mongo;
+using RestaurantReservation.Infrastructure.Mongo.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +26,8 @@ app.MapMinimalApiEndpoints();
 app.UseCorrelationId();
 app.UseCustomExceptionHandler();
 app.UseCustomHealthCheck();
-app.UseMigration<AppDbContext>(app.Environment);
+
+app.UseMigration<AppMongoDbContext>(app.Environment);
 // app.UseHttpsRedirection();
 
 app.Run();

@@ -18,6 +18,18 @@ services:
     networks:
       - reservations
 
+  mongo:
+    image: mongo:5
+    container_name: mongo
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=root
+    #   - MONGO_INITDB_ROOT_PASSWORD=secret
+    networks:
+      - reservations
+    ports:
+      - "27017:27017"
+
+
   api:
     image: api
     container_name: api

@@ -23,7 +23,7 @@
     <ItemGroup>
         <ProjectReference Include="..\RestaurantReservation.Core\RestaurantReservation.Core.csproj" />
         <ProjectReference Include="..\RestaurantReservation.Domain\RestaurantReservation.Domain.csproj" />
-        <ProjectReference Include="..\RestaurantReservation.Infrastructure.EF\RestaurantReservation.Infrastructure.EF.csproj" />
+        <ProjectReference Include="..\RestaurantReservation.Infrastructure.Mongo\RestaurantReservation.Infrastructure.Mongo.csproj" />
     </ItemGroup>
 
 </Project>

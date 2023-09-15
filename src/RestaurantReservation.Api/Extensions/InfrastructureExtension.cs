@@ -1,9 +1,10 @@
 ﻿using RestaurantReservation.Api.Endpoints;
 using RestaurantReservation.Api.Swagger;
 using RestaurantReservation.Core.Logging;
-using RestaurantReservation.Infrastructure.EF;
-using RestaurantReservation.Infrastructure.EF.Data;
-using RestaurantReservation.Infrastructure.EF.Data.Repository;
+using RestaurantReservation.Domain;
+using RestaurantReservation.Infrastructure.Mongo;
+using RestaurantReservation.Infrastructure.Mongo.Data;
+using RestaurantReservation.Infrastructure.Mongo.Seeders;
 
 namespace RestaurantReservation.Api.Extensions;
 
@@ -25,8 +26,9 @@ public static class InfrastructureExtension
         #endregion
 
         builder.Services.AddCustomMediatR();
-        builder.Services.AddCustomDbContext<AppDbContext>();
-        builder.AddCustomRepositories();
+        builder.Services.AddMongoDbContext<AppMongoDbContext>(configuration);
+        builder.Services.AddScoped<IDataSeeder, CustomerSeeder>();
+        builder.Services.AddScoped<IDataSeeder, RestaurantSeeder>();
         builder.AddSerilog();
     }
 }

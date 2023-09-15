@@ -3,7 +3,7 @@ using RestaurantReservation.Core.Model;
 
 namespace RestaurantReservation.Core.Repository;
 
-public interface IRepositoryBase<T, in TId>
+public interface IRepositoryBase<T, TId>
     where T : class, IEntity<TId>
     where TId : IEquatable<TId>
 {
@@ -21,6 +21,8 @@ public interface IRepositoryBase<T, in TId>
     /// Returns the first element of a sequence, or a default value if the sequence contains no elements.
     /// </summary>
     Task<T?> SingleOrDefaultAsync(Expression<Func<T, bool>> filter, CancellationToken cancellationToken = default);
+
+    // Task<T> SingleOrDefaultAsync(TId id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Adds an entity in the database.
@@ -40,10 +42,23 @@ public interface IRepositoryBase<T, in TId>
     /// <summary>
     /// Removes an entity in the database
     /// </summary>
-    void DeleteAsync(T entity, CancellationToken cancellationToken = default);
+    Task DeleteAsync(T entity, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Persists changes to the database.
+    /// Removes an entity with the specified Id in the database
     /// </summary>
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    /// <param name="id"></param>
+    Task DeleteByIdAsync(TId id, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Removes a range of entities from the database
+    /// </summary>
+    /// <param name="entities"></param>
+    Task DeleteRangeAsync(IReadOnlyList<T> entities, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Removes an entity based on the given expression
+    /// </summary>
+    /// <param name="predicate"></param>
+    Task DeleteAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 }

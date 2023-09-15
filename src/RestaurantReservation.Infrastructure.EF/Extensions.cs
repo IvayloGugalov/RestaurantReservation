@@ -20,6 +20,7 @@ public static class Extensions
         this IServiceCollection services)
         where TContext : DbContext, IDbContext
     {
+        throw new NotImplementedException("Cant implement postgres");
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
         services.AddValidateOptions<PostgresOptions>();
@@ -49,6 +50,7 @@ public static class Extensions
     public static IApplicationBuilder UseMigration<TContext>(this IApplicationBuilder app, IWebHostEnvironment env)
         where TContext : DbContext, IDbContext
     {
+        throw new NotImplementedException("Cant implement postgres");
         MigrateDatabaseAsync<TContext>(app.ApplicationServices).GetAwaiter().GetResult();
 
         if (env.IsEnvironment("Development"))

@@ -26,10 +26,4 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Compile Update="Data\Migrations\20230830224505_Initial.Designer.cs">
-        <DependentUpon>20230830224505_Initial.cs</DependentUpon>
-      </Compile>
-    </ItemGroup>
-
 </Project>

@@ -54,7 +54,7 @@ public class Customer : AggregateRoot<CustomerId>
 
         this.reservations.Add(reservationId);
 
-        // var @event = new RestaurantAddedToFavoritesDomainEvent(reservationId);
+        // var @event = new RestaurantAddedToFavoritesDomainEvent(reservation);
         // this.AddDomainEvent(@event);
 
         return true;

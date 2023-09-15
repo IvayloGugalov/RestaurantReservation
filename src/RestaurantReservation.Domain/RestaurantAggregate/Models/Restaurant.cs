@@ -7,7 +7,7 @@ public class Restaurant : AggregateRoot<RestaurantId>
     public string Description { get; private init; } = null!;
     public string Url { get; private init; } = null!;
     public string WebSite { get; private init; } = null!;
-    public WorkTime WorkTime { get; private init; } = null!;
+    public WorkTime WorkTime { get; private set; } = null!;
 
     private readonly List<Review> reviews;
     public IReadOnlyCollection<Review> Reviews => this.reviews.AsReadOnly();
@@ -27,8 +27,7 @@ public class Restaurant : AggregateRoot<RestaurantId>
         string phone,
         string description,
         string url,
-        string webSite,
-        WorkTime? workTime)
+        string webSite)
     {
         var restaurant = new Restaurant
         {
@@ -37,8 +36,7 @@ public class Restaurant : AggregateRoot<RestaurantId>
             Phone = phone,
             Description = description,
             Url = url,
-            WebSite = webSite,
-            WorkTime = (workTime ?? WorkTime.CreateEmpty())!
+            WebSite = webSite
         };
 
         var @event = new RestaurantCreatedDomainEvent(
@@ -51,6 +49,11 @@ public class Restaurant : AggregateRoot<RestaurantId>
         restaurant.AddDomainEvent(@event);
 
         return restaurant;
+    }
+
+    public void SetWorkTime(WorkTime workTime)
+    {
+        this.WorkTime = workTime;
     }
 
     public Table AddTable(
@@ -71,10 +74,11 @@ public class Restaurant : AggregateRoot<RestaurantId>
 
     public Review AddReview(
         ReviewId id,
-        CustomerId customerId,
+        Customer customer,
         int ratingValue,
         string comment,
-        string customerName)
+        string customerName,
+        Reservation? reservation)
     {
         // if (this.Status != ReservationStatus.Completed || this.Status != ReservationStatus.Canceled) return null;
 
@@ -84,9 +88,9 @@ public class Restaurant : AggregateRoot<RestaurantId>
             ratingValue,
             comment,
             this,
-            customerId,
+            customer,
             customerName,
-            new ReservationId(this.Id));
+            reservation);
 
         // Raise domain events or perform other actions related to review creation
         var @event = new ReviewCreatedDomainEvent(review);

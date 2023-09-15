@@ -10,6 +10,7 @@
         <PackageReference Include="MassTransit" Version="8.0.16" />
         <PackageReference Include="MediatR" Version="12.1.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.0" />
+        <PackageReference Include="MongoDB.Driver" Version="2.21.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
@@ -19,6 +20,14 @@
 
     <ItemGroup>
         <Folder Include="Common\Enums" />
+        <Folder Include="CustomerAggregate\Handlers" />
+        <Folder Include="ReservationAggregate\Handlers" />
+        <Folder Include="RestaurantAggregate\Handlers" />
+        <Folder Include="ReservationAggregate\Handlers" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="ReservationAggregate\Handlers\CreateReviewHandler.cs" />
     </ItemGroup>
 
 </Project>

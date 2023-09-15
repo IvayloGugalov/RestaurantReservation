@@ -32,8 +32,8 @@ public class AppDbContext : DbContext, IDbContext
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(builder);
-        builder.FilterSoftDeletedProperties();
-        builder.ToSnakeCaseTables();
+        // builder.FilterSoftDeletedProperties();
+        // builder.ToSnakeCaseTables();
     }
 
     // TODO: If going to have a base DbContext and split the aggregates into separate Microservices

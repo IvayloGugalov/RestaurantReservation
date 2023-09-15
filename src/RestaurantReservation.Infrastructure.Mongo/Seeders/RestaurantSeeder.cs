@@ -1,21 +1,25 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MongoDB.Driver;
+using RestaurantReservation.Domain;
+using RestaurantReservation.Domain.RestaurantAggregate.Models;
+using RestaurantReservation.Domain.RestaurantAggregate.ValueObjects;
+using RestaurantReservation.Infrastructure.Mongo.Data;
 
-namespace RestaurantReservation.Infrastructure.EF.Data.Seeders;
+namespace RestaurantReservation.Infrastructure.Mongo.Seeders;
 
 public class RestaurantSeeder : IDataSeeder
 {
-    private readonly AppDbContext dbContext;
+    private readonly AppMongoDbContext dbContext;
 
-    public RestaurantSeeder(AppDbContext dbContext)
+    public RestaurantSeeder(AppMongoDbContext dbContext)
     {
         this.dbContext = dbContext;
     }
 
     public async Task SeedAllAsync()
     {
-        if (!await this.dbContext.Restaurants.AnyAsync())
+        if (!await this.dbContext.Restaurants.AsQueryable().AnyAsync())
         {
-            await this.dbContext.BeginTransactionAsync();
+            // await this.dbContext.BeginTransactionAsync();
             var restaurants = Restaurants().ToArray();
 
             foreach (var restaurant in restaurants)
@@ -41,25 +45,27 @@ public class RestaurantSeeder : IDataSeeder
                     restaurant.SetWorkTime(CreateWorkTime(10, 20, 10, 22));
                 }
             }
-            await this.dbContext.Restaurants.AddRangeAsync(restaurants);
+            await this.dbContext.Restaurants.InsertManyAsync(restaurants);
 
-            await this.dbContext.CommitTransactionAsync();
+            // await this.dbContext.CommitTransactionAsync();
 
-            foreach (var restaurant in this.dbContext.Restaurants)
+            foreach (var restaurant in restaurants)
             {
                 AddTables(restaurant);
             }
-            await this.dbContext.SaveChangesAsync();
+            // await this.dbContext.SaveChangesAsync();
         }
     }
 
-    private static void AddTables(Restaurant restaurant)
+    private void AddTables(Restaurant restaurant)
     {
+        var tables = new List<Table>();
         for (var i = 1; i <= 10; i++)
         {
             var tableId = new TableId(Guid.NewGuid());
-            restaurant.AddTable(tableId, i.ToString(), 4);
+            tables.Add(restaurant.AddTable(tableId, i.ToString(), 4));
         }
+        this.dbContext.Tables.InsertMany(tables);
     }
 
     private static IEnumerable<Restaurant> Restaurants()

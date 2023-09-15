@@ -4,9 +4,7 @@ public record Rating
 {
     public int Value { get; }
 
-    private Rating()
-    {
-    }
+    private Rating() { }
 
     public Rating(int value)
         : base()

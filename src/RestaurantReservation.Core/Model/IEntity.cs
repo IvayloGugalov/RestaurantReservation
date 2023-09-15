@@ -1,6 +1,6 @@
 ﻿namespace RestaurantReservation.Core.Model;
 
-public interface IEntity<T> : IEntity
+public interface IEntity<T> : IEntity where T : IEquatable<T>
 {
     public T Id { get; set; }
 }
