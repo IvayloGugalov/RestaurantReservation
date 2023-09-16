@@ -48,8 +48,8 @@ public class GetRestaurantByIdHandler : IQueryHandler<GetRestaurantById, GetRest
                 restaurant.WorkTime.Saturday.ClosingTime.ToString(),
                 restaurant.WorkTime.Sunday.OpeningTime.ToString(),
                 restaurant.WorkTime.Sunday.ClosingTime.ToString()),
-            Reviews: restaurant.Reviews?.Select(r => new ReviewDto(r.Rating.Value, r.Comment, r.CustomerName))
-        );
+            //TODO:
+            Reviews: null);
 
         return new GetRestaurantByIdResult(restaurantDto);
     }

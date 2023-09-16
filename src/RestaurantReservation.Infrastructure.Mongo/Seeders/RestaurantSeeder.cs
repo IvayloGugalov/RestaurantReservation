@@ -57,7 +57,7 @@ public class RestaurantSeeder : IDataSeeder
         for (var i = 1; i <= 10; i++)
         {
             var tableId = new TableId(Guid.NewGuid());
-            tables.Add(restaurant.AddTable(tableId, i.ToString(), 4));
+            tables.Add(restaurant.AddTable(tableId, i.ToString(), (ushort)(i + 1)));
         }
         this.dbContext.Tables.InsertMany(tables);
     }

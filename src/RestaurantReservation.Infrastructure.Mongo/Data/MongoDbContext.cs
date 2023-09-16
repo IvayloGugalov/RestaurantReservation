@@ -35,7 +35,7 @@ public class MongoDbContext : IMongoDbContext
             }, _ => true);
     }
 
-     public IMongoCollection<T> GetCollection<T>(string? name = null)
+    public IMongoCollection<T> GetCollection<T>(string? name = null)
     {
         return Database.GetCollection<T>(name ?? typeof(T).Name.ToLower());
     }

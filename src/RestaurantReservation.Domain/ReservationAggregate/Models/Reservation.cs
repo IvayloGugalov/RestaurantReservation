@@ -23,8 +23,8 @@ public class Reservation : AggregateRoot<ReservationId>
         ushort occupants)
     {
         if (table.Capacity < occupants) throw new TableLimitOfPeopleBreachedException(table.Capacity, occupants);
-        if (table.Reservations.All(r => r.ReservationDate.Add(MIN_STAY) < reservationDate))
-            throw new ReservationConflictException();
+        // if (table.Reservations.All(r => r.ReservationDate.Add(MIN_STAY) < reservationDate))
+        //     throw new ReservationConflictException();
 
         var reservation = new Reservation
         {

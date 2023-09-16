@@ -41,6 +41,7 @@ public class CreateReservationHandler : ICommandHandler<CreateReservation, Creat
             command.ReservationDate,
             command.Occupants);
 
+        // or replaceAsync
         await this.dbContext.Tables.UpdateOneAsync(
             x => x.Id.Value == table.Id,
             Builders<Table>.Update

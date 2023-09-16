@@ -21,7 +21,6 @@
 
     <ItemGroup>
         <Folder Include="Common\Enums" />
-        <Folder Include="CustomerAggregate\Handlers" />
         <Folder Include="ReservationAggregate\Handlers" />
         <Folder Include="ReservationAggregate\Handlers" />
     </ItemGroup>

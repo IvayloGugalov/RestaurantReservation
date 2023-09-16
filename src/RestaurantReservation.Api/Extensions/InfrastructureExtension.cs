@@ -28,6 +28,7 @@ public static class InfrastructureExtension
         builder.Services.AddMongoDbContext<AppMongoDbContext>(configuration);
         builder.Services.AddScoped<IDataSeeder, CustomerSeeder>();
         builder.Services.AddScoped<IDataSeeder, RestaurantSeeder>();
+        builder.Services.AddScoped<IDataSeeder, ReservationSeeder>();
         builder.AddSerilog();
     }
 }

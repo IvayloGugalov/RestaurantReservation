@@ -11,6 +11,8 @@ public static class RegisterSerializers
             RegisterTypedIds();
             RegisterBaseEntities();
 
+            CustomerSerialization.Register();
+            RestaurantSerialization.Register();
             ReservationSerialization.Register();
             ReviewSerialization.Register();
             TableSerialization.Register();
@@ -23,10 +25,12 @@ public static class RegisterSerializers
 
     private static void RegisterBaseEntities()
     {
-        RegisterBaseEntityMap<Entity<RestaurantId>, RestaurantId>(
-            new IdSerializationProvider<RestaurantId>(new GuidSerializer(BsonType.String)));
         RegisterBaseEntityMap<Entity<CustomerId>, CustomerId>(
             new IdSerializationProvider<CustomerId>(new GuidSerializer(BsonType.String)));
+        RegisterBaseEntityMap<Entity<RestaurantId>, RestaurantId>(
+            new IdSerializationProvider<RestaurantId>(new GuidSerializer(BsonType.String)));
+        RegisterBaseEntityMap<Entity<ReservationId>, ReservationId>(
+            new IdSerializationProvider<ReservationId>(new GuidSerializer(BsonType.String)));
         RegisterBaseEntityMap<Entity<ReviewId>, ReviewId>(
             new IdSerializationProvider<ReviewId>(new GuidSerializer(BsonType.String)));
         RegisterBaseEntityMap<Entity<TableId>, TableId>(

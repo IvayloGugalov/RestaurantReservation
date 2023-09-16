@@ -1,20 +1,26 @@
 ﻿namespace RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
 
-internal sealed class IdSerializationProvider<TId> : SerializerBase<TId>, IBsonDocumentSerializer
+public sealed class IdSerializationProvider<TId> : SerializerBase<TId>, IBsonDocumentSerializer
     where TId : IEquatable<TId>
 {
     private readonly IBsonSerializer<Guid> guidSerializer;
+    private readonly NullableSerializer<Guid> nullableSerializer = new(new GuidSerializer(BsonType.String));
 
     public IdSerializationProvider(IBsonSerializer<Guid> guidSerializer)
     {
         this.guidSerializer = guidSerializer;
     }
 
-    public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, TId id)
+    public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, TId? id)
     {
         if (id is StronglyTypedId<Guid> guidId)
         {
             this.guidSerializer.Serialize(context, args, guidId.Value);
+        }
+        else if (id is null)
+        {
+            var nullableGuid = id as StronglyTypedId<Guid>;
+            this.nullableSerializer.Serialize(context, args, nullableGuid?.Value);
         }
         else
         {
@@ -38,9 +44,9 @@ internal sealed class IdSerializationProvider<TId> : SerializerBase<TId>, IBsonD
 
     // MongoDB performs the filtering and matching inside the driver.
     // When using LINQ
-    public bool TryGetMemberSerializationInfo(string memberName, out BsonSerializationInfo serializationInfo)
+    public bool TryGetMemberSerializationInfo(string memberName, out BsonSerializationInfo? serializationInfo)
     {
-        serializationInfo = null!;
+        serializationInfo = null;
         var propTypeName = ValueType.GetProperty(memberName)?.PropertyType.Name;
         if (propTypeName == nameof(Guid) && memberName == "Value")
         {

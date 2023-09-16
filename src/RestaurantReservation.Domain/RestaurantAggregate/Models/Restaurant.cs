@@ -9,16 +9,16 @@ public class Restaurant : AggregateRoot<RestaurantId>
     public string WebSite { get; private init; } = null!;
     public WorkTime WorkTime { get; private set; } = null!;
 
-    private readonly List<Review> reviews;
-    public IReadOnlyCollection<Review> Reviews => this.reviews.AsReadOnly();
+    private readonly List<ReviewId> reviews;
+    public IReadOnlyCollection<ReviewId> Reviews => this.reviews.AsReadOnly();
 
-    private readonly List<Table> tables;
-    public IReadOnlyCollection<Table> Tables => this.tables.AsReadOnly();
+    private readonly List<TableId> tables;
+    public IReadOnlyCollection<TableId> Tables => this.tables.AsReadOnly();
 
     private Restaurant()
     {
-        this.reviews = new List<Review>();
-        this.tables = new List<Table>();
+        this.reviews = new List<ReviewId>();
+        this.tables = new List<TableId>();
     }
 
     public static Restaurant Create(
@@ -67,7 +67,7 @@ public class Restaurant : AggregateRoot<RestaurantId>
             capacity,
             this);
 
-        this.tables.Add(table);
+        this.tables.Add(table.Id);
 
         return table;
     }
@@ -95,7 +95,7 @@ public class Restaurant : AggregateRoot<RestaurantId>
         // Raise domain events or perform other actions related to review creation
         var @event = new ReviewCreatedDomainEvent(review);
         this.AddDomainEvent(@event);
-        this.reviews.Add(review);
+        this.reviews.Add(review.Id);
 
         return review;
     }
