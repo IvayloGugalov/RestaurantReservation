@@ -2,8 +2,8 @@
 
 public interface IUnitOfWork : IDisposable
 {
-    Task BeginTransactionAsync(CancellationToken cancellationToken = default);
-    Task CommitAsync(CancellationToken cancellationToken = default);
+    Task BeginTransactionAsync(CancellationToken ct = default);
+    Task CommitAsync(CancellationToken ct = default);
 }
 
 public interface IUnitOfWork<out TContext> : IUnitOfWork

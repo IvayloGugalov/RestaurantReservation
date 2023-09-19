@@ -16,7 +16,7 @@ public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
     }
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
-        CancellationToken cancellationToken)
+        CancellationToken ct)
     {
         const string prefix = nameof(LoggingBehavior<TRequest, TResponse>);
 

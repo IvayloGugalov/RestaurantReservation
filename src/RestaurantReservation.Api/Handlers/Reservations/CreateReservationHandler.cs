@@ -18,22 +18,22 @@ public class CreateReservationHandler : ICommandHandler<CreateReservation, Creat
     }
 
     public async Task<CreateReservationResult> Handle(CreateReservation command,
-        CancellationToken cancellationToken)
+        CancellationToken ct)
     {
         var table =
             (await this.dbContext.Tables
                 .FindAsync(Builders<Table>
                     .Filter
-                    .Eq("_id", command.Id), cancellationToken: cancellationToken))
-            .FirstOrDefault(cancellationToken: cancellationToken);
+                    .Eq("_id", command.Id), cancellationToken: ct))
+            .FirstOrDefault(cancellationToken: ct);
 
         if (table == null) throw new TableNotFoundException();
 
         var customer = (await this.dbContext.Customers
                 .FindAsync(Builders<Customer>
                     .Filter
-                    .Eq("_id", command.Id), cancellationToken: cancellationToken))
-            .FirstOrDefault(cancellationToken: cancellationToken);
+                    .Eq("_id", command.Id), cancellationToken: ct))
+            .FirstOrDefault(cancellationToken: ct);
 
         var reservationEntity = table.AddReservation(
             new ReservationId(command.Id),
@@ -46,9 +46,9 @@ public class CreateReservationHandler : ICommandHandler<CreateReservation, Creat
             x => x.Id.Value == table.Id,
             Builders<Table>.Update
                 .Set(x => x.Reservations, table.Reservations),
-            cancellationToken: cancellationToken);
+            cancellationToken: ct);
         await this.dbContext.Reservations
-            .InsertOneAsync(reservationEntity, new InsertOneOptions(), cancellationToken);
+            .InsertOneAsync(reservationEntity, new InsertOneOptions(), ct);
 
         return new CreateReservationResult(reservationEntity.Id.Value);
     }

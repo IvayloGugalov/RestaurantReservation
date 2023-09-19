@@ -7,78 +7,63 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId>
     where TId : IEquatable<TId>
 {
     private readonly IMongoDbContext context;
-    protected readonly IMongoCollection<TEntity> DbSet;
+    private readonly IMongoCollection<TEntity> DbSet;
 
     public MongoRepository(IMongoDbContext context)
     {
         this.context = context;
-        this.DbSet = this.context.GetCollection<TEntity>();
+        this.DbSet = this.context.GetCollection<TEntity>(typeof(TEntity).Name);
     }
 
     public void Dispose()
     {
-        this.context?.Dispose();
+        this.context.Dispose();
     }
 
-    public Task<TEntity?> GetByIdAsync(TId id, CancellationToken cancellationToken = default)
+    public async Task<TEntity?> GetByIdAsync(TId id, CancellationToken ct = default)
     {
-        return this.FindOneAsync(e => e.Id.Equals(id), cancellationToken);
+        var result = await this.DbSet.FindAsync(Builders<TEntity>.Filter.Eq("_id", id), cancellationToken: ct);
+        return result.SingleOrDefault(cancellationToken: ct);
     }
 
-    public Task<TEntity?> FindOneAsync(
-        Expression<Func<TEntity, bool>> predicate,
-        CancellationToken cancellationToken = default)
+    public async Task<TEntity?> FindOneAsync(FilterDefinition<TEntity> filter, CancellationToken ct = default)
     {
-        return DbSet.Find(predicate).SingleOrDefaultAsync(cancellationToken: cancellationToken)!;
+        var result = await this.DbSet.FindAsync(filter, cancellationToken: ct);
+        return result.SingleOrDefault(ct);
     }
 
-    public async Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default)
+    public async Task<List<TEntity>> ListAsync(CancellationToken ct = default)
     {
-        return await this.DbSet.AsQueryable().ToListAsync(cancellationToken);
+        return await this.DbSet.AsQueryable().ToListAsync(ct);
     }
 
-    public Task<TEntity?> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default)
+    public void AddAsync(TEntity entity, CancellationToken ct = default)
     {
-        return this.DbSet.Find(filter).SingleOrDefaultAsync(cancellationToken: cancellationToken)!;
+        entity.CreatedAt = DateTime.UtcNow;
+        this.context.AddCommand(() => this.DbSet.InsertOneAsync(entity, new InsertOneOptions(), ct));
     }
 
-    public Task<TEntity> SingleOrDefaultAsync(StronglyTypedId<TId> id, CancellationToken cancellationToken = default)
+    public void UpdateAsync(TEntity entity, CancellationToken ct = default)
     {
-        var filter = Builders<TEntity>.Filter.Eq("_id", id);
-        return this.DbSet.Find(filter).SingleOrDefaultAsync(cancellationToken: cancellationToken);
+        entity.LastModified = DateTime.UtcNow;
+        this.context.AddCommand(() =>
+            this.DbSet.ReplaceOneAsync(Builders<TEntity>.Filter.Eq("_id", entity.Id), entity, new ReplaceOptions(), ct));
     }
 
-    public async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public void DeleteByIdAsync(TId id, CancellationToken ct = default)
     {
-        await this.DbSet.InsertOneAsync(entity, new InsertOneOptions(), cancellationToken);
-
-        return entity;
+        this.context.AddCommand(() => this.DbSet.DeleteOneAsync(Builders<TEntity>.Filter.Eq("_id", id), ct));
     }
 
-    public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public void DeleteRangeAsync(FilterDefinition<TEntity> filter, CancellationToken ct = default)
     {
-        await this.DbSet.ReplaceOneAsync(e => e.Id.Equals(entity.Id), entity, new ReplaceOptions(), cancellationToken);
-
-        return entity;
+        this.context.AddCommand(() => this.DbSet.DeleteManyAsync(filter, ct));
     }
 
-    public Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public bool Exists(Expression<Func<TEntity, object>> criteria, bool exists)
     {
-        return this.DbSet.DeleteOneAsync(e => e.Id.Equals(entity.Id), cancellationToken);
-    }
-
-    public Task DeleteByIdAsync(TId id, CancellationToken cancellationToken = default)
-    {
-        return this.DbSet.DeleteOneAsync(e => e.Id.Equals(id), cancellationToken);
-    }
-
-    public Task DeleteRangeAsync(IReadOnlyList<TEntity> entities, CancellationToken cancellationToken = default)
-    {
-        return this.DbSet.DeleteOneAsync(e => entities.Any(i => e.Id.Equals(i.Id)), cancellationToken);
-    }
-
-    public Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
-    {
-        return this.DbSet.DeleteOneAsync(predicate, cancellationToken);
+        var builder = Builders<TEntity>.Filter;
+        var filter = builder.Exists(criteria, exists);
+        return this.DbSet.Find(filter).Any();
     }
 }

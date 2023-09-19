@@ -12,7 +12,7 @@ public class CreateReviewHandler : ICommandHandler<CreateReviewEvent, CreateRevi
         this.dbContext = dbContext;
     }
 
-    public async Task<CreateReviewResult> Handle(CreateReviewEvent command, CancellationToken cancellationToken)
+    public async Task<CreateReviewResult> Handle(CreateReviewEvent command, CancellationToken ct)
     {
         // var reservation = await this.reservationRepository.FirstOrDefaultAsync(x => x.Id == command.ReservationId, cancellationToken);
         // if (reservation == null) throw new ReservationNotFoundException();

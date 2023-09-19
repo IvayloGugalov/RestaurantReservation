@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
 
 namespace RestaurantReservation.Infrastructure.Mongo.Data;
 
@@ -8,130 +7,115 @@ public class MongoDbContext : IMongoDbContext
     public IClientSessionHandle? Session { get; set; }
     public IMongoDatabase Database { get; }
     public IMongoClient MongoClient { get; }
-    protected readonly IList<Func<Task>> _commands;
+    protected readonly IList<Func<Task>> commands;
 
     protected MongoDbContext(IOptions<MongoOptions> options)
     {
-        MongoClient = new MongoClient(options.Value.ConnectionString);
+        this.MongoClient = new MongoClient(options.Value.ConnectionString);
         var databaseName = options.Value.DatabaseName;
-        Database = MongoClient.GetDatabase(databaseName);
+        this.Database = this.MongoClient.GetDatabase(databaseName);
 
-        RegisterSerializers.Register();
-        RegisterConventions();
         // Every command will be stored and it'll be processed at SaveChanges
-        _commands = new List<Func<Task>>();
-    }
-
-    private static void RegisterConventions()
-    {
-        ConventionRegistry.Register(
-            "conventions",
-            new ConventionPack
-            {
-                new CamelCaseElementNameConvention(),
-                new IgnoreExtraElementsConvention(true),
-                new EnumRepresentationConvention(BsonType.String),
-                new IgnoreIfDefaultConvention(false)
-            }, _ => true);
+        this.commands = new List<Func<Task>>();
     }
 
     public IMongoCollection<T> GetCollection<T>(string? name = null)
     {
-        return Database.GetCollection<T>(name ?? typeof(T).Name.ToLower());
+        return this.Database.GetCollection<T>(name ?? typeof(T).Name.ToLower());
     }
 
     public void Dispose()
     {
-        while (Session is { IsInTransaction: true })
+        while (this.Session is { IsInTransaction: true })
             Thread.Sleep(TimeSpan.FromMilliseconds(100));
 
         GC.SuppressFinalize(this);
     }
 
-    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public async Task<int> SaveChangesAsync(CancellationToken ct = default)
     {
-        var result = _commands.Count;
+        var result = this.commands.Count;
 
-        using (Session = await MongoClient.StartSessionAsync(cancellationToken: cancellationToken))
+        using (this.Session = await this.MongoClient.StartSessionAsync(cancellationToken: ct))
         {
-            Session.StartTransaction();
+            this.Session.StartTransaction();
 
             try
             {
-                var commandTasks = _commands.Select(c => c());
+                var commandTasks = this.commands.Select(c => c());
 
                 await Task.WhenAll(commandTasks);
 
-                await Session.CommitTransactionAsync(cancellationToken);
+                await this.Session.CommitTransactionAsync(ct);
             }
             catch (Exception ex)
             {
-                await Session.AbortTransactionAsync(cancellationToken);
-                _commands.Clear();
+                await this.Session.AbortTransactionAsync(ct);
+                this.commands.Clear();
                 throw;
             }
         }
 
-        _commands.Clear();
+        this.commands.Clear();
         return result;
     }
 
-    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+    public async Task BeginTransactionAsync(CancellationToken ct = default)
     {
-        Session = await MongoClient.StartSessionAsync(cancellationToken: cancellationToken);
-        Session.StartTransaction();
+        this.Session = await this.MongoClient.StartSessionAsync(cancellationToken: ct);
+        this.Session.StartTransaction();
     }
 
-    public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
+    public async Task CommitTransactionAsync(CancellationToken ct = default)
     {
-        if (Session is { IsInTransaction: true })
-            await Session.CommitTransactionAsync(cancellationToken);
+        if (this.Session is { IsInTransaction: true })
+            await this.Session.CommitTransactionAsync(ct);
 
-        Session?.Dispose();
+        this.Session?.Dispose();
     }
 
-    public async Task RollbackTransaction(CancellationToken cancellationToken = default)
+    public async Task RollbackTransaction(CancellationToken ct = default)
     {
-        await Session?.AbortTransactionAsync(cancellationToken)!;
+        await this.Session?.AbortTransactionAsync(ct)!;
     }
 
     public void AddCommand(Func<Task> func)
     {
-        _commands.Add(func);
+        this.commands.Add(func);
     }
 
-    public async Task ExecuteTransactionalAsync(Func<Task> action, CancellationToken cancellationToken = default)
+    public async Task ExecuteTransactionalAsync(Func<Task> action, CancellationToken ct = default)
     {
-        await BeginTransactionAsync(cancellationToken);
+        await BeginTransactionAsync(ct);
         try
         {
             await action();
 
-            await CommitTransactionAsync(cancellationToken);
+            await CommitTransactionAsync(ct);
         }
         catch
         {
-            await RollbackTransaction(cancellationToken);
+            await RollbackTransaction(ct);
             throw;
         }
     }
 
     public async Task<T> ExecuteTransactionalAsync<T>(
         Func<Task<T>> action,
-        CancellationToken cancellationToken = default)
+        CancellationToken ct = default)
     {
-        await BeginTransactionAsync(cancellationToken);
+        await BeginTransactionAsync(ct);
         try
         {
             var result = await action();
 
-            await CommitTransactionAsync(cancellationToken);
+            await CommitTransactionAsync(ct);
 
             return result;
         }
         catch
         {
-            await RollbackTransaction(cancellationToken);
+            await RollbackTransaction(ct);
             throw;
         }
     }

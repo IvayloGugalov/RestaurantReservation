@@ -6,10 +6,10 @@ public class Create : IMinimalApiEndpoint
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/reservation/create",
-                async (RequestCreateReservationDto request, IMediator mediator, CancellationToken cancellationToken) =>
+                async (RequestCreateReservationDto request, IMediator mediator, CancellationToken ct) =>
                 {
                     var command = ReservationMappings.Map(request);
-                    var result = await mediator.Send(command, cancellationToken);
+                    var result = await mediator.Send(command, ct);
                     var response = ReservationMappings.Map(result);
                     return Results.Ok(response);
                 })

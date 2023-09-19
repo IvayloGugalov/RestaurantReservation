@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using RestaurantReservation.Core.Web;
+using RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
 
 namespace RestaurantReservation.Infrastructure.Mongo;
 
@@ -17,7 +18,7 @@ public static class Extensions
         return services.AddMongoDbContext<TContext, TContext>(configuration, configurator);
     }
 
-    public static IServiceCollection AddMongoDbContext<TContextService, TContextImplementation>(
+    private static IServiceCollection AddMongoDbContext<TContextService, TContextImplementation>(
         this IServiceCollection services, IConfiguration configuration, Action<MongoOptions>? configurator = null)
         where TContextService : IMongoDbContext
         where TContextImplementation : MongoDbContext, TContextService
@@ -41,7 +42,23 @@ public static class Extensions
         services.AddTransient(typeof(IMongoRepository<,>), typeof(MongoRepository<,>));
         services.AddTransient(typeof(IMongoUnitOfWork<>), typeof(MongoUnitOfWork<>));
 
+        Serializers.RegisterAll();
+        RegisterConventions();
+
         return services;
+    }
+
+    private static void RegisterConventions()
+    {
+        ConventionRegistry.Register(
+            "conventions",
+            new ConventionPack
+            {
+                new CamelCaseElementNameConvention(),
+                new IgnoreExtraElementsConvention(true),
+                new EnumRepresentationConvention(BsonType.String),
+                new IgnoreIfDefaultConvention(false)
+            }, _ => true);
     }
 
     public static IApplicationBuilder UseMigration<TContext>(this IApplicationBuilder app, IWebHostEnvironment env)

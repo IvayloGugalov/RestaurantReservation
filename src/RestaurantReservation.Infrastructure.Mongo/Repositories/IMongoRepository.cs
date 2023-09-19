@@ -1,9 +1,24 @@
-﻿using RestaurantReservation.Core.Repository;
+﻿using System.Linq.Expressions;
 
 namespace RestaurantReservation.Infrastructure.Mongo.Repositories;
 
-public interface IMongoRepository<TEntity, TId> : IRepositoryBase<TEntity, TId>
+public interface IMongoRepository<TEntity, in TId> : IDisposable
     where TEntity : class, IEntity<TId>
     where TId : IEquatable<TId>
 {
+    Task<TEntity?> GetByIdAsync(TId id, CancellationToken ct = default);
+
+    Task<TEntity?> FindOneAsync(FilterDefinition<TEntity> filter, CancellationToken ct = default);
+
+    Task<List<TEntity>> ListAsync(CancellationToken ct = default);
+
+    void AddAsync(TEntity entity, CancellationToken ct = default);
+
+    void UpdateAsync(TEntity entity, CancellationToken ct = default);
+
+    void DeleteByIdAsync(TId id, CancellationToken ct = default);
+
+    void DeleteRangeAsync(FilterDefinition<TEntity> filter, CancellationToken ct = default);
+
+    bool Exists(Expression<Func<TEntity, object>> criteria, bool exists);
 }

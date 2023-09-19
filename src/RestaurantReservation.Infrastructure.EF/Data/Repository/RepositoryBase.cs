@@ -19,35 +19,35 @@ public class RepositoryBase<T, TId> : IRepositoryBase<T, TId>
         this.dbContext = dbContext;
     }
 
-    public Task<T?> GetByIdAsync(TId id, CancellationToken cancellationToken = default) =>
-        this.dbContext.Set<T, TId>().SingleOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
+    public Task<T?> GetByIdAsync(TId id, CancellationToken ct = default) =>
+        this.dbContext.Set<T, TId>().SingleOrDefaultAsync(x => x.Id.Equals(id), ct);
 
-    public Task<List<T>> ListAsync(CancellationToken cancellationToken = default) =>
-        this.dbContext.Set<T, TId>().ToListAsync(cancellationToken);
+    public Task<List<T>> ListAsync(CancellationToken ct = default) =>
+        this.dbContext.Set<T, TId>().ToListAsync(ct);
 
-    public Task<T?> SingleOrDefaultAsync(Expression<Func<T, bool>> filter, CancellationToken cancellationToken = default) =>
-        this.dbContext.Set<T, TId>().SingleOrDefaultAsync(filter, cancellationToken);
+    public Task<T?> SingleOrDefaultAsync(Expression<Func<T, bool>> filter, CancellationToken ct = default) =>
+        this.dbContext.Set<T, TId>().SingleOrDefaultAsync(filter, ct);
 
-    public async Task<T> SingleOrDefaultAsync(TId id, CancellationToken cancellationToken = default)
+    public async Task<T> SingleOrDefaultAsync(TId id, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
+    public async Task<T> AddAsync(T entity, CancellationToken ct = default)
     {
-        var result = await this.dbContext.Set<T, TId>().AddAsync(entity, cancellationToken);
+        var result = await this.dbContext.Set<T, TId>().AddAsync(entity, ct);
         return result.Entity;
     }
 
-    public Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default) =>
-        this.dbContext.Set<T, TId>().AddRangeAsync(entities, cancellationToken);
+    public Task AddRangeAsync(IEnumerable<T> entities, CancellationToken ct = default) =>
+        this.dbContext.Set<T, TId>().AddRangeAsync(entities, ct);
 
-    public async Task<T> UpdateAsync(T entity, CancellationToken cancellationToken = default)
+    public async Task<T> UpdateAsync(T entity, CancellationToken ct = default)
     {
         var toUpdate = await this.dbContext.Set<T, TId>()
-            .SingleOrDefaultAsync(x => x.Id.Equals(entity.Id), cancellationToken);
+            .SingleOrDefaultAsync(x => x.Id.Equals(entity.Id), ct);
         EntityEntry<T> result;
-        if (toUpdate == null) result = await this.dbContext.Set<T, TId>().AddAsync(entity, cancellationToken);
+        if (toUpdate == null) result = await this.dbContext.Set<T, TId>().AddAsync(entity, ct);
         else
         {
             result = this.dbContext.Set<T, TId>().Update(toUpdate);
@@ -56,24 +56,24 @@ public class RepositoryBase<T, TId> : IRepositoryBase<T, TId>
         return result.Entity;
     }
 
-    public Task DeleteAsync(T entity, CancellationToken cancellationToken = default) =>
+    public Task DeleteAsync(T entity, CancellationToken ct = default) =>
         Task.FromResult(this.dbContext.Set<T, TId>().Remove(entity));
 
-    public Task DeleteByIdAsync(TId id, CancellationToken cancellationToken = default)
+    public Task DeleteByIdAsync(TId id, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task DeleteRangeAsync(IReadOnlyList<T> entities, CancellationToken cancellationToken = default)
+    public Task DeleteRangeAsync(IReadOnlyList<T> entities, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task DeleteAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
+    public Task DeleteAsync(Expression<Func<T, bool>> predicate, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) =>
-        this.dbContext.SaveChangesAsync(cancellationToken);
+    public Task<int> SaveChangesAsync(CancellationToken ct = default) =>
+        this.dbContext.SaveChangesAsync(ct);
 }

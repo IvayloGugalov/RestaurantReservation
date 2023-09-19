@@ -3,9 +3,9 @@
 public interface IMongoDbContext : IDisposable
 {
     IMongoCollection<T> GetCollection<T>(string? name = null);
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-    Task BeginTransactionAsync(CancellationToken cancellationToken = default);
-    Task CommitTransactionAsync(CancellationToken cancellationToken = default);
-    Task RollbackTransaction(CancellationToken cancellationToken = default);
+    Task<int> SaveChangesAsync(CancellationToken ct = default);
+    Task BeginTransactionAsync(CancellationToken ct = default);
+    Task CommitTransactionAsync(CancellationToken ct = default);
+    Task RollbackTransaction(CancellationToken ct = default);
     void AddCommand(Func<Task> func);
 }

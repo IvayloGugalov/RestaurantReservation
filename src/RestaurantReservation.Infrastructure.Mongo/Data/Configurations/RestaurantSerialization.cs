@@ -1,4 +1,6 @@
-﻿namespace RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
+﻿using RestaurantReservation.Core.Extensions;
+
+namespace RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
 
 public static class RestaurantSerialization
 {
@@ -8,8 +10,8 @@ public static class RestaurantSerialization
             map =>
             {
                 map.AutoMap();
-                map.UnmapMember(x => x.Reviews);
-                map.UnmapMember(x => x.Tables);
+                map.MapField(nameof(Restaurant.Reviews).ToCamelCase()).SetElementName(nameof(Restaurant.Reviews));
+                map.MapField(nameof(Restaurant.Tables).ToCamelCase()).SetElementName(nameof(Restaurant.Tables));
             });
     }
 }

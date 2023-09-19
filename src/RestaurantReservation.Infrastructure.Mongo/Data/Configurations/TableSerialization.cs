@@ -1,4 +1,6 @@
-﻿namespace RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
+﻿using RestaurantReservation.Core.Extensions;
+
+namespace RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
 
 public static class TableSerialization
 {
@@ -8,11 +10,7 @@ public static class TableSerialization
             map =>
             {
                 map.AutoMap();
-                map.UnmapMember(x => x.Reservations);
-
-                map.MapProperty(x => x.RestaurantId)
-                    .SetSerializer(new IdSerializationProvider<RestaurantId>(new GuidSerializer(BsonType.String)));
-
+                map.MapField(nameof(Table.Reservations).ToCamelCase()).SetElementName(nameof(Table.Reservations));
             });
     }
 }

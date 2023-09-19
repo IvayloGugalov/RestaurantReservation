@@ -1,5 +1,43 @@
 ﻿namespace RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
 
+public class StronglyTypedIdSerializer<TStronglyTypedId, TValue> : SerializerBase<TStronglyTypedId>
+    where TStronglyTypedId : StronglyTypedId<TValue>
+    where TValue : IEquatable<TValue>
+{
+    private readonly IBsonSerializer<TValue> valueSerializer;
+
+    public StronglyTypedIdSerializer()
+    {
+        this.valueSerializer = BsonSerializer.LookupSerializer<TValue>();
+    }
+
+    public override TStronglyTypedId Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+    {
+        var bsonType = context.Reader.GetCurrentBsonType();
+        if (bsonType == BsonType.String)
+        {
+            var idValue = context.Reader.ReadString();
+            // Parse the ID value and construct your strongly typed ID.
+            var guidId = Activator.CreateInstance(typeof(TStronglyTypedId), Guid.Parse(idValue));
+            return (TStronglyTypedId)guidId!;
+        }
+        throw new FormatException($"Cannot deserialize {bsonType} to {typeof(TStronglyTypedId).Name}.");
+    }
+
+    public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, TStronglyTypedId? value)
+    {
+        if (value == null)
+        {
+            context.Writer.WriteNull();
+        }
+        else
+        {
+            this.valueSerializer.Serialize(context, args, value.Value);
+        }
+    }
+}
+
+// Not needed
 public sealed class IdSerializationProvider<TId> : SerializerBase<TId>, IBsonDocumentSerializer
     where TId : IEquatable<TId>
 {

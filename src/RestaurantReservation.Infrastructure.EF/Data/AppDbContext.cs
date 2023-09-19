@@ -42,24 +42,24 @@ public class AppDbContext : DbContext, IDbContext
         where TId : IEquatable<TId> =>
         base.Set<TEntity>();
 
-    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+    public async Task BeginTransactionAsync(CancellationToken ct = default)
     {
         if (this.currentTransaction != null) return;
 
         this.currentTransaction =
-            await this.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+            await this.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, ct);
     }
 
-    public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
+    public async Task CommitTransactionAsync(CancellationToken ct = default)
     {
         try
         {
-            await this.SaveChangesAsync(cancellationToken);
-            await this.currentTransaction?.CommitAsync(cancellationToken)!;
+            await this.SaveChangesAsync(ct);
+            await this.currentTransaction?.CommitAsync(ct)!;
         }
         catch
         {
-            await this.RollbackTransactionAsync(cancellationToken);
+            await this.RollbackTransactionAsync(ct);
             throw;
         }
         finally
@@ -69,11 +69,11 @@ public class AppDbContext : DbContext, IDbContext
         }
     }
 
-    public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
+    public async Task RollbackTransactionAsync(CancellationToken ct = default)
     {
         try
         {
-            await this.currentTransaction?.RollbackAsync(cancellationToken)!;
+            await this.currentTransaction?.RollbackAsync(ct)!;
         }
         finally
         {
@@ -82,39 +82,39 @@ public class AppDbContext : DbContext, IDbContext
         }
     }
 
-    public Task ExecuteTransactionalAsync(CancellationToken cancellationToken = default)
+    public Task ExecuteTransactionalAsync(CancellationToken ct = default)
     {
         var strategy = this.CreateExecutionStrategy();
         return strategy.ExecuteAsync(async () =>
         {
             await using var transaction =
-                await this.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken);
+                await this.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, ct);
             try
             {
-                await this.SaveChangesAsync(cancellationToken);
-                await transaction.CommitAsync(cancellationToken);
+                await this.SaveChangesAsync(ct);
+                await transaction.CommitAsync(ct);
             }
             catch
             {
-                await transaction.RollbackAsync(cancellationToken);
+                await transaction.RollbackAsync(ct);
                 throw;
             }
         });
     }
 
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(CancellationToken ct = default)
     {
         OnBeforeSaving();
         try
         {
-            return await base.SaveChangesAsync(cancellationToken);
+            return await base.SaveChangesAsync(ct);
         }
         //ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=data-annotations#resolving-concurrency-conflicts
         catch (DbUpdateConcurrencyException ex)
         {
             foreach (var entry in ex.Entries)
             {
-                var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
+                var databaseValues = await entry.GetDatabaseValuesAsync(ct);
 
                 if (databaseValues == null)
                 {
@@ -127,7 +127,7 @@ public class AppDbContext : DbContext, IDbContext
                 entry.OriginalValues.SetValues(databaseValues);
             }
 
-            return await base.SaveChangesAsync(cancellationToken);
+            return await base.SaveChangesAsync(ct);
         }
     }
 
@@ -197,10 +197,10 @@ public interface IDbContext
         where TId : IEquatable<TId>;
 
     IReadOnlyList<IDomainEvent> GetDomainEvents();
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-    Task BeginTransactionAsync(CancellationToken cancellationToken = default);
-    Task CommitTransactionAsync(CancellationToken cancellationToken = default);
-    Task RollbackTransactionAsync(CancellationToken cancellationToken = default);
+    Task<int> SaveChangesAsync(CancellationToken ct = default);
+    Task BeginTransactionAsync(CancellationToken ct = default);
+    Task CommitTransactionAsync(CancellationToken ct = default);
+    Task RollbackTransactionAsync(CancellationToken ct = default);
     IExecutionStrategy CreateExecutionStrategy();
-    Task ExecuteTransactionalAsync(CancellationToken cancellationToken = default);
+    Task ExecuteTransactionalAsync(CancellationToken ct = default);
 }

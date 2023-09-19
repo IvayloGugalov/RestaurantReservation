@@ -15,14 +15,14 @@ public class CreateRestaurantHandler : ICommandHandler<CreateRestaurant, CreateR
         this.dbContext = dbContext;
     }
 
-    public async Task<CreateRestaurantResult> Handle(CreateRestaurant command, CancellationToken cancellationToken)
+    public async Task<CreateRestaurantResult> Handle(CreateRestaurant command, CancellationToken ct)
     {
         var restaurant =
             (await this.dbContext.Restaurants
                 .FindAsync(Builders<Domain.RestaurantAggregate.Models.Restaurant>
                     .Filter
-                    .Eq(x => x.Name, command.Name), cancellationToken: cancellationToken))
-            .FirstOrDefault(cancellationToken: cancellationToken);
+                    .Eq(x => x.Name, command.Name), cancellationToken: ct))
+            .FirstOrDefault(cancellationToken: ct);
         if (restaurant != null) throw new RestaurantAlreadyExistsException();
 
         var restaurantEntity = Domain.RestaurantAggregate.Models.Restaurant.Create(
@@ -34,7 +34,7 @@ public class CreateRestaurantHandler : ICommandHandler<CreateRestaurant, CreateR
             webSite: command.WebSite);
 
         restaurantEntity.SetWorkTime(command.WorkTime!);
-        await this.dbContext.Restaurants.InsertOneAsync(restaurantEntity, new InsertOneOptions(), cancellationToken);
+        await this.dbContext.Restaurants.InsertOneAsync(restaurantEntity, new InsertOneOptions(), ct);
 
         return new CreateRestaurantResult(restaurantEntity.Id.Value);
     }

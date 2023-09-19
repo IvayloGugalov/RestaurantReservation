@@ -7,9 +7,9 @@ public class Get : IMinimalApiEndpoint
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder.MapGet($"{EndpointConfig.BaseApiPath}/restaurant",
-        async ([FromQuery] Guid id, IMediator mediator, CancellationToken cancellationToken) =>
+        async ([FromQuery] Guid id, IMediator mediator, CancellationToken ct) =>
         {
-            var response = await mediator.Send(new GetRestaurantById(id), cancellationToken);
+            var response = await mediator.Send(new GetRestaurantById(id), ct);
             return Results.Ok(response);
         })
         .WithOpenApi(operation => new OpenApiOperation(operation)

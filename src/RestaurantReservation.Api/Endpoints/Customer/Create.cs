@@ -5,10 +5,10 @@ public class Create : IMinimalApiEndpoint
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/customer/create",
-            async (RequestCreateCustomerDto request, IMediator mediator, CancellationToken cancellationToken) =>
+            async (RequestCreateCustomerDto request, IMediator mediator, CancellationToken ct) =>
             {
                 var command = CustomerMappings.Map(request);
-                var result = await mediator.Send(command, cancellationToken);
+                var result = await mediator.Send(command, ct);
                 var response = CustomerMappings.Map(result);
                 return Results.Ok(response);
             })

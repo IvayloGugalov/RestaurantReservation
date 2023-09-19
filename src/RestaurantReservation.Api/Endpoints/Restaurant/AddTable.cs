@@ -5,10 +5,10 @@ public class AddTable : IMinimalApiEndpoint
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/restaurant/add-table",
-            async (RequestAddTableDto request, IMediator mediator, CancellationToken cancellationToken) =>
+            async (RequestAddTableDto request, IMediator mediator, CancellationToken ct) =>
             {
                 var command = TableMappings.Map(request);
-                var result = await mediator.Send(command, cancellationToken);
+                var result = await mediator.Send(command, ct);
                 var response = TableMappings.Map(result);
                 return Results.Ok(response);
             })
@@ -24,10 +24,10 @@ public class AddTable : IMinimalApiEndpoint
             .HasApiVersion(new ApiVersion(1, 0));
 
         builder.MapPost($"{EndpointConfig.BaseApiPath}/restaurant/add-tables",
-            async (RequestAddMultipleTablesDto request, IMediator mediator, CancellationToken cancellationToken) =>
+            async (RequestAddMultipleTablesDto request, IMediator mediator, CancellationToken ct) =>
             {
                 var command = TableMappings.Map(request);
-                var result = await mediator.Send(command, cancellationToken);
+                var result = await mediator.Send(command, ct);
                 var response = TableMappings.Map(result);
                 return Results.Ok(response);
             })

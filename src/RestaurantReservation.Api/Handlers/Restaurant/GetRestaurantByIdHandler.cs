@@ -1,27 +1,24 @@
 ﻿using MongoDB.Driver;
 using RestaurantReservation.Core.CQRS;
 using RestaurantReservation.Domain.RestaurantAggregate.Dtos;
+using RestaurantReservation.Domain.RestaurantAggregate.ValueObjects;
 using RestaurantReservation.Infrastructure.Mongo.Data;
+using RestaurantReservation.Infrastructure.Mongo.Repositories;
 
 namespace RestaurantReservation.Api.Handlers.Restaurant;
 
 public class GetRestaurantByIdHandler : IQueryHandler<GetRestaurantById, GetRestaurantByIdResult>
 {
-    private readonly AppMongoDbContext dbContext;
+    private readonly IMongoRepository<Domain.RestaurantAggregate.Models.Restaurant, RestaurantId> dbContext;
 
-    public GetRestaurantByIdHandler(AppMongoDbContext dbContext)
+    public GetRestaurantByIdHandler(IMongoRepository<Domain.RestaurantAggregate.Models.Restaurant, RestaurantId> dbContext)
     {
         this.dbContext = dbContext;
     }
 
-    public async Task<GetRestaurantByIdResult> Handle(GetRestaurantById request, CancellationToken cancellationToken)
+    public async Task<GetRestaurantByIdResult> Handle(GetRestaurantById request, CancellationToken ct)
     {
-        var restaurant =
-            (await this.dbContext.Restaurants
-                .FindAsync(Builders<Domain.RestaurantAggregate.Models.Restaurant>
-                    .Filter
-                    .Eq("_id", request.Id), cancellationToken: cancellationToken))
-            .FirstOrDefault(cancellationToken: cancellationToken);
+        var restaurant = await this.dbContext.GetByIdAsync(request.Id, ct);
 
         // TODO:
         if (restaurant == null) throw new Exception("Restaurant does not exist");
