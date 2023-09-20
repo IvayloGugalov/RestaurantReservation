@@ -39,7 +39,7 @@ public static class Extensions
 
         services.AddScoped<IMongoDbContext>(sp => sp.GetRequiredService<TContextService>());
 
-        services.AddTransient(typeof(IMongoRepository<,>), typeof(MongoRepository<,>));
+        services.AddTransient(typeof(IMongoRepository<,,>), typeof(MongoRepository<,,>));
         services.AddTransient(typeof(IMongoUnitOfWork<>), typeof(MongoUnitOfWork<>));
 
         Serializers.RegisterAll();

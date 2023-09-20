@@ -1,14 +1,25 @@
-﻿namespace RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
+﻿using System.Reflection;
+using RestaurantReservation.Domain;
+
+namespace RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
 
 public static class StronglyTypedIdSerialization
 {
     public static void RegisterTypedIds()
     {
-        BsonSerializer.RegisterSerializer(new StronglyTypedIdSerializer<CustomerId, Guid>());
-        BsonSerializer.RegisterSerializer(new StronglyTypedIdSerializer<RestaurantId, Guid>());
-        BsonSerializer.RegisterSerializer(new StronglyTypedIdSerializer<ReservationId, Guid>());
-        BsonSerializer.RegisterSerializer(new StronglyTypedIdSerializer<ReviewId, Guid>());
-        BsonSerializer.RegisterSerializer(new StronglyTypedIdSerializer<TableId, Guid>());
+        var aggregateIdTypes = Assembly.GetAssembly(typeof(RestaurantReservationDomain))
+            ?.GetTypes()
+            .Where(t => t is { IsAbstract: false, BaseType.IsGenericType: true }
+                        && t.BaseType.GetGenericTypeDefinition() == typeof(StronglyTypedId<>))
+            .ToArray();
+
+        foreach (var type in aggregateIdTypes!)
+        {
+            var serializerType = typeof(StronglyTypedIdSerializer<,>).MakeGenericType(type, type.BaseType!.GetGenericArguments()[0]);
+            var serializerInstance = (IBsonSerializer)Activator.CreateInstance(serializerType)!;
+
+            BsonSerializer.RegisterSerializer(type, serializerInstance);
+        }
 
         BsonClassMap.RegisterClassMap<StronglyTypedId<Guid>>(
             map =>

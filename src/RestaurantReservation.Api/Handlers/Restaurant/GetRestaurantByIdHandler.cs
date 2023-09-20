@@ -9,16 +9,21 @@ namespace RestaurantReservation.Api.Handlers.Restaurant;
 
 public class GetRestaurantByIdHandler : IQueryHandler<GetRestaurantById, GetRestaurantByIdResult>
 {
-    private readonly IMongoRepository<Domain.RestaurantAggregate.Models.Restaurant, RestaurantId> dbContext;
+    private readonly IMongoRepository<Domain.RestaurantAggregate.Models.Restaurant, RestaurantId, Guid> dbContext;
+    private readonly AppMongoDbContext db;
 
-    public GetRestaurantByIdHandler(IMongoRepository<Domain.RestaurantAggregate.Models.Restaurant, RestaurantId> dbContext)
+    public GetRestaurantByIdHandler(IMongoRepository<Domain.RestaurantAggregate.Models.Restaurant, RestaurantId, Guid> dbContext, AppMongoDbContext db)
     {
         this.dbContext = dbContext;
+        this.db = db;
     }
 
     public async Task<GetRestaurantByIdResult> Handle(GetRestaurantById request, CancellationToken ct)
     {
-        var restaurant = await this.dbContext.GetByIdAsync(request.Id, ct);
+        var restaurant = await this.dbContext.GetByIdAsync(new RestaurantId(request.Id), ct);
+        // var restaurant1 = await this.db.Restaurants
+        //     .FindAsync(Builders<Domain.RestaurantAggregate.Models.Restaurant>.Filter.Eq("_id", request.Id), cancellationToken: ct);
+        // var restaurant = restaurant1.SingleOrDefault();
 
         // TODO:
         if (restaurant == null) throw new Exception("Restaurant does not exist");

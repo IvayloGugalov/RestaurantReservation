@@ -18,8 +18,8 @@ public class StronglyTypedIdSerializer<TStronglyTypedId, TValue> : SerializerBas
         {
             var idValue = context.Reader.ReadString();
             // Parse the ID value and construct your strongly typed ID.
-            var guidId = Activator.CreateInstance(typeof(TStronglyTypedId), Guid.Parse(idValue));
-            return (TStronglyTypedId)guidId!;
+            var id = Activator.CreateInstance(typeof(TStronglyTypedId), Guid.Parse(idValue));
+            return (TStronglyTypedId)id!;
         }
         throw new FormatException($"Cannot deserialize {bsonType} to {typeof(TStronglyTypedId).Name}.");
     }

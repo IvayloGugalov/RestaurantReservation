@@ -2,9 +2,10 @@
 
 namespace RestaurantReservation.Infrastructure.Mongo.Repositories;
 
-public interface IMongoRepository<TEntity, in TId> : IDisposable
+public interface IMongoRepository<TEntity, in TId, TValue> : IDisposable
     where TEntity : class, IEntity<TId>
-    where TId : IEquatable<TId>
+    where TId : StronglyTypedId<TValue>
+    where TValue : IEquatable<TValue>
 {
     Task<TEntity?> GetByIdAsync(TId id, CancellationToken ct = default);
 

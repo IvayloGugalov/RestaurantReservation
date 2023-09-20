@@ -2,9 +2,10 @@
 
 namespace RestaurantReservation.Infrastructure.Mongo.Repositories;
 
-public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId>
+public class MongoRepository<TEntity, TId, TValue> : IMongoRepository<TEntity, TId, TValue>
     where TEntity : class, IEntity<TId>
-    where TId : IEquatable<TId>
+    where TId : StronglyTypedId<TValue>
+    where TValue : IEquatable<TValue>
 {
     private readonly IMongoDbContext context;
     private readonly IMongoCollection<TEntity> DbSet;
@@ -22,7 +23,7 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId>
 
     public async Task<TEntity?> GetByIdAsync(TId id, CancellationToken ct = default)
     {
-        var result = await this.DbSet.FindAsync(Builders<TEntity>.Filter.Eq("_id", id), cancellationToken: ct);
+        var result = await this.DbSet.FindAsync(Builders<TEntity>.Filter.Eq("_id", id.Value), cancellationToken: ct);
         return result.SingleOrDefault(cancellationToken: ct);
     }
 
