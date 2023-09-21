@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using RestaurantReservation.Core.Repository;
 using RestaurantReservation.Core.Web;
 using RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
 
@@ -39,7 +39,7 @@ public static class Extensions
 
         services.AddScoped<IMongoDbContext>(sp => sp.GetRequiredService<TContextService>());
 
-        services.AddTransient(typeof(IMongoRepository<,,>), typeof(MongoRepository<,,>));
+        services.AddTransient(typeof(IMongoRepository<,>), typeof(MongoRepository<,>));
         services.AddTransient(typeof(IMongoUnitOfWork<>), typeof(MongoUnitOfWork<>));
 
         Serializers.RegisterAll();

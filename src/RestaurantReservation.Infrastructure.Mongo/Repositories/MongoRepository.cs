@@ -1,11 +1,11 @@
 ﻿using System.Linq.Expressions;
+using RestaurantReservation.Core.Repository;
 
 namespace RestaurantReservation.Infrastructure.Mongo.Repositories;
 
-public class MongoRepository<TEntity, TId, TValue> : IMongoRepository<TEntity, TId, TValue>
+public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId>
     where TEntity : class, IEntity<TId>
-    where TId : StronglyTypedId<TValue>
-    where TValue : IEquatable<TValue>
+    where TId : IEquatable<TId>
 {
     private readonly IMongoDbContext context;
     private readonly IMongoCollection<TEntity> DbSet;
@@ -23,11 +23,11 @@ public class MongoRepository<TEntity, TId, TValue> : IMongoRepository<TEntity, T
 
     public async Task<TEntity?> GetByIdAsync(TId id, CancellationToken ct = default)
     {
-        var result = await this.DbSet.FindAsync(Builders<TEntity>.Filter.Eq("_id", id.Value), cancellationToken: ct);
+        var result = await this.DbSet.FindAsync(x => x.Id.Equals(id), cancellationToken: ct);
         return result.SingleOrDefault(cancellationToken: ct);
     }
 
-    public async Task<TEntity?> FindOneAsync(FilterDefinition<TEntity> filter, CancellationToken ct = default)
+    public async Task<TEntity?> FindOneAsync(Expression<Func<TEntity, bool>> filter, CancellationToken ct = default)
     {
         var result = await this.DbSet.FindAsync(filter, cancellationToken: ct);
         return result.SingleOrDefault(ct);
@@ -56,7 +56,7 @@ public class MongoRepository<TEntity, TId, TValue> : IMongoRepository<TEntity, T
         this.context.AddCommand(() => this.DbSet.DeleteOneAsync(Builders<TEntity>.Filter.Eq("_id", id), ct));
     }
 
-    public void DeleteRangeAsync(FilterDefinition<TEntity> filter, CancellationToken ct = default)
+    public void DeleteRangeAsync(Expression<Func<TEntity, bool>> filter, CancellationToken ct = default)
     {
         this.context.AddCommand(() => this.DbSet.DeleteManyAsync(filter, ct));
     }

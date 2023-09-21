@@ -21,12 +21,7 @@
 
     <ItemGroup>
         <Folder Include="Common\Enums" />
-        <Folder Include="ReservationAggregate\Handlers" />
-        <Folder Include="ReservationAggregate\Handlers" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="ReservationAggregate\Handlers\CreateReviewHandler.cs" />
+        <Folder Include="CustomerAggregate\Handlers" />
     </ItemGroup>
 
 </Project>

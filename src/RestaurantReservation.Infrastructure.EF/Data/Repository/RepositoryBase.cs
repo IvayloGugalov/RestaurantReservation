@@ -4,11 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 using RestaurantReservation.Core.Model;
-using RestaurantReservation.Core.Repository;
 
 namespace RestaurantReservation.Infrastructure.EF.Data.Repository;
 
-public class RepositoryBase<T, TId> : IRepositoryBase<T, TId>
+public class RepositoryBase<T, TId>
     where T : class, IEntity<TId>
     where TId : IEquatable<TId>
 {

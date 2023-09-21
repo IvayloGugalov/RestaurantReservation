@@ -1,15 +1,12 @@
-﻿using RestaurantReservation.Core.CQRS;
-using RestaurantReservation.Infrastructure.Mongo.Data;
-
-namespace RestaurantReservation.Api.Handlers.Reservations;
+﻿namespace RestaurantReservation.Domain.ReservationAggregate.Handlers;
 
 public class CreateReviewHandler : ICommandHandler<CreateReviewEvent, CreateReviewResult>
 {
-    private readonly AppMongoDbContext dbContext;
+    private readonly IMongoRepository<Reservation, ReservationId> reservationRepository;
 
-    public CreateReviewHandler(AppMongoDbContext dbContext)
+    public CreateReviewHandler(IMongoRepository<Reservation, ReservationId> reservationRepository)
     {
-        this.dbContext = dbContext;
+        this.reservationRepository = reservationRepository;
     }
 
     public async Task<CreateReviewResult> Handle(CreateReviewEvent command, CancellationToken ct)

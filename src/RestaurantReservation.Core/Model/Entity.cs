@@ -1,6 +1,7 @@
 ﻿namespace RestaurantReservation.Core.Model;
 
 public abstract class Entity<T> : IEntity<T>
+    where T : IEquatable<T>
 {
     public T Id { get; set; } = default!;
     public DateTime? CreatedAt { get; set; }

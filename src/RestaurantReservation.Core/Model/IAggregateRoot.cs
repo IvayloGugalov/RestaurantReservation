@@ -3,6 +3,7 @@
 namespace RestaurantReservation.Core.Model;
 
 public interface IAggregateRoot<T> : IAggregateRoot, IEntity<T>
+    where T : IEquatable<T>
 {
 }
 

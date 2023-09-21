@@ -18,7 +18,7 @@ public class CustomException : Exception
 
     protected CustomException(
         string message,
-        System.Exception innerException,
+        Exception innerException,
         HttpStatusCode statusCode = HttpStatusCode.BadRequest,
         int? code = null) : base(message, innerException)
     {

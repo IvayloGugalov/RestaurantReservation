@@ -1,17 +1,14 @@
-﻿using RestaurantReservation.Core.CQRS;
-using RestaurantReservation.Domain.RestaurantAggregate.Dtos;
-using RestaurantReservation.Domain.RestaurantAggregate.ValueObjects;
-using RestaurantReservation.Infrastructure.Mongo.Repositories;
+﻿using RestaurantReservation.Domain.RestaurantAggregate.Dtos;
 
-namespace RestaurantReservation.Api.Handlers.Restaurant;
+namespace RestaurantReservation.Domain.RestaurantAggregate.Handlers;
 
-using Restaurant = Domain.RestaurantAggregate.Models.Restaurant;
+using Restaurant = Restaurant;
 
 public class GetRestaurantByIdHandler : IQueryHandler<GetRestaurantById, GetRestaurantByIdResult>
 {
-    private readonly IMongoRepository<Restaurant, RestaurantId, Guid> restaurantRepository;
+    private readonly IMongoRepository<Restaurant, RestaurantId> restaurantRepository;
 
-    public GetRestaurantByIdHandler(IMongoRepository<Restaurant, RestaurantId, Guid> restaurantRepository)
+    public GetRestaurantByIdHandler(IMongoRepository<Restaurant, RestaurantId> restaurantRepository)
     {
         this.restaurantRepository = restaurantRepository;
     }
