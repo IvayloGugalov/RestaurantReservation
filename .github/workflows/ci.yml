@@ -25,4 +25,4 @@ jobs:
         if: success()
         id: build-api-step
         with:
-          project-path: 'RestaurantReservation.Api'
+          project-path: 'src/RestaurantReservation.Api'

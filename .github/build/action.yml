@@ -38,4 +38,4 @@ runs:
       if: ${{ success()}}
       working-directory: ${{ inputs.project-path }}
       run: |
-        dotnet build -c Release --no-restore
+        dotnet build -c Release
