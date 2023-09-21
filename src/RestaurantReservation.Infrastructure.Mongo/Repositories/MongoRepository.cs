@@ -13,7 +13,7 @@ public class MongoRepository<TEntity, TId, TValue> : IMongoRepository<TEntity, T
     public MongoRepository(IMongoDbContext context)
     {
         this.context = context;
-        this.DbSet = this.context.GetCollection<TEntity>(typeof(TEntity).Name);
+        this.DbSet = this.context.GetCollection<TEntity>();
     }
 
     public void Dispose()

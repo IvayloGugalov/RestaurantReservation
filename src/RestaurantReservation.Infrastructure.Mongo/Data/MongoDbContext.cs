@@ -21,6 +21,7 @@ public class MongoDbContext : IMongoDbContext
 
     public IMongoCollection<T> GetCollection<T>(string? name = null)
     {
+        if (!string.IsNullOrEmpty(name) && !this.CollectionExists(name)) throw new CollectionNameDoesNotExist(name);
         return this.Database.GetCollection<T>(name ?? typeof(T).Name.ToLower());
     }
 
@@ -119,4 +120,7 @@ public class MongoDbContext : IMongoDbContext
             throw;
         }
     }
+
+    private bool CollectionExists(string collectionName) =>
+        this.Database.ListCollectionNames().ToList().Contains(collectionName);
 }

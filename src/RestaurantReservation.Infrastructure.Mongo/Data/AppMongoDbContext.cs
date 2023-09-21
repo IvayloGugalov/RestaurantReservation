@@ -12,10 +12,10 @@ public class AppMongoDbContext : MongoDbContext
 
     public AppMongoDbContext(IOptions<MongoOptions> options) : base(options)
     {
-        this.Customers = GetCollection<Customer>(nameof(Customers));
-        this.Restaurants = GetCollection<Restaurant>(nameof(Restaurants));
-        this.Reservations = GetCollection<Reservation>(nameof(Reservations));
-        this.Tables = GetCollection<Table>(nameof(Tables));
-        this.Reviews = GetCollection<Review>(nameof(Reviews));
+        this.Customers = this.GetCollection<Customer>();
+        this.Restaurants = this.GetCollection<Restaurant>();
+        this.Reservations = this.GetCollection<Reservation>();
+        this.Tables = this.GetCollection<Table>();
+        this.Reviews = this.GetCollection<Review>();
     }
 }

@@ -4,6 +4,8 @@ global using MongoDB.Bson.Serialization;
 global using MongoDB.Bson.Serialization.Conventions;
 global using MongoDB.Bson.Serialization.Serializers;
 
+global using RestaurantReservation.Infrastructure.Mongo.Exceptions;
+
 global using RestaurantReservation.Infrastructure.Mongo.Data;
 global using RestaurantReservation.Infrastructure.Mongo.Repositories;
 
