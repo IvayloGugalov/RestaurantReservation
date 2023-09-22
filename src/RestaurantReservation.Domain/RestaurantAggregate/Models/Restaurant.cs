@@ -74,23 +74,23 @@ public class Restaurant : AggregateRoot<RestaurantId>
 
     public Review AddReview(
         ReviewId id,
-        Customer customer,
+        CustomerId customerId,
         int ratingValue,
         string comment,
         string customerName,
-        Reservation? reservation)
+        Reservation reservation)
     {
-        // if (this.Status != ReservationStatus.Completed || this.Status != ReservationStatus.Canceled) return null;
+        if (reservation.Status != ReservationStatus.Completed) throw new CanNotAddReviewToIncompleteReservationException();
 
         // Create a review associated with this reservation
         var review = Review.Create(
             id,
             ratingValue,
             comment,
-            this,
-            customer,
+            this.Id,
+            customerId,
             customerName,
-            reservation);
+            reservation.Id);
 
         // Raise domain events or perform other actions related to review creation
         var @event = new ReviewCreatedDomainEvent(review);

@@ -21,14 +21,14 @@ public class CreateReservationHandler : ICommandHandler<CreateReservation, Creat
     public async Task<CreateReservationResult> Handle(CreateReservation command,
         CancellationToken ct)
     {
-        var table = await this.tableRepository.GetByIdAsync(command.TableId, ct);
+        var table = await this.tableRepository.GetByIdAsync(new TableId(command.TableId), ct);
         if (table == null) throw new TableNotFoundException();
 
-        var customer = await this.customerRepository.GetByIdAsync(command.CustomerId, ct);
+        var customer = await this.customerRepository.GetByIdAsync(new CustomerId(command.CustomerId), ct);
 
         var reservationEntity = table.AddReservation(
             new ReservationId(command.Id),
-            customer ?? throw new Exception(""),
+            customer ?? throw new CustomerNotFoundException(),
             command.ReservationDate,
             command.Occupants);
 

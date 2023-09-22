@@ -6,4 +6,7 @@ public static class ReservationMappings
         new(model.TableId, model.CustomerId, model.ReservationDate, model.Occupants);
 
     public static ResponseCreateReservationDto Map(CreateReservationResult model) => new(model.Id);
+
+    public static AddReview Map(this RequestAddReviewDto model) =>
+        new(model.ReservationId, model.Rating, model.Comment, model.CustomerName);
 }

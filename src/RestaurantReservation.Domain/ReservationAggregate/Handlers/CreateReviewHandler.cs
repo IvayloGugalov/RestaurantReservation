@@ -2,30 +2,40 @@
 
 namespace RestaurantReservation.Domain.ReservationAggregate.Handlers;
 
-public class CreateReviewHandler : ICommandHandler<CreateReviewEvent, CreateReviewResult>
+public class CreateReviewHandler : ICommandHandler<AddReview, CreateReviewResult>
 {
     private readonly IMongoRepository<Reservation, ReservationId> reservationRepository;
+    private readonly IMongoRepository<Restaurant, RestaurantId> restaurantRepository;
+    private readonly IMongoRepository<Review, ReviewId> reviewRepository;
 
-    public CreateReviewHandler(IMongoRepository<Reservation, ReservationId> reservationRepository)
+    public CreateReviewHandler(
+        IMongoRepository<Reservation, ReservationId> reservationRepository,
+        IMongoRepository<Restaurant, RestaurantId> restaurantRepository,
+        IMongoRepository<Review, ReviewId> reviewRepository)
     {
         this.reservationRepository = reservationRepository;
+        this.restaurantRepository = restaurantRepository;
+        this.reviewRepository = reviewRepository;
     }
 
-    public async Task<CreateReviewResult> Handle(CreateReviewEvent command, CancellationToken ct)
+    public async Task<CreateReviewResult> Handle(AddReview command, CancellationToken ct)
     {
-        // var reservation = await this.reservationRepository.FirstOrDefaultAsync(x => x.Id == command.ReservationId, cancellationToken);
-        // if (reservation == null) throw new ReservationNotFoundException();
-        //
-        // var reviewEntity = reservation.AddReview(
-        //     new ReviewId(command.Id),
-        //     command.Rating,
-        //     command.Comment,
-        //     command.CustomerName);
-        //
-        // await this.reservationRepository.UpdateAsync(reservation, cancellationToken);
-        // var newReview = await this.reviewRepository.AddAsync(reviewEntity, cancellationToken);
-        //
-        // return new CreateReviewResult(newReview.Id);
-        throw new NotImplementedException();
+        var reservation = await this.reservationRepository.GetByIdAsync(new ReservationId(command.ReservationId), ct);
+        if (reservation == null) throw new ReservationNotFoundException();
+
+        var restaurant = await this.restaurantRepository.GetByIdAsync(reservation.RestaurantId, ct);
+        if (restaurant == null) throw new RestaurantNotFoundException();
+        var reviewEntity = restaurant.AddReview(
+            new ReviewId(command.Id),
+            reservation.CustomerId,
+            command.Rating,
+            command.Comment,
+            command.CustomerName,
+            reservation);
+
+        await this.restaurantRepository.UpdateAsync(restaurant, ct);
+        var newReview = await this.reviewRepository.AddAsync(reviewEntity, ct);
+
+        return new CreateReviewResult(newReview.Id);
     }
 }

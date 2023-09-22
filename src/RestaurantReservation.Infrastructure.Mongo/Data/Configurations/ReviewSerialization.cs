@@ -8,14 +8,21 @@ public static class ReviewSerialization
             map =>
             {
                 map.AutoMap();
-
-                // map.MapProperty(x => x.RestaurantId)
-                //     .SetSerializer(new IdSerializationProvider<RestaurantId>(new GuidSerializer(BsonType.String)));
-                // map.MapProperty(x => x.CustomerId)
-                //     .SetSerializer(new IdSerializationProvider<CustomerId>(new GuidSerializer(BsonType.String)));
-                // map.MapProperty(x => x.ReservationId)
-                //     .SetSerializer(new IdSerializationProvider<ReservationId>(new GuidSerializer(BsonType.String)));
-
+                map.MapProperty(e => e.Rating).SetElementName(nameof(Review.Rating)).SetSerializer(new RatingSerializer());
             });
+    }
+
+    private class RatingSerializer : SerializerBase<Rating>
+    {
+        public override Rating Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+        {
+            var value = context.Reader.ReadDouble();
+            return new Rating(value);
+        }
+
+        public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, Rating rating)
+        {
+            context.Writer.WriteDouble(rating.Value);
+        }
     }
 }

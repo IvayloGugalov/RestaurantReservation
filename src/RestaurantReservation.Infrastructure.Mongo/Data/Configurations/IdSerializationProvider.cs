@@ -1,6 +1,6 @@
 ﻿namespace RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
 
-public class StronglyTypedIdSerializer<TStronglyTypedId, TValue> : SerializerBase<TStronglyTypedId>
+public class StronglyTypedIdSerializer<TStronglyTypedId, TValue> : SerializerBase<TStronglyTypedId?>
     where TStronglyTypedId : StronglyTypedId<TValue>
     where TValue : IEquatable<TValue>
 {
@@ -11,17 +11,24 @@ public class StronglyTypedIdSerializer<TStronglyTypedId, TValue> : SerializerBas
         this.valueSerializer = BsonSerializer.LookupSerializer<TValue>();
     }
 
-    public override TStronglyTypedId Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+    public override TStronglyTypedId? Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
     {
         var bsonType = context.Reader.GetCurrentBsonType();
-        if (bsonType == BsonType.String)
+        switch (bsonType)
         {
-            var idValue = context.Reader.ReadString();
-            // Parse the ID value and construct your strongly typed ID.
-            var id = Activator.CreateInstance(typeof(TStronglyTypedId), Guid.Parse(idValue));
-            return (TStronglyTypedId)id!;
+            case BsonType.Null:
+                context.Reader.ReadNull();
+                return null;
+            case BsonType.String:
+            {
+                var idValue = context.Reader.ReadString();
+                // Parse the ID value and construct your strongly typed ID.
+                var id = Activator.CreateInstance(typeof(TStronglyTypedId), Guid.Parse(idValue));
+                return (TStronglyTypedId)id!;
+            }
+            default:
+                throw new FormatException($"Cannot deserialize {bsonType} to {typeof(TStronglyTypedId).Name}.");
         }
-        throw new FormatException($"Cannot deserialize {bsonType} to {typeof(TStronglyTypedId).Name}.");
     }
 
     public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, TStronglyTypedId? value)

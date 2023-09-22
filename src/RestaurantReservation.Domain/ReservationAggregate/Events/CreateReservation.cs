@@ -4,12 +4,12 @@ namespace RestaurantReservation.Domain.ReservationAggregate.Events;
 
 public record CreateReservationResult(Guid Id);
 
-public record RequestCreateReservationDto(TableId TableId, CustomerId CustomerId, DateTime ReservationDate, ushort Occupants);
+public record RequestCreateReservationDto(Guid TableId, Guid CustomerId, DateTime ReservationDate, ushort Occupants);
 
 public record ResponseCreateReservationDto(Guid Id);
 
 public record CreateReservation(
-        TableId TableId, CustomerId CustomerId, DateTime ReservationDate, ushort Occupants)
+        Guid TableId, Guid CustomerId, DateTime ReservationDate, ushort Occupants)
     : ICommand<CreateReservationResult>, IDomainEvent
 {
     public Guid Id { get; } = NewId.NextGuid();

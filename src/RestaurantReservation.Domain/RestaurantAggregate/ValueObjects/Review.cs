@@ -7,7 +7,7 @@ public class Review : Entity<ReviewId>
     public RestaurantId RestaurantId { get; private init; } = null!;
     public CustomerId CustomerId { get; private init; } = null!;
     public string CustomerName { get; private init; } = null!;
-    public ReservationId? ReservationId { get; private init; }
+    public ReservationId ReservationId { get; private init; } = null!;
 
     private Review() { }
 
@@ -15,20 +15,20 @@ public class Review : Entity<ReviewId>
         ReviewId id,
         int ratingValue,
         string comment,
-        Restaurant restaurant,
-        Customer customer,
+        RestaurantId restaurantId,
+        CustomerId customerId,
         string customerName,
-        Reservation? reservation)
+        ReservationId reservationId)
     {
         var newReview = new Review
         {
             Id = id,
             Rating = new Rating(ratingValue),
             Comment = comment,
-            RestaurantId = restaurant.Id,
-            CustomerId = customer.Id,
+            RestaurantId = restaurantId,
+            CustomerId = customerId,
             CustomerName = customerName,
-            ReservationId = reservation?.Id
+            ReservationId = reservationId
         };
 
         return newReview;
