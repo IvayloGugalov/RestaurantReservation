@@ -93,7 +93,7 @@ public static class Extensions
     {
         return builder.Add(new HealthCheckRegistration(
             name ?? NAME,
-            sp => new MongoHealthCheck(mongodbConnectionString),
+            sp => new MongoHealthCheck(mongodbConnectionString, name),
             failureStatus,
             tags,
             timeout));

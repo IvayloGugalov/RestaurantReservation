@@ -32,7 +32,7 @@ public static class HealthCheckExtension
         //     $"amqp://{rabbitMqOptions.UserName}:{rabbitMqOptions.Password}@{rabbitMqOptions.HostName}")
         // .AddElasticsearch(logOptions.Elastic.ElasticServiceUrl);
 
-        if (mongoOptions.ConnectionString is not null) healthChecksBuilder.AddMongoDb(mongoOptions.ConnectionString);
+        if (mongoOptions.ConnectionString is not null) healthChecksBuilder.AddMongoDb(mongoOptions.ConnectionString, mongoOptions.DatabaseName);
 
         // if (postgresOptions.ConnectionString is not null)
         // healthChecksBuilder.AddNpgSql(postgresOptions.ConnectionString);
@@ -40,7 +40,7 @@ public static class HealthCheckExtension
         services.AddHealthChecksUI(setup =>
         {
             setup.SetEvaluationTimeInSeconds(60); // time in seconds between check
-            setup.AddHealthCheckEndpoint($"Basic Health Check - {appOptions?.Name}", "/healthz");
+            setup.AddHealthCheckEndpoint($"Basic Health Check - {appOptions?.Name ?? nameof(RestaurantReservation)}", "/healthz");
         }).AddInMemoryStorage();
 
         return services;

@@ -25,6 +25,7 @@ public static class InfrastructureExtension
 
         #endregion
 
+        builder.Services.AddCustomHealthCheck(configuration);
         builder.Services.AddCustomMediatR();
         builder.Services.AddMongoDbContext<AppMongoDbContext>(configuration);
         builder.Services.AddScoped<IDataSeeder, CustomerSeeder>();
