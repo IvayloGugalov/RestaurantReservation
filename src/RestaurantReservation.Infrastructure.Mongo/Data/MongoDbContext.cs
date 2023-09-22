@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using RestaurantReservation.Core.Mongo;
 
 namespace RestaurantReservation.Infrastructure.Mongo.Data;
 

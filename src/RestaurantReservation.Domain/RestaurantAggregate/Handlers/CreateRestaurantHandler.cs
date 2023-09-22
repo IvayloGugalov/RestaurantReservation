@@ -1,4 +1,5 @@
-﻿
+﻿using RestaurantReservation.Core.Mongo;
+
 namespace RestaurantReservation.Domain.RestaurantAggregate.Handlers;
 
 public class CreateRestaurantHandler : ICommandHandler<CreateRestaurant, CreateRestaurantResult>
@@ -24,7 +25,7 @@ public class CreateRestaurantHandler : ICommandHandler<CreateRestaurant, CreateR
             webSite: command.WebSite);
 
         restaurantEntity.SetWorkTime(command.WorkTime!);
-        this.restaurantRepository.AddAsync(restaurantEntity, ct);
+        await this.restaurantRepository.AddAsync(restaurantEntity, ct);
 
         return new CreateRestaurantResult(restaurantEntity.Id.Value);
     }

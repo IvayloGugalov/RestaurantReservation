@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using RestaurantReservation.Core.Repository;
+using RestaurantReservation.Core.Mongo;
 
 namespace RestaurantReservation.Infrastructure.Mongo.Repositories;
 
@@ -38,27 +38,28 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId>
         return await this.DbSet.AsQueryable().ToListAsync(ct);
     }
 
-    public void AddAsync(TEntity entity, CancellationToken ct = default)
+    public async Task<TEntity> AddAsync(TEntity entity, CancellationToken ct = default)
     {
         entity.CreatedAt = DateTime.UtcNow;
-        this.context.AddCommand(() => this.DbSet.InsertOneAsync(entity, new InsertOneOptions(), ct));
+        await this.DbSet.InsertOneAsync(entity, new InsertOneOptions(), ct);
+        return entity;
     }
 
-    public void UpdateAsync(TEntity entity, CancellationToken ct = default)
+    public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken ct = default)
     {
         entity.LastModified = DateTime.UtcNow;
-        this.context.AddCommand(() =>
-            this.DbSet.ReplaceOneAsync(Builders<TEntity>.Filter.Eq("_id", entity.Id), entity, new ReplaceOptions(), ct));
+        await this.DbSet.ReplaceOneAsync(e => e.Id.Equals(entity.Id), entity, new ReplaceOptions(), ct);
+        return entity;
     }
 
-    public void DeleteByIdAsync(TId id, CancellationToken ct = default)
+    public Task DeleteByIdAsync(TId id, CancellationToken ct = default)
     {
-        this.context.AddCommand(() => this.DbSet.DeleteOneAsync(Builders<TEntity>.Filter.Eq("_id", id), ct));
+        return this.DbSet.DeleteOneAsync(Builders<TEntity>.Filter.Eq("_id", id), ct);
     }
 
-    public void DeleteRangeAsync(Expression<Func<TEntity, bool>> filter, CancellationToken ct = default)
+    public Task DeleteRangeAsync(IReadOnlyList<TEntity> entities, CancellationToken ct = default)
     {
-        this.context.AddCommand(() => this.DbSet.DeleteManyAsync(filter, ct));
+        return this.DbSet.DeleteOneAsync(e => entities.Any(i => e.Id.Equals(i.Id)), ct);
     }
 
     public bool Exists(Expression<Func<TEntity, object>> criteria, bool exists)

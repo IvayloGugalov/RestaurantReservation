@@ -2,7 +2,7 @@
 
 namespace RestaurantReservation.Infrastructure.Mongo.Data;
 
-public class AppMongoDbContext : MongoDbContext
+public sealed class AppMongoDbContext : MongoDbContext
 {
     public IMongoCollection<Customer> Customers { get; }
     public IMongoCollection<Restaurant> Restaurants { get; }

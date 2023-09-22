@@ -2,7 +2,7 @@
 
 public class ConflictException : CustomException
 {
-    public ConflictException(string message, int? code = null) : base(message, code: code)
+    protected ConflictException(string message, int? code = 409) : base(message, code: code)
     {
     }
 }

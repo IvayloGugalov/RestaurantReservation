@@ -2,7 +2,7 @@
 
 namespace RestaurantReservation.Domain.CustomerAggregate.Exceptions;
 
-public class CustomerNotFoundException : CustomException
+public class CustomerNotFoundException : NotFoundException
 {
     public CustomerNotFoundException(int? code = default)
         : base("Customer not found", code: code)

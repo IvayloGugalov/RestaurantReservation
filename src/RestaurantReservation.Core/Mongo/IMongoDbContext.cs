@@ -1,4 +1,6 @@
-﻿namespace RestaurantReservation.Infrastructure.Mongo.Data;
+﻿using MongoDB.Driver;
+
+namespace RestaurantReservation.Core.Mongo;
 
 public interface IMongoDbContext : IDisposable
 {

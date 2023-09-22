@@ -13,13 +13,13 @@ public interface IRepositoryBase<TEntity, in TId>
 
     Task<List<TEntity>> ListAsync(CancellationToken ct = default);
 
-    void AddAsync(TEntity entity, CancellationToken ct = default);
+    Task<TEntity> AddAsync(TEntity entity, CancellationToken ct = default);
 
-    void UpdateAsync(TEntity entity, CancellationToken ct = default);
+    Task<TEntity> UpdateAsync(TEntity entity, CancellationToken ct = default);
 
-    void DeleteByIdAsync(TId id, CancellationToken ct = default);
+    Task DeleteByIdAsync(TId id, CancellationToken ct = default);
 
-    void DeleteRangeAsync(Expression<Func<TEntity, bool>> filter, CancellationToken ct = default);
+    Task DeleteRangeAsync(IReadOnlyList<TEntity> entities, CancellationToken ct = default);
 
     bool Exists(Expression<Func<TEntity, object>> criteria, bool exists);
 }

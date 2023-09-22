@@ -1,4 +1,6 @@
-﻿namespace RestaurantReservation.Infrastructure.Mongo.Data;
+﻿using RestaurantReservation.Core.Mongo;
+
+namespace RestaurantReservation.Infrastructure.Mongo.Data;
 
 public interface IUnitOfWork : IDisposable
 {

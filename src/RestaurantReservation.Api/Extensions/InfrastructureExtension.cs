@@ -15,6 +15,7 @@ public static class InfrastructureExtension
 
         #region Api
 
+        builder.Services.AddProblemDetails();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddCustomVersioning();
         builder.Services.AddHttpContextAccessor();

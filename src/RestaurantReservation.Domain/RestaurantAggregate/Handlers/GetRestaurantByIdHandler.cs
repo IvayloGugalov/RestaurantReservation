@@ -1,4 +1,5 @@
-﻿using RestaurantReservation.Domain.RestaurantAggregate.Dtos;
+﻿using RestaurantReservation.Core.Mongo;
+using RestaurantReservation.Domain.RestaurantAggregate.Dtos;
 
 namespace RestaurantReservation.Domain.RestaurantAggregate.Handlers;
 
@@ -18,7 +19,7 @@ public class GetRestaurantByIdHandler : IQueryHandler<GetRestaurantById, GetRest
         var restaurant = await this.restaurantRepository.GetByIdAsync(new RestaurantId(request.Id), ct);
 
         // TODO:
-        if (restaurant == null) throw new Exception("Restaurant does not exist");
+        if (restaurant == null) throw new RestaurantDoesNotExistException();
 
         var restaurantDto = new RestaurantDto(
             Id: restaurant.Id,

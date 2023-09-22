@@ -2,7 +2,7 @@
 
 namespace RestaurantReservation.Domain.ReservationAggregate.Exceptions;
 
-public class TableNotFoundException : CustomException
+public class TableNotFoundException : NotFoundException
 {
     public TableNotFoundException(int? code = default)
         : base("Table not found", code: code)

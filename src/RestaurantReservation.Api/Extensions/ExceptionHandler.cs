@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.WebUtilities;
 using RestaurantReservation.Core.Exceptions;
 
 namespace RestaurantReservation.Api.Extensions;
@@ -7,6 +8,27 @@ public static class ExceptionHandler
 {
     public static IApplicationBuilder UseCustomExceptionHandler(this WebApplication app)
     {
+        app.UseStatusCodePages(statusCodeHandlerApp =>
+        {
+            statusCodeHandlerApp.Run(async context =>
+            {
+                context.Response.ContentType = "application/problem+json";
+
+                if (context.RequestServices.GetService<IProblemDetailsService>() is { } problemDetailsService)
+                {
+                    await problemDetailsService.WriteAsync(new ProblemDetailsContext
+                    {
+                        HttpContext = context,
+                        ProblemDetails =
+                        {
+                            Detail = ReasonPhrases.GetReasonPhrase(context.Response.StatusCode),
+                            Status = context.Response.StatusCode
+                        }
+                    });
+                }
+            });
+        });
+
         app.UseExceptionHandler(exceptionHandlerApp =>
         {
             exceptionHandlerApp.Run(async context =>
@@ -61,8 +83,7 @@ public static class ExceptionHandler
 
                         if (app.Environment.IsDevelopment())
                         {
-                            problem.ProblemDetails.Extensions.Add("exception",
-                                exceptionHandlerFeature?.Error.ToString());
+                            problem.ProblemDetails.Extensions.Add("exception", exceptionHandlerFeature?.Error.ToString());
                         }
 
                         await problemDetailsService.WriteAsync(problem);

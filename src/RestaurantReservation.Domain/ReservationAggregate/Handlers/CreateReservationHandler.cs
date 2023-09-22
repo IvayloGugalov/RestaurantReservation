@@ -1,4 +1,4 @@
-﻿
+﻿using RestaurantReservation.Core.Mongo;
 
 namespace RestaurantReservation.Domain.ReservationAggregate.Handlers;
 
@@ -32,8 +32,8 @@ public class CreateReservationHandler : ICommandHandler<CreateReservation, Creat
             command.ReservationDate,
             command.Occupants);
 
-        this.tableRepository.UpdateAsync(table, ct);
-        this.reservationRepository.AddAsync(reservationEntity, ct);
+        await this.tableRepository.UpdateAsync(table, ct);
+        await this.reservationRepository.AddAsync(reservationEntity, ct);
 
         return new CreateReservationResult(reservationEntity.Id.Value);
     }

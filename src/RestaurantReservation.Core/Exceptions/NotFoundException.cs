@@ -2,7 +2,7 @@
 
 public class NotFoundException : CustomException
 {
-    public NotFoundException(string message, int? code = null) : base(message, code: code)
+    protected NotFoundException(string message, int? code = 404) : base(message, code: code)
     {
     }
 }

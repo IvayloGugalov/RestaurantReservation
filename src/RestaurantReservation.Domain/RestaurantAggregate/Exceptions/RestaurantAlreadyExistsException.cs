@@ -2,10 +2,10 @@
 
 namespace RestaurantReservation.Domain.RestaurantAggregate.Exceptions;
 
-public class RestaurantAlreadyExistsException : CustomException
+public class RestaurantAlreadyExistsException : ConflictException
 {
     public RestaurantAlreadyExistsException(int? code = default)
-        : base("Customer already exists", code: code)
+        : base("Restaurant already exists", code: code)
     {
     }
 }
