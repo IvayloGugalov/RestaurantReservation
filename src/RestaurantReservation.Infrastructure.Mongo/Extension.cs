@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using RestaurantReservation.Core.Mongo;
-using RestaurantReservation.Core.Repository;
 using RestaurantReservation.Core.Web;
 using RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
 
@@ -12,6 +12,8 @@ namespace RestaurantReservation.Infrastructure.Mongo;
 
 public static class Extensions
 {
+    private const string NAME = "mongodb";
+
     public static IServiceCollection AddMongoDbContext<TContext>(
         this IServiceCollection services, IConfiguration configuration, Action<MongoOptions>? configurator = null)
         where TContext : MongoDbContext
@@ -26,7 +28,7 @@ public static class Extensions
     {
         services.Configure<MongoOptions>(configuration.GetSection(nameof(MongoOptions)));
 
-        if (configurator is { })
+        if (configurator is not null)
         {
             services.Configure(nameof(MongoOptions), configurator);
         }
@@ -79,5 +81,21 @@ public static class Extensions
         }
 
         return app;
+    }
+
+    public static IHealthChecksBuilder AddMongoDb(
+        this IHealthChecksBuilder builder,
+        string mongodbConnectionString,
+        string? name = default,
+        HealthStatus? failureStatus = default,
+        IEnumerable<string>? tags = default,
+        TimeSpan? timeout = default)
+    {
+        return builder.Add(new HealthCheckRegistration(
+            name ?? NAME,
+            sp => new MongoHealthCheck(mongodbConnectionString),
+            failureStatus,
+            tags,
+            timeout));
     }
 }

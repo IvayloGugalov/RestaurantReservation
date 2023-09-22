@@ -2,13 +2,13 @@
 
 public record WorkTime
 {
-    public WorkingHours? Monday { get; private init; } = null!;
-    public WorkingHours? Tuesday { get; private init; } = null!;
-    public WorkingHours? Wednesday { get; private init; } = null!;
-    public WorkingHours? Thursday { get; private init; } = null!;
-    public WorkingHours? Friday { get; private init; } = null!;
-    public WorkingHours? Saturday { get; private init; } = null!;
-    public WorkingHours? Sunday { get; private init; } = null!;
+    public WorkingHours? Monday { get; private init; }
+    public WorkingHours? Tuesday { get; private init; }
+    public WorkingHours? Wednesday { get; private init; }
+    public WorkingHours? Thursday { get; private init; }
+    public WorkingHours? Friday { get; private init; }
+    public WorkingHours? Saturday { get; private init; }
+    public WorkingHours? Sunday { get; private init; }
 
     private WorkTime() { }
 

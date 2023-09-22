@@ -14,7 +14,7 @@ public static class Mapper
             PopulateCacheKey(key);
         }
 
-        var result = Activator.CreateInstance<T>()!;
+        var result = Activator.CreateInstance<T>();
         var entry = _cache[key];
         foreach (var e in entry)
         {
@@ -40,7 +40,7 @@ public static class Mapper
                 continue;
             }
 
-            entry.Add((from.GetMethod, to.GetMethod));
+            entry.Add((from.GetMethod, to.GetMethod)!);
         }
 
         _cache[key] = entry;

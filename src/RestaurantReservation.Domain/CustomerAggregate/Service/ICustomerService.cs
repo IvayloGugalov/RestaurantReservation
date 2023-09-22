@@ -1,6 +1,4 @@
-﻿using RestaurantReservation.Domain.CustomerAggregate.Models;
-
-namespace RestaurantReservation.Domain.CustomerAggregate.Service;
+﻿namespace RestaurantReservation.Domain.CustomerAggregate.Service;
 
 public interface ICustomerService
 {

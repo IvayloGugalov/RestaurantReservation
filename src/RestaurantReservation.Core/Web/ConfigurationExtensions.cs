@@ -25,7 +25,7 @@ public static class ConfigurationExtensions
     public static TModel GetOptions<TModel>(this WebApplication app, string section) where TModel : new()
     {
         var model = new TModel();
-        app.Configuration?.GetSection(section).Bind(model);
+        app.Configuration.GetSection(section).Bind(model);
         return model;
     }
 

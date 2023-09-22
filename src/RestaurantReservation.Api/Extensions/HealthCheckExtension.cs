@@ -1,8 +1,8 @@
 ﻿using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using RestaurantReservation.Core.Logging;
 using RestaurantReservation.Core.Web;
+using RestaurantReservation.Infrastructure.Mongo;
 
 namespace RestaurantReservation.Api.Extensions;
 
@@ -23,8 +23,8 @@ public static class HealthCheckExtension
         var appOptions = configuration.GetSection(nameof(AppOptions)).Get<AppOptions>();
         // var postgresOptions = services.GetSection(nameof(PostgresOptions)).Get<PostgresOptions>();
         // var rabbitMqOptions = services.GetOptions<RabbitMqOptions>(nameof(RabbitMqOptions));
-        // var mongoOptions = services.GetOptions<MongoOptions>(nameof(MongoOptions));
-        var logOptions = configuration.GetSection(nameof(LogOptions)).Get<LogOptions>();
+        var mongoOptions = services.GetOptions<MongoOptions>(nameof(MongoOptions));
+        // var logOptions = configuration.GetSection(nameof(LogOptions)).Get<LogOptions>();
 
         var healthChecksBuilder = services.AddHealthChecks();
         // .AddRabbitMQ(
@@ -32,8 +32,7 @@ public static class HealthCheckExtension
         //     $"amqp://{rabbitMqOptions.UserName}:{rabbitMqOptions.Password}@{rabbitMqOptions.HostName}")
         // .AddElasticsearch(logOptions.Elastic.ElasticServiceUrl);
 
-        // if (mongoOptions.ConnectionString is not null)
-        // healthChecksBuilder.AddMongoDb(mongoOptions.ConnectionString);
+        if (mongoOptions.ConnectionString is not null) healthChecksBuilder.AddMongoDb(mongoOptions.ConnectionString);
 
         // if (postgresOptions.ConnectionString is not null)
         // healthChecksBuilder.AddNpgSql(postgresOptions.ConnectionString);
@@ -41,7 +40,7 @@ public static class HealthCheckExtension
         services.AddHealthChecksUI(setup =>
         {
             setup.SetEvaluationTimeInSeconds(60); // time in seconds between check
-            setup.AddHealthCheckEndpoint($"Basic Health Check - {appOptions.Name}", "/healthz");
+            setup.AddHealthCheckEndpoint($"Basic Health Check - {appOptions?.Name}", "/healthz");
         }).AddInMemoryStorage();
 
         return services;

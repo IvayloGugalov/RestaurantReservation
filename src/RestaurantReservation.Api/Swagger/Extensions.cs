@@ -64,14 +64,14 @@ public static class Extensions
 
         // services.Configure<SwaggerGeneratorOptions>(o => o.InferSecuritySchemes = true);
 
+        return services;
+
         static string XmlCommentsFilePath(Assembly assembly)
         {
             var basePath = Path.GetDirectoryName(assembly.Location);
             var fileName = assembly.GetName().Name + ".xml";
             return Path.Combine(basePath, fileName);
         }
-
-        return services;
     }
 
     public static IApplicationBuilder UseCustomSwagger(this WebApplication app)

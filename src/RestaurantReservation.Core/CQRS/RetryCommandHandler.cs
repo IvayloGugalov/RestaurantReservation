@@ -5,9 +5,6 @@ namespace RestaurantReservation.Core.CQRS;
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
 public sealed class RetryCommandHandlerAttribute : Attribute
 {
-    public RetryCommandHandlerAttribute()
-    {
-    }
 }
 
 public sealed class RetryCommandHandler<TCommand>: ICommandHandler<TCommand>

@@ -50,7 +50,7 @@ public class MongoDbContext : IMongoDbContext
 
                 await this.Session.CommitTransactionAsync(ct);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await this.Session.AbortTransactionAsync(ct);
                 this.commands.Clear();

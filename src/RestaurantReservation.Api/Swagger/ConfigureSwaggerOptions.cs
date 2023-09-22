@@ -7,9 +7,9 @@ namespace RestaurantReservation.Api.Swagger;
 
 public class SwaggerOptions
 {
-    public string Title { get; set; }
-    public string Name { get; set; }
-    public string Version { get; set; }
+    public string? Title { get; set; }
+    public string? Name { get; set; }
+    public string? Version { get; set; }
 }
 
 public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
@@ -23,11 +23,11 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
         this.options = options.Value;
     }
 
-    public void Configure(SwaggerGenOptions options)
+    public void Configure(SwaggerGenOptions swaggerOptions)
     {
         foreach (var description in provider.ApiVersionDescriptions)
         {
-            options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
+            swaggerOptions.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
         }
     }
 
