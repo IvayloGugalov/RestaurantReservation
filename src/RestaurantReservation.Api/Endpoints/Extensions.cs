@@ -4,8 +4,7 @@ namespace RestaurantReservation.Api.Endpoints;
 
 public static class Extensions
 {
-    public static WebApplicationBuilder AddMinimalApiEndpoints(
-        this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddMinimalApiEndpoints(this WebApplicationBuilder builder)
     {
         var classes = Assembly.GetCallingAssembly().GetTypes()
             .Where(c => typeof(IMinimalApiEndpoint).IsAssignableFrom(c) && !c.IsInterface);

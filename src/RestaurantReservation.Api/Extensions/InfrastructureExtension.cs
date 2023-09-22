@@ -15,22 +15,25 @@ public static class InfrastructureExtension
 
         #region Api
 
-        builder.Services.AddProblemDetails();
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddCustomVersioning();
-        builder.Services.AddHttpContextAccessor();
+        builder.Services
+            .AddProblemDetails()
+            .AddEndpointsApiExplorer()
+            .AddCustomVersioning()
+            .AddHttpContextAccessor();
         builder.AddMinimalApiEndpoints();
 
         builder.Services.AddCustomSwagger(configuration, typeof(RestaurantReservationApi).Assembly);
 
         #endregion
 
-        builder.Services.AddCustomHealthCheck(configuration);
-        builder.Services.AddCustomMediatR();
-        builder.Services.AddMongoDbContext<AppMongoDbContext>(configuration);
-        builder.Services.AddScoped<IDataSeeder, CustomerSeeder>();
-        builder.Services.AddScoped<IDataSeeder, RestaurantSeeder>();
-        builder.Services.AddScoped<IDataSeeder, ReservationSeeder>();
+        builder.Services
+            .AddCustomHealthCheck(configuration)
+            .AddCustomMediatR()
+            .AddMongoDbContext<AppMongoDbContext>(configuration)
+            .AddScoped<IDataSeeder, CustomerSeeder>()
+            .AddScoped<IDataSeeder, RestaurantSeeder>()
+            .AddScoped<IDataSeeder, ReservationSeeder>();
+        builder.AddCustomCaching();
         builder.AddSerilog();
     }
 }

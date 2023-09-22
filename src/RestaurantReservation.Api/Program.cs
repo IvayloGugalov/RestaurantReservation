@@ -26,6 +26,9 @@ app.UseCorrelationId();
 app.UseCustomExceptionHandler();
 app.UseCustomHealthCheck();
 
+// UseOutputCache must be called after UseCors
+app.UseOutputCache();
+
 app.UseMigration<AppMongoDbContext>(app.Environment);
 // app.UseHttpsRedirection();
 
