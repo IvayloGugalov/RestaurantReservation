@@ -9,8 +9,8 @@ public static class StronglyTypedIdSerialization
     {
         var aggregateIdTypes = Assembly.GetAssembly(typeof(RestaurantReservationDomain))
             ?.GetTypes()
-            .Where(t => t is { IsAbstract: false, BaseType.IsGenericType: true }
-                        && t.BaseType.GetGenericTypeDefinition() == typeof(StronglyTypedId<>))
+            .Where(t => t is { IsAbstract: false, BaseType.IsGenericType: true } &&
+                        t.BaseType.GetGenericTypeDefinition() == typeof(StronglyTypedId<>))
             .ToArray();
 
         foreach (var type in aggregateIdTypes!)
