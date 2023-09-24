@@ -1,4 +1,4 @@
-﻿namespace RestaurantReservation.Infrastructure.Mongo.Data;
+﻿namespace RestaurantReservation.Core.Mongo.Data;
 
 public interface ITransactionAble
 {

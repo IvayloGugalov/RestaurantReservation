@@ -1,4 +1,4 @@
-﻿namespace RestaurantReservation.Infrastructure.EF;
+﻿namespace RestaurantReservation.Core.EFCore;
 
 public class PostgresOptions
 {

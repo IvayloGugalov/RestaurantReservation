@@ -1,4 +1,7 @@
-﻿namespace RestaurantReservation.Api.Extensions;
+﻿using Asp.Versioning;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace RestaurantReservation.Core.Web;
 
 public static class ApiVersioningExtensions
 {

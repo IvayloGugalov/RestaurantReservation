@@ -1,14 +1,12 @@
 ﻿using System.Reflection;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
+using RestaurantReservation.Core.EFCore;
+using RestaurantReservation.Core.Event;
 
 namespace RestaurantReservation.Identity.Data;
-
-public interface IDbContext
-{
-    Task<int> SaveChangesAsync(CancellationToken ct = default);
-}
 
 public class IdentityContext : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>, IDbContext
 {
@@ -24,6 +22,16 @@ public class IdentityContext : IdentityDbContext<User, Role, Guid, UserClaim, Us
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(builder);
+    }
+
+    public DbSet<TEntity> Set<TEntity, TId>() where TEntity : class, IEntity<TId> where TId : IEquatable<TId>
+    {
+        throw new NotImplementedException();
+    }
+
+    public IReadOnlyList<IDomainEvent> GetDomainEvents()
+    {
+        throw new NotImplementedException();
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -51,6 +59,31 @@ public class IdentityContext : IdentityDbContext<User, Role, Guid, UserClaim, Us
 
             return await base.SaveChangesAsync(cancellationToken);
         }
+    }
+
+    public async Task BeginTransactionAsync(CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task CommitTransactionAsync(CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task RollbackTransactionAsync(CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IExecutionStrategy CreateExecutionStrategy()
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task ExecuteTransactionalAsync(CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
     }
 
     private void OnBeforeSaving()

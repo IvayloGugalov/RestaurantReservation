@@ -4,6 +4,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
+using RestaurantReservation.Core.EFCore;
 using RestaurantReservation.Core.Event;
 using RestaurantReservation.Core.Model;
 using RestaurantReservation.Domain.CustomerAggregate.Models;
@@ -188,19 +189,4 @@ public class AppDbContext : DbContext, IDbContext
             throw new Exception("try for find IAggregate", ex);
         }
     }
-}
-
-public interface IDbContext
-{
-    DbSet<TEntity> Set<TEntity, TId>()
-        where TEntity : class, IEntity<TId>
-        where TId : IEquatable<TId>;
-
-    IReadOnlyList<IDomainEvent> GetDomainEvents();
-    Task<int> SaveChangesAsync(CancellationToken ct = default);
-    Task BeginTransactionAsync(CancellationToken ct = default);
-    Task CommitTransactionAsync(CancellationToken ct = default);
-    Task RollbackTransactionAsync(CancellationToken ct = default);
-    IExecutionStrategy CreateExecutionStrategy();
-    Task ExecuteTransactionalAsync(CancellationToken ct = default);
 }

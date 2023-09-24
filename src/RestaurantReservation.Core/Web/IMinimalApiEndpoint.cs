@@ -1,4 +1,6 @@
-﻿namespace RestaurantReservation.Api.Endpoints;
+﻿using Microsoft.AspNetCore.Routing;
+
+namespace RestaurantReservation.Core.Web;
 
 public interface IMinimalApiEndpoint
 {

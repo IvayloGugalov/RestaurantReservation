@@ -1,6 +1,6 @@
 ﻿using Asp.Versioning.Builder;
 
-namespace RestaurantReservation.Api.Endpoints;
+namespace RestaurantReservation.Core.Web;
 
 public static class EndpointConfig
 {

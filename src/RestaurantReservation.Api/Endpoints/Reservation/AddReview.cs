@@ -1,4 +1,6 @@
-﻿namespace RestaurantReservation.Api.Endpoints.Reservation;
+﻿using RestaurantReservation.Core.Web;
+
+namespace RestaurantReservation.Api.Endpoints.Reservation;
 
 public class AddReview : IMinimalApiEndpoint
 {

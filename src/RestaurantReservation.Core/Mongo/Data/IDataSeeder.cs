@@ -1,4 +1,4 @@
-﻿namespace RestaurantReservation.Infrastructure.Mongo;
+﻿namespace RestaurantReservation.Core.Mongo.Data;
 
 public interface IDataSeeder
 {

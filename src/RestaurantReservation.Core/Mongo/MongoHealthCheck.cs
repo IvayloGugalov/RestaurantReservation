@@ -1,8 +1,9 @@
 ﻿using System.Collections.Concurrent;
-
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
-namespace RestaurantReservation.Infrastructure.Mongo;
+namespace RestaurantReservation.Core.Mongo;
 
 public sealed class MongoHealthCheck : IHealthCheck
 {

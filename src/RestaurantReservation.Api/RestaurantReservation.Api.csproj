@@ -27,4 +27,8 @@
         <ProjectReference Include="..\RestaurantReservation.Infrastructure.Mongo\RestaurantReservation.Infrastructure.Mongo.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Swagger\" />
+    </ItemGroup>
+
 </Project>

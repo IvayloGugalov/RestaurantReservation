@@ -1,7 +1,8 @@
 ﻿using System.Linq.Expressions;
-using RestaurantReservation.Core.Mongo;
+using MongoDB.Driver;
+using RestaurantReservation.Core.Model;
 
-namespace RestaurantReservation.Infrastructure.Mongo.Repositories;
+namespace RestaurantReservation.Core.Mongo.Repository;
 
 public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId>
     where TEntity : class, IEntity<TId>

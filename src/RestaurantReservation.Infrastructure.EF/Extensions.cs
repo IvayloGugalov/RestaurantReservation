@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RestaurantReservation.Core.EFCore;
 using RestaurantReservation.Core.Model;
 using RestaurantReservation.Core.Web;
 using RestaurantReservation.Infrastructure.EF.Data;

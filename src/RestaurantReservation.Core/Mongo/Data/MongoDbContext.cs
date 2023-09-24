@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
-using RestaurantReservation.Core.Mongo;
+using MongoDB.Driver;
+using RestaurantReservation.Core.Mongo.Exceptions;
 
-namespace RestaurantReservation.Infrastructure.Mongo.Data;
+namespace RestaurantReservation.Core.Mongo.Data;
 
 public class MongoDbContext : IMongoDbContext
 {

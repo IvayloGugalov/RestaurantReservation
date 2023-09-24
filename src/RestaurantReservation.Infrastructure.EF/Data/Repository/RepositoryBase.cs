@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-
+using RestaurantReservation.Core.EFCore;
 using RestaurantReservation.Core.Model;
 
 namespace RestaurantReservation.Infrastructure.EF.Data.Repository;

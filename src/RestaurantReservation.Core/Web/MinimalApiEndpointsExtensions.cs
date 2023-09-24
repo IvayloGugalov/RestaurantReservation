@@ -1,10 +1,13 @@
 ﻿using System.Reflection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace RestaurantReservation.Api.Endpoints;
+namespace RestaurantReservation.Core.Web;
 
-public static class Extensions
+public static class MinimalApiEndpointsExtensions
 {
-    public static WebApplicationBuilder AddMinimalApiEndpoints(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddMinimalApiEndpoints(this WebApplicationBuilder builder, params Assembly[] assemblies)
     {
         var classes = Assembly.GetCallingAssembly().GetTypes()
             .Where(c => typeof(IMinimalApiEndpoint).IsAssignableFrom(c) && !c.IsInterface);

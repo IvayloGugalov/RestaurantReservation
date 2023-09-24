@@ -1,4 +1,4 @@
-﻿namespace RestaurantReservation.Infrastructure.Mongo;
+﻿namespace RestaurantReservation.Core.Mongo;
 
 public class MongoOptions
 {

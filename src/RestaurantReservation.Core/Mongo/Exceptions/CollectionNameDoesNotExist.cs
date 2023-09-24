@@ -1,6 +1,6 @@
 ﻿using RestaurantReservation.Core.Exceptions;
 
-namespace RestaurantReservation.Infrastructure.Mongo.Exceptions;
+namespace RestaurantReservation.Core.Mongo.Exceptions;
 
 public class CollectionNameDoesNotExist : NotFoundException
 {

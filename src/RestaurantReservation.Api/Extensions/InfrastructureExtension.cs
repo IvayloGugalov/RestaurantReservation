@@ -1,7 +1,8 @@
 ﻿using RestaurantReservation.Api.Endpoints;
-using RestaurantReservation.Api.Swagger;
 using RestaurantReservation.Core.Logging;
-using RestaurantReservation.Infrastructure.Mongo;
+using RestaurantReservation.Core.Mongo;
+using RestaurantReservation.Core.Mongo.Data;
+using RestaurantReservation.Core.Web;
 using RestaurantReservation.Infrastructure.Mongo.Data;
 using RestaurantReservation.Infrastructure.Mongo.Seeders;
 

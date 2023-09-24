@@ -2,11 +2,12 @@ using Serilog;
 
 using RestaurantReservation.Api.Endpoints;
 using RestaurantReservation.Api.Extensions;
-using RestaurantReservation.Api.Swagger;
 using RestaurantReservation.Core.Logging;
+using RestaurantReservation.Core.Mongo;
 using RestaurantReservation.Core.Web;
 using RestaurantReservation.Infrastructure.Mongo;
 using RestaurantReservation.Infrastructure.Mongo.Data;
+using RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,7 @@ app.UseCustomHealthCheck();
 // UseOutputCache must be called after UseCors
 app.UseOutputCache();
 
+Serializers.RegisterAll();
 app.UseMigration<AppMongoDbContext>(app.Environment);
 // app.UseHttpsRedirection();
 

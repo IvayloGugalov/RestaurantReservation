@@ -4,11 +4,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
-using RestaurantReservation.Core.Mongo;
-using RestaurantReservation.Core.Web;
-using RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
 
-namespace RestaurantReservation.Infrastructure.Mongo;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Conventions;
+
+using RestaurantReservation.Core.Mongo.Data;
+using RestaurantReservation.Core.Mongo.Repository;
+using RestaurantReservation.Core.Web;
+
+namespace RestaurantReservation.Core.Mongo;
 
 public static class Extensions
 {
@@ -45,7 +49,6 @@ public static class Extensions
         services.AddTransient(typeof(IMongoRepository<,>), typeof(MongoRepository<,>));
         services.AddTransient(typeof(IMongoUnitOfWork<>), typeof(MongoUnitOfWork<>));
 
-        Serializers.RegisterAll();
         RegisterConventions();
 
         return services;

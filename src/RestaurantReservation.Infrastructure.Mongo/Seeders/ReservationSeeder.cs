@@ -1,4 +1,6 @@
-﻿namespace RestaurantReservation.Infrastructure.Mongo.Seeders;
+﻿using RestaurantReservation.Core.Mongo.Data;
+
+namespace RestaurantReservation.Infrastructure.Mongo.Seeders;
 
 public class ReservationSeeder : IDataSeeder
 {
