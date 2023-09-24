@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using RestaurantReservation.Core.EFCore;
 using RestaurantReservation.Core.Mongo;
 
 namespace RestaurantReservation.Core.Web;
@@ -24,7 +25,7 @@ public static class HealthCheckExtension
         if (!healthOptions?.Enabled ?? true) return services;
 
         var appOptions = configuration.GetSection(nameof(AppOptions)).Get<AppOptions>();
-        // var postgresOptions = services.GetSection(nameof(PostgresOptions)).Get<PostgresOptions>();
+        var postgresOptions = configuration.GetSection(nameof(PostgresOptions)).Get<PostgresOptions>();
         // var rabbitMqOptions = services.GetOptions<RabbitMqOptions>(nameof(RabbitMqOptions));
         var mongoOptions = services.GetOptions<MongoOptions>(nameof(MongoOptions));
         // var logOptions = configuration.GetSection(nameof(LogOptions)).Get<LogOptions>();
@@ -37,8 +38,7 @@ public static class HealthCheckExtension
 
         if (mongoOptions.ConnectionString is not null) healthChecksBuilder.AddMongoDb(mongoOptions.ConnectionString, mongoOptions.DatabaseName);
 
-        // if (postgresOptions.ConnectionString is not null)
-        // healthChecksBuilder.AddNpgSql(postgresOptions.ConnectionString);
+        if (postgresOptions.ConnectionString is not null) healthChecksBuilder.AddNpgSql(postgresOptions.ConnectionString);
 
         services.AddHealthChecksUI(setup =>
         {
@@ -53,7 +53,7 @@ public static class HealthCheckExtension
     {
         var healthOptions = app.Configuration.GetSection(nameof(HealthOptions)).Get<HealthOptions>();
 
-        if (!healthOptions?.Enabled ?? false) return app;
+        if (!healthOptions?.Enabled ?? true) return app;
 
         app.UseHealthChecks(
             "/healthz",

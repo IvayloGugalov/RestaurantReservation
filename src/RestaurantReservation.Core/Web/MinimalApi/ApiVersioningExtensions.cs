@@ -1,7 +1,7 @@
 ﻿using Asp.Versioning;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace RestaurantReservation.Core.Web;
+namespace RestaurantReservation.Core.Web.MinimalApi;
 
 public static class ApiVersioningExtensions
 {

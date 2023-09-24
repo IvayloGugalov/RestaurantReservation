@@ -5,6 +5,7 @@ using RestaurantReservation.Api.Extensions;
 using RestaurantReservation.Core.Logging;
 using RestaurantReservation.Core.Mongo;
 using RestaurantReservation.Core.Web;
+using RestaurantReservation.Core.Web.MinimalApi;
 using RestaurantReservation.Infrastructure.Mongo;
 using RestaurantReservation.Infrastructure.Mongo.Data;
 using RestaurantReservation.Infrastructure.Mongo.Data.Configurations;

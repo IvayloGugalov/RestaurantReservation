@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Npgsql;
 using RestaurantReservation.Core.Mongo.Data;
 using RestaurantReservation.Core.Web;
 
@@ -10,6 +12,9 @@ namespace RestaurantReservation.Core.EFCore;
 
 public static class Extensions
 {
+    private const string NAME = "npgsql";
+    internal const string HEALTH_QUERY = "SELECT 1;";
+
     public static IServiceCollection AddCustomDbContext<TContext>(
         this IServiceCollection services)
         where TContext : DbContext, IDbContext
@@ -22,14 +27,18 @@ public static class Extensions
         {
             var postgresOptions = sp.GetRequiredService<PostgresOptions>();
 
-            options.UseNpgsql(postgresOptions?.ConnectionString,
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+            if (postgresOptions == null) throw new NullReferenceException(nameof(postgresOptions));
+
+            options.UseNpgsql(postgresOptions.ConnectionString,
                 dbOptions =>
                 {
                     dbOptions.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name);
                 });
         });
 
-        services.AddScoped<IDbContext>(provider => provider.GetService<TContext>());
+        services.AddScoped<IDbContext>(provider =>
+            provider.GetService<TContext>() ?? throw new InvalidOperationException());
 
         return services;
     }

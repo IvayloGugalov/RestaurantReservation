@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using RestaurantReservation.Core.Web.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace RestaurantReservation.Core.Web;

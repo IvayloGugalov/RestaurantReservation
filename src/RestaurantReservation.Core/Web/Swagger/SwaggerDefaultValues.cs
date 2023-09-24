@@ -3,7 +3,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace RestaurantReservation.Core.Web;
+namespace RestaurantReservation.Core.Web.Swagger;
 
 public class SwaggerDefaultValues : IOperationFilter
 {

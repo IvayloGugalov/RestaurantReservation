@@ -1,4 +1,5 @@
 using RestaurantReservation.Core.Web;
+using RestaurantReservation.Core.Web.MinimalApi;
 using RestaurantReservation.Identity;
 using RestaurantReservation.Identity.Api.Extensions;
 

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace RestaurantReservation.Core.Web;
+namespace RestaurantReservation.Core.Web.Swagger;
 
 public class SwaggerOptions
 {

@@ -6,6 +6,8 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["src/RestaurantReservation.Identity.Api/RestaurantReservation.Identity.Api.csproj", "src/RestaurantReservation.Identity.Api/"]
+COPY ["src/RestaurantReservation.Core/RestaurantReservation.Core.csproj", "src/RestaurantReservation.Core/"]
+COPY ["src/RestaurantReservation.Identity/RestaurantReservation.Identity.csproj", "src/RestaurantReservation.Identity/"]
 RUN dotnet restore "src/RestaurantReservation.Identity.Api/RestaurantReservation.Identity.Api.csproj"
 COPY . .
 WORKDIR "/src/src/RestaurantReservation.Identity.Api"

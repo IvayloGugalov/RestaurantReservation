@@ -29,14 +29,11 @@ services:
     ports:
       - "27017:27017"
 
-
   api:
     image: api
     container_name: api
     build:
       context: ../
-      #      args:
-      #        Version: "1"
       dockerfile: src/RestaurantReservation.Api/Dockerfile
     ports:
       - "5147:80"
@@ -44,8 +41,29 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+;https://+
-      - ASPNETCORE_HTTPS_PORT=7257
       - ASPNETCORE_HTTP_PORT=5147
+      - ASPNETCORE_HTTPS_PORT=7257
+    networks:
+      - reservations
+
+  identity:
+    image: identity
+    build:
+      context: ../
+      dockerfile: src/RestaurantReservation.Identity.Api/Dockerfile
+    container_name: identity
+    ports:
+      - "5079:80"
+      - "7016:443"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+;https://+
+      - ASPNETCORE_HTTP_PORT=5079
+      - ASPNETCORE_HTTPS_PORT=7016
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/%USERPROFILE%/.aspnet/https/aspnetapp.pfx
     networks:
       - reservations
 

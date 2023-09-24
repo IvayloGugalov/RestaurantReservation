@@ -4,5 +4,6 @@ namespace RestaurantReservation.Identity.Services;
 
 public interface IUserService
 {
-    Task<RegisterNewUserResponseDto> RegisterNewUserAsync(RegisterNewUserRequestDto request);
+    Task<RegisterNewUserResponseDto> RegisterNewUserAsync(RegisterNewUserRequestDto request,
+        CancellationToken cancellationToken);
 }

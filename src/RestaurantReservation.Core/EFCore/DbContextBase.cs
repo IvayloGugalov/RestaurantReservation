@@ -1,29 +1,32 @@
 ﻿using System.Collections.Immutable;
 using System.Data;
-using System.Reflection;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
-using RestaurantReservation.Core.EFCore;
 using RestaurantReservation.Core.Event;
+using RestaurantReservation.Core.Model;
+using RestaurantReservation.Core.Web;
 
-namespace RestaurantReservation.Identity.Data;
+namespace RestaurantReservation.Core.EFCore;
 
-public class IdentityContext : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>, IDbContext
+public abstract class DbContextBase : DbContext, IDbContext
 {
-    private readonly ILogger<IdentityContext>? logger;
+    private readonly ICurrentUserProvider? currentUserProvider;
+    private readonly ILogger<DbContextBase>? logger;
     private IDbContextTransaction? currentTransaction;
 
-    public IdentityContext(DbContextOptions<IdentityContext> options, ILogger<IdentityContext>? logger = null)
+    protected DbContextBase(
+        DbContextOptions options,
+        ICurrentUserProvider? currentUserProvider = null,
+        ILogger<DbContextBase>? logger = null)
         : base(options)
     {
+        this.currentUserProvider = currentUserProvider;
         this.logger = logger;
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        base.OnModelCreating(builder);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -141,17 +144,34 @@ public class IdentityContext : IdentityDbContext<User, Role, Guid, UserClaim, Us
     {
         try
         {
-            foreach (var entry in ChangeTracker.Entries<IVersion>())
+            foreach (var entry in ChangeTracker.Entries<IAggregateRoot>())
             {
-                switch (entry.State)
-                {
-                    case EntityState.Modified:
-                        entry.Entity.Version++;
-                        break;
+                var isAuditable = entry.Entity.GetType().IsAssignableTo(typeof(IAggregateRoot));
+                var userId = this.currentUserProvider?.GetCurrentUserId() ?? 0;
 
-                    case EntityState.Deleted:
-                        entry.Entity.Version++;
-                        break;
+                if (isAuditable)
+                {
+                    switch (entry.State)
+                    {
+                        case EntityState.Added:
+                            entry.Entity.CreatedBy = userId;
+                            entry.Entity.CreatedAt = DateTime.Now;
+                            break;
+
+                        case EntityState.Modified:
+                            entry.Entity.LastModifiedBy = userId;
+                            entry.Entity.LastModified = DateTime.Now;
+                            // entry.Entity.Version++;
+                            break;
+
+                        case EntityState.Deleted:
+                            entry.State = EntityState.Modified;
+                            entry.Entity.LastModifiedBy = userId;
+                            entry.Entity.LastModified = DateTime.Now;
+                            entry.Entity.IsDeleted = true;
+                            // entry.Entity.Version++;
+                            break;
+                    }
                 }
             }
         }

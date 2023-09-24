@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace RestaurantReservation.Core.Web;
+namespace RestaurantReservation.Core.Web.MinimalApi;
 
 public static class MinimalApiEndpointsExtensions
 {

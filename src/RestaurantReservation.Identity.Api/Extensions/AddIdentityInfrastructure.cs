@@ -7,6 +7,8 @@ using RestaurantReservation.Core.Web;
 using RestaurantReservation.Identity.Data;
 using RestaurantReservation.Identity.Extensions;
 using RestaurantReservation.Core.EFCore;
+using RestaurantReservation.Core.Web.MinimalApi;
+using RestaurantReservation.Identity.Services;
 using Serilog;
 
 namespace RestaurantReservation.Identity.Api.Extensions;
@@ -41,7 +43,6 @@ public static class AddIdentityInfrastructure
         });
 
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddControllers();
         // builder.Services.AddPersistMessageProcessor(env);
         builder.Services.AddCustomDbContext<IdentityContext>();
         // builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
@@ -54,6 +55,8 @@ public static class AddIdentityInfrastructure
         builder.Services.AddCustomHealthCheck(configuration);
 
         // builder.Services.AddCustomMassTransit(env, typeof(IdentityRoot).Assembly);
+
+        builder.Services.AddTransient<IUserService, UserService>();
 
         builder.AddCustomIdentityServer();
 

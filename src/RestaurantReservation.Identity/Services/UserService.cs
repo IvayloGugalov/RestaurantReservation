@@ -12,7 +12,8 @@ public class UserService : IUserService
         this.userManager = userManager;
     }
 
-    public async Task<RegisterNewUserResponseDto> RegisterNewUserAsync(RegisterNewUserRequestDto request)
+    public async Task<RegisterNewUserResponseDto> RegisterNewUserAsync(RegisterNewUserRequestDto request,
+        CancellationToken cancellationToken)
     {
         var validations = await new RegisterNewUserValidator().ValidateAsync(request);
         if (!validations.IsValid)
