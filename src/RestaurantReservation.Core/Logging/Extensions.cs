@@ -19,7 +19,7 @@ public static class Extensions
             var logOptions = context.Configuration.GetSection(nameof(LogOptions)).Get<LogOptions>();
             var appOptions = context.Configuration.GetSection(nameof(AppOptions)).Get<AppOptions>();
 
-            var logLevel = Enum.TryParse<LogEventLevel>(logOptions.Level, true, out var level)
+            var logLevel = Enum.TryParse<LogEventLevel>(logOptions?.Level, true, out var level)
                 ? level
                 : LogEventLevel.Information;
 

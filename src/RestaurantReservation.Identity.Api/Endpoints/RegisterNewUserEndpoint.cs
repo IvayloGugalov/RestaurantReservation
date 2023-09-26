@@ -22,7 +22,7 @@ public class RegisterNewUserEndpoint : IMinimalApiEndpoint
                 Summary = "Register User",
             })
             .WithName("RegisterUser")
-            .RequireAuthorization()
+            // .RequireAuthorization()
             .Produces<RegisterNewUserResponseDto>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .WithApiVersionSet(builder.NewApiVersionSet("Identity").Build())

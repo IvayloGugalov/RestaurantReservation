@@ -2,6 +2,8 @@
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
+ENV ASPNETCORE_URLS https://*:443, http://*:80
+ENV ASPNETCORE_ENVIRONMENT docker
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
@@ -19,4 +21,4 @@ RUN dotnet publish "RestaurantReservation.Identity.Api.csproj" -c Release -o /ap
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "RestaurantReservation.Identity.Api.dll"]
+ENTRYPOINT ["dotnet", "RestaurantReservation.Identity.Api.dll", "--environment=docker"]

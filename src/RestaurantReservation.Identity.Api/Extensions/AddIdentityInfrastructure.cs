@@ -2,6 +2,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantReservation.Core.Authentication;
 using RestaurantReservation.Core.Logging;
 using RestaurantReservation.Core.Web;
 using RestaurantReservation.Identity.Data;
@@ -47,6 +48,7 @@ public static class AddIdentityInfrastructure
         builder.Services.AddCustomDbContext<IdentityContext>();
         // builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
         builder.AddSerilog();
+        builder.Services.AddJwt();
         builder.Services.AddCustomSwagger(configuration, typeof(IdentityRoot).Assembly);
         builder.Services.AddCustomVersioning();
         // builder.Services.AddCustomMediatR();
@@ -86,9 +88,9 @@ public static class AddIdentityInfrastructure
         app.UseCustomHealthCheck();
         app.UseIdentityServer();
 
-        app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
+        app.MapGet("/", x => x.Response.WriteAsync("Identity"));
 
-        if (env.IsDevelopment())
+        if (!env.IsProduction())
         {
             app.UseCustomSwagger();
         }
