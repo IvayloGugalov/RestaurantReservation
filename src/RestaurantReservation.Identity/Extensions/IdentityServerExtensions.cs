@@ -40,6 +40,7 @@ public static class IdentityServerExtensions
             .AddResourceOwnerValidator<UserValidator>();
 
         //ref: https://documentation.openiddict.com/configuration/encryption-and-signing-credentials.html
+        // Generates the jwk key
         identityServerBuilder.AddDeveloperSigningCredential();
 
         return builder;

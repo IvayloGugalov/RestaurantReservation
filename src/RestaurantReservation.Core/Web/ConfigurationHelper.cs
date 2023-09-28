@@ -1,4 +1,6 @@
-﻿namespace RestaurantReservation.Api.Extensions;
+﻿using Microsoft.Extensions.Configuration;
+
+namespace RestaurantReservation.Core.Web;
 
 public static class ConfigurationHelper
 {

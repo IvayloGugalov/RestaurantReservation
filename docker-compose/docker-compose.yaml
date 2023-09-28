@@ -40,7 +40,7 @@ services:
       - "7257:443"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+;https://+
+      - ASPNETCORE_URLS=https://+;http://+
       - ASPNETCORE_HTTP_PORT=5147
       - ASPNETCORE_HTTPS_PORT=7257
     networks:
@@ -59,7 +59,7 @@ services:
       - ~/.aspnet/https:/https:ro
     environment:
       - ASPNETCORE_ENVIRONMENT=docker
-      - ASPNETCORE_URLS=https://+:7016;http://+
+      - ASPNETCORE_URLS=https://+;http://+
       - ASPNETCORE_HTTP_PORT=5079
       - ASPNETCORE_HTTPS_PORT=7016
       - ASPNETCORE_Kestrel__Certificates__Default__Password=password
