@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
@@ -24,6 +24,7 @@
         <PackageReference Include="Asp.Versioning.Mvc" Version="6.0.0" />
         <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="6.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.22" />
+        <PackageReference Include="Microsoft.AspNetCore.ConcurrencyLimiter" Version="7.0.11" />
         <PackageReference Include="Microsoft.CodeAnalysis" Version="4.7.0-2.final" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">

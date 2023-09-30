@@ -45,4 +45,9 @@ public class UserService : IUserService
 
         return new RegisterNewUserResponseDto(applicationUser.Id, applicationUser.FirstName, applicationUser.LastName);
     }
+
+    public Task<List<User>> GetUsersAsync()
+    {
+        return Task.FromResult(this.userManager.Users.ToList());
+    }
 }

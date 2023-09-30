@@ -4,12 +4,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using RestaurantReservation.Core.Web.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace RestaurantReservation.Core.Web;
+namespace RestaurantReservation.Core.Web.Swagger;
 
-public static class Extensions
+public static class SwaggerExtension
 {
     public static IServiceCollection AddCustomSwagger(
         this IServiceCollection services, IConfiguration configuration, params Assembly[] assemblies)
@@ -56,15 +55,7 @@ public static class Extensions
                     }
                 });
 
-
                 options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
-
-                ////https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/467
-                // options.OperationFilter<TagByApiExplorerSettingsOperationFilter>();
-                // options.OperationFilter<TagBySwaggerOperationFilter>();
-
-                // Enables Swagger annotations (SwaggerOperationAttribute, SwaggerParameterAttribute etc.)
-                // options.EnableAnnotations();
             });
 
         // services.Configure<SwaggerGeneratorOptions>(o => o.InferSecuritySchemes = true);

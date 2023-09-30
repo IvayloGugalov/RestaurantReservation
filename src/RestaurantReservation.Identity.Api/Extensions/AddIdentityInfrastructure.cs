@@ -1,18 +1,4 @@
-﻿using System.Threading.RateLimiting;
-using FluentValidation;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
-using RestaurantReservation.Core.Authentication;
-using RestaurantReservation.Core.Logging;
-using RestaurantReservation.Core.Web;
-using RestaurantReservation.Identity.Data;
-using RestaurantReservation.Identity.Extensions;
-using RestaurantReservation.Core.EFCore;
-using RestaurantReservation.Core.Web.MinimalApi;
-using RestaurantReservation.Identity.Services;
-using Serilog;
-
-namespace RestaurantReservation.Identity.Api.Extensions;
+﻿namespace RestaurantReservation.Identity.Api.Extensions;
 
 public static class AddIdentityInfrastructure
 {
@@ -32,35 +18,20 @@ public static class AddIdentityInfrastructure
 
         var appOptions = builder.Services.GetOptions<AppOptions>(nameof(AppOptions));
 
-        builder.Services.AddRateLimiter(options =>
-        {
-            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
-                RateLimitPartition.GetFixedWindowLimiter(
-                    partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
-                    factory: partition => new FixedWindowRateLimiterOptions
-                    {
-                        AutoReplenishment = true, PermitLimit = 10, QueueLimit = 0, Window = TimeSpan.FromMinutes(1)
-                    }));
-        });
-
-        builder.Services.AddEndpointsApiExplorer();
-        // builder.Services.AddPersistMessageProcessor(env);
-        builder.Services.AddCustomDbContext<IdentityContext>();
-        // builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
         builder.AddSerilog();
-        builder.Services.AddJwt();
-        builder.Services.AddCustomSwagger(configuration, typeof(IdentityRoot).Assembly);
-        builder.Services.AddCustomVersioning();
-        // builder.Services.AddCustomMediatR();
-        builder.Services.AddValidatorsFromAssembly(typeof(IdentityRoot).Assembly);
-        builder.Services.AddProblemDetails();
-        builder.Services.AddCustomHealthCheck(configuration);
-
-        // builder.Services.AddCustomMassTransit(env, typeof(IdentityRoot).Assembly);
-
-        builder.Services.AddTransient<IUserService, UserService>();
+        builder.Services
+            .AddEndpointsApiExplorer()
+            .AddCustomDbContext<IdentityContext>()
+            .AddJwt()
+            .AddCustomRateLimiter()
+            .AddCustomHealthCheck(configuration)
+            .AddProblemDetails()
+            .AddValidatorsFromAssembly(typeof(IdentityRoot).Assembly)
+            .AddCustomVersioning()
+            .AddCustomSwagger(configuration, typeof(IdentityRoot).Assembly);
 
         builder.AddCustomIdentityServer();
+        builder.Services.AddTransient<IUserService, UserService>();
 
         builder.Services.Configure<ForwardedHeadersOptions>(options =>
         {

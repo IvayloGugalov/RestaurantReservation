@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-using RestaurantReservation.Core.Web;
-using RestaurantReservation.Identity.Configuration;
-using RestaurantReservation.Identity.Data;
-
 namespace RestaurantReservation.Identity.Extensions;
 
 public static class IdentityServerExtensions

@@ -1,12 +1,10 @@
 using Serilog;
-
-using RestaurantReservation.Api.Endpoints;
 using RestaurantReservation.Api.Extensions;
 using RestaurantReservation.Core.Logging;
 using RestaurantReservation.Core.Mongo;
 using RestaurantReservation.Core.Web;
 using RestaurantReservation.Core.Web.MinimalApi;
-using RestaurantReservation.Infrastructure.Mongo;
+using RestaurantReservation.Core.Web.Swagger;
 using RestaurantReservation.Infrastructure.Mongo.Data;
 using RestaurantReservation.Infrastructure.Mongo.Data.Configurations;
 

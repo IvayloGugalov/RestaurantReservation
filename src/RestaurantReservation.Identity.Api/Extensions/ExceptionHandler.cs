@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.WebUtilities;
-using RestaurantReservation.Core.Exceptions;
-
-namespace RestaurantReservation.Identity.Api.Extensions;
+﻿namespace RestaurantReservation.Identity.Api.Extensions;
 
 public static class ExceptionHandler
 {

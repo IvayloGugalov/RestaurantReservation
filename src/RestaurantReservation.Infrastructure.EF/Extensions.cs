@@ -10,7 +10,6 @@ using Microsoft.Extensions.Hosting;
 using RestaurantReservation.Core.EFCore;
 using RestaurantReservation.Core.Model;
 using RestaurantReservation.Core.Web;
-using RestaurantReservation.Infrastructure.EF.Data;
 using RestaurantReservation.Infrastructure.EF.Data.Seeders;
 
 namespace RestaurantReservation.Infrastructure.EF;

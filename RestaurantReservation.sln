@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantReservation.Ident
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantReservation.Identity.Api", "src\RestaurantReservation.Identity.Api\RestaurantReservation.Identity.Api.csproj", "{57739FBB-AD40-40C1-96BC-FF37AC578488}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateway", "ApiGateway", "{7F23E5F0-854A-4122-8036-90BFE9CC0E7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantReservation.ApiGateway", "src\RestaurantReservation.ApiGateway\RestaurantReservation.ApiGateway.csproj", "{314B82D8-60F6-41B1-9523-FA1AD31AE0BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +65,10 @@ Global
 		{57739FBB-AD40-40C1-96BC-FF37AC578488}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57739FBB-AD40-40C1-96BC-FF37AC578488}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57739FBB-AD40-40C1-96BC-FF37AC578488}.Release|Any CPU.Build.0 = Release|Any CPU
+		{314B82D8-60F6-41B1-9523-FA1AD31AE0BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{314B82D8-60F6-41B1-9523-FA1AD31AE0BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{314B82D8-60F6-41B1-9523-FA1AD31AE0BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{314B82D8-60F6-41B1-9523-FA1AD31AE0BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,5 +85,7 @@ Global
 		{D78294E9-FBE3-4BFF-BCB7-7B7B74EABD46} = {4AF3AB1C-6EE5-4DEE-AC79-3A4797C6E5E9}
 		{AA4CC511-FF6E-41CF-B0F3-0FDF19E8C967} = {94CA2EA2-29DB-44C5-B718-45A0E6640D36}
 		{57739FBB-AD40-40C1-96BC-FF37AC578488} = {94CA2EA2-29DB-44C5-B718-45A0E6640D36}
+		{7F23E5F0-854A-4122-8036-90BFE9CC0E7D} = {94CA2EA2-29DB-44C5-B718-45A0E6640D36}
+		{314B82D8-60F6-41B1-9523-FA1AD31AE0BC} = {7F23E5F0-854A-4122-8036-90BFE9CC0E7D}
 	EndGlobalSection
 EndGlobal
