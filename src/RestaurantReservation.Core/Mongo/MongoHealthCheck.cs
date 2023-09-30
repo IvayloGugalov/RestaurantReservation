@@ -28,7 +28,7 @@ public sealed class MongoHealthCheck : IHealthCheck
     }
 
     /// <inheritdoc />
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken ct = default)
     {
         try
         {
@@ -43,13 +43,13 @@ public sealed class MongoHealthCheck : IHealthCheck
 
                 await mongoClient
                     .GetDatabase(_specifiedDatabase)
-                    .RunCommandAsync(_command, cancellationToken: cancellationToken)
+                    .RunCommandAsync(_command, cancellationToken: ct)
                     .ConfigureAwait(false);
             }
             else
             {
-                using var cursor = await mongoClient.ListDatabaseNamesAsync(cancellationToken).ConfigureAwait(false);
-                await cursor.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+                using var cursor = await mongoClient.ListDatabaseNamesAsync(ct).ConfigureAwait(false);
+                await cursor.FirstOrDefaultAsync(ct).ConfigureAwait(false);
             }
 
             return HealthCheckResult.Healthy();

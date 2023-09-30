@@ -1,21 +1,24 @@
-﻿using RestaurantReservation.Identity.Validations;
+﻿using RestaurantReservation.Core.Events;
+using RestaurantReservation.Identity.Contracts;
+using RestaurantReservation.Identity.Validations;
 
 namespace RestaurantReservation.Identity.Services;
 
 public class UserService : IUserService
 {
-    // private readonly IEventDispatcher _eventDispatcher;
+    private readonly IEventDispatcher eventDispatcher;
     private readonly UserManager<User> userManager;
 
-    public UserService(UserManager<User> userManager)
+    public UserService(UserManager<User> userManager, IEventDispatcher eventDispatcher)
     {
         this.userManager = userManager;
+        this.eventDispatcher = eventDispatcher;
     }
 
     public async Task<RegisterNewUserResponseDto> RegisterNewUserAsync(RegisterNewUserRequestDto request,
-        CancellationToken cancellationToken)
+        CancellationToken ct)
     {
-        var validations = await new RegisterNewUserValidator().ValidateAsync(request, cancellationToken);
+        var validations = await new RegisterNewUserValidator().ValidateAsync(request, ct);
         if (!validations.IsValid)
         {
             throw new ValidationException(string.Join(',', validations.Errors.Select(e => e.ErrorMessage)));
@@ -42,6 +45,9 @@ public class UserService : IUserService
         {
             throw new RegisterIdentityUserException(string.Join(',', roleResult.Errors.Select(e => e.Description)));
         }
+
+        await this.eventDispatcher.SendAsync(
+            new UserCreated(applicationUser.Id, applicationUser.FirstName + " " + applicationUser.LastName), ct: ct);
 
         return new RegisterNewUserResponseDto(applicationUser.Id, applicationUser.FirstName, applicationUser.LastName);
     }

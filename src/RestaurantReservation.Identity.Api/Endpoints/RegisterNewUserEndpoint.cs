@@ -11,9 +11,9 @@ public class RegisterNewUserEndpoint : IMinimalApiEndpoint
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder.MapPost($"{EndpointConfig.BaseApiPath}/identity/register-user", async (
-                RegisterNewUserRequestDto request, IUserService userService, CancellationToken cancellationToken) =>
+                RegisterNewUserRequestDto request, IUserService userService, CancellationToken ct) =>
             {
-                var result = await userService.RegisterNewUserAsync(request, cancellationToken);
+                var result = await userService.RegisterNewUserAsync(request, ct);
                 return Results.Ok(result);
             })
             .WithOpenApi(operation => new OpenApiOperation(operation)

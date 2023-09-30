@@ -3,7 +3,7 @@ using System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
-using RestaurantReservation.Core.Event;
+using RestaurantReservation.Core.Events;
 using RestaurantReservation.Core.Model;
 using RestaurantReservation.Core.Web;
 
@@ -29,19 +29,19 @@ public abstract class DbContextBase : DbContext, IDbContext
     {
     }
 
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(CancellationToken ct = default)
     {
         OnBeforeSaving();
         try
         {
-            return await base.SaveChangesAsync(cancellationToken);
+            return await base.SaveChangesAsync(ct);
         }
         //ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=data-annotations#resolving-concurrency-conflicts
         catch (DbUpdateConcurrencyException ex)
         {
             foreach (var entry in ex.Entries)
             {
-                var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
+                var databaseValues = await entry.GetDatabaseValuesAsync(ct);
 
                 if (databaseValues == null)
                 {
@@ -53,7 +53,7 @@ public abstract class DbContextBase : DbContext, IDbContext
                 entry.OriginalValues.SetValues(databaseValues);
             }
 
-            return await base.SaveChangesAsync(cancellationToken);
+            return await base.SaveChangesAsync(ct);
         }
     }
 

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using RestaurantReservation.Core.EFCore;
-using RestaurantReservation.Core.Event;
+using RestaurantReservation.Core.Events;
 using RestaurantReservation.Core.Model;
 using RestaurantReservation.Domain.CustomerAggregate.Models;
 

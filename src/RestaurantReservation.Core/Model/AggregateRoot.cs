@@ -1,4 +1,4 @@
-﻿using RestaurantReservation.Core.Event;
+﻿using RestaurantReservation.Core.Events;
 
 namespace RestaurantReservation.Core.Model;
 

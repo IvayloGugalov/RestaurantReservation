@@ -3,7 +3,7 @@
 public interface IUserService
 {
     Task<RegisterNewUserResponseDto> RegisterNewUserAsync(RegisterNewUserRequestDto request,
-        CancellationToken cancellationToken);
+        CancellationToken ct);
 
     Task<List<User>> GetUsersAsync();
 }

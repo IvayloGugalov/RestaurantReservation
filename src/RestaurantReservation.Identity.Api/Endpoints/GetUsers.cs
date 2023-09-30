@@ -11,7 +11,7 @@ public class GetUsers : IMinimalApiEndpoint
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
         builder.MapGet($"{EndpointConfig.BaseApiPath}/identity/users", async (
-            IUserService userService, CancellationToken cancellationToken) => await userService.GetUsersAsync())
+            IUserService userService, CancellationToken ct) => await userService.GetUsersAsync())
         .WithOpenApi(operation => new OpenApiOperation(operation)
         {
             Description = "Get Users",

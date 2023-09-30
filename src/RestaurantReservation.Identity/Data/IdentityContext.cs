@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using RestaurantReservation.Core.EFCore;
-using RestaurantReservation.Core.Event;
+using RestaurantReservation.Core.Events;
 
 namespace RestaurantReservation.Identity.Data;
 
@@ -26,19 +26,19 @@ public class IdentityContext : IdentityDbContext<User, Role, Guid, UserClaim, Us
         base.OnModelCreating(builder);
     }
 
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(CancellationToken ct = default)
     {
         OnBeforeSaving();
         try
         {
-            return await base.SaveChangesAsync(cancellationToken);
+            return await base.SaveChangesAsync(ct);
         }
         //ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=data-annotations#resolving-concurrency-conflicts
         catch (DbUpdateConcurrencyException ex)
         {
             foreach (var entry in ex.Entries)
             {
-                var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
+                var databaseValues = await entry.GetDatabaseValuesAsync(ct);
 
                 if (databaseValues == null)
                 {
@@ -50,7 +50,7 @@ public class IdentityContext : IdentityDbContext<User, Role, Guid, UserClaim, Us
                 entry.OriginalValues.SetValues(databaseValues);
             }
 
-            return await base.SaveChangesAsync(cancellationToken);
+            return await base.SaveChangesAsync(ct);
         }
     }
 

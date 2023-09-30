@@ -1,4 +1,4 @@
-﻿namespace RestaurantReservation.Core.Event;
+﻿namespace RestaurantReservation.Core.Events;
 
 public abstract class DomainEvent
 {

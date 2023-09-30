@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-
-using RestaurantReservation.Core.Event;
+using RestaurantReservation.Core.Events;
 using RestaurantReservation.Core.Model;
 
 namespace RestaurantReservation.Core.EFCore;

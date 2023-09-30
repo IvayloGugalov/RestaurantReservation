@@ -1,7 +1,7 @@
 ﻿using MassTransit;
 using MediatR;
 
-namespace RestaurantReservation.Core.Event;
+namespace RestaurantReservation.Core.Events;
 
 public interface IEvent : INotification
 {

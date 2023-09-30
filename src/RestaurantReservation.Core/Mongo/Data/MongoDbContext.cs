@@ -21,6 +21,17 @@ public class MongoDbContext : IMongoDbContext
         this.commands = new List<Func<Task>>();
     }
 
+    protected MongoDbContext(string? connectionString, string? databaseName)
+    {
+        if (string.IsNullOrEmpty(connectionString)) throw new NullReferenceException(nameof(connectionString));
+        if (string.IsNullOrEmpty(databaseName)) throw new NullReferenceException(nameof(databaseName));
+
+        this.MongoClient = new MongoClient(connectionString);
+        this.Database = this.MongoClient.GetDatabase(databaseName);
+
+        this.commands = new List<Func<Task>>();
+    }
+
     public IMongoCollection<T> GetCollection<T>(string? name = null)
     {
         if (!string.IsNullOrEmpty(name) && !this.CollectionExists(name)) throw new CollectionNameDoesNotExist(name);
@@ -89,16 +100,16 @@ public class MongoDbContext : IMongoDbContext
 
     public async Task ExecuteTransactionalAsync(Func<Task> action, CancellationToken ct = default)
     {
-        await BeginTransactionAsync(ct);
+        await this.BeginTransactionAsync(ct);
         try
         {
             await action();
 
-            await CommitTransactionAsync(ct);
+            await this.CommitTransactionAsync(ct);
         }
         catch
         {
-            await RollbackTransaction(ct);
+            await this.RollbackTransaction(ct);
             throw;
         }
     }
@@ -107,18 +118,18 @@ public class MongoDbContext : IMongoDbContext
         Func<Task<T>> action,
         CancellationToken ct = default)
     {
-        await BeginTransactionAsync(ct);
+        await this.BeginTransactionAsync(ct);
         try
         {
             var result = await action();
 
-            await CommitTransactionAsync(ct);
+            await this.CommitTransactionAsync(ct);
 
             return result;
         }
         catch
         {
-            await RollbackTransaction(ct);
+            await this.RollbackTransaction(ct);
             throw;
         }
     }

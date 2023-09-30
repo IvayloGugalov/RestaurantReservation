@@ -1,4 +1,10 @@
-﻿namespace RestaurantReservation.Identity.Api.Extensions;
+﻿using MediatR;
+using RestaurantReservation.Core.Events;
+using RestaurantReservation.Core.MessageProcessor;
+using RestaurantReservation.Core.Validation;
+using RestaurantReservation.Identity.Configuration;
+
+namespace RestaurantReservation.Identity.Api.Extensions;
 
 public static class AddIdentityInfrastructure
 {
@@ -8,8 +14,8 @@ public static class AddIdentityInfrastructure
         var env = builder.Environment;
 
         builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
-        // builder.Services.AddScoped<IEventMapper, EventMapper>();
-        // builder.Services.AddScoped<IEventDispatcher, EventDispatcher>();
+        builder.Services.AddScoped<IEventMapper, EventMapper>();
+        builder.Services.AddScoped<IEventDispatcher, EventDispatcher>();
 
         builder.Services.Configure<ApiBehaviorOptions>(options =>
         {
@@ -18,9 +24,9 @@ public static class AddIdentityInfrastructure
 
         var appOptions = builder.Services.GetOptions<AppOptions>(nameof(AppOptions));
 
-        builder.AddSerilog();
         builder.Services
             .AddEndpointsApiExplorer()
+            .AddCustomMediatR()
             .AddCustomDbContext<IdentityContext>()
             .AddJwt()
             .AddCustomRateLimiter()
@@ -30,8 +36,12 @@ public static class AddIdentityInfrastructure
             .AddCustomVersioning()
             .AddCustomSwagger(configuration, typeof(IdentityRoot).Assembly);
 
-        builder.AddCustomIdentityServer();
+        builder
+            .AddCustomIdentityServer()
+            .AddSerilog()
+            .AddPersistMessageProcessor(env);
         builder.Services.AddTransient<IUserService, UserService>();
+        builder.Services.AddScoped<IEventDispatcher, EventDispatcher>();
 
         builder.Services.Configure<ForwardedHeadersOptions>(options =>
         {
@@ -40,6 +50,15 @@ public static class AddIdentityInfrastructure
         });
 
         return builder;
+    }
+
+    private static IServiceCollection AddCustomMediatR(this IServiceCollection services)
+    {
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(IdentityRoot).Assembly));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+
+        return services;
     }
 
     public static WebApplication UseInfrastructure(this WebApplication app)
