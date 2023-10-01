@@ -1,5 +1,7 @@
-﻿using RestaurantReservation.Core.Authentication;
+﻿using FluentValidation;
+using RestaurantReservation.Core.Authentication;
 using RestaurantReservation.Core.Logging;
+using RestaurantReservation.Core.MassTransit;
 using RestaurantReservation.Core.Mongo;
 using RestaurantReservation.Core.Mongo.Data;
 using RestaurantReservation.Core.Web;
@@ -32,7 +34,9 @@ public static class InfrastructureExtension
         builder.Services
             .AddCustomHealthCheck(configuration)
             .AddCustomMediatR()
+            .AddCustomMassTransit(builder.Environment, typeof(RestaurantReservationApi).Assembly)
             .AddJwt()
+            .AddValidatorsFromAssembly(typeof(RestaurantReservationApi).Assembly)
             .AddMongoDbContext<AppMongoDbContext>(configuration)
             .AddScoped<ICurrentUserProvider, CurrentUserProvider>()
             .AddScoped<IDataSeeder, CustomerSeeder>()

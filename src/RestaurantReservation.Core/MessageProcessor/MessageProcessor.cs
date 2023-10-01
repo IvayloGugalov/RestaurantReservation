@@ -14,17 +14,18 @@ public class MessageProcessor : IMessageProcessor
     private readonly ILogger<MessageProcessor> logger;
     private readonly IMediator mediator;
     private readonly IMessageDbContext messagesDbContext;
-    // private readonly IPublishEndpoint publishEndpoint;
+    private readonly IPublishEndpoint publishEndpoint;
 
     public MessageProcessor(
         ILogger<MessageProcessor> logger,
         IMediator mediator,
-        IMessageDbContext messagesDbContext)
+        IMessageDbContext messagesDbContext,
+        IPublishEndpoint publishEndpoint)
     {
         this.logger = logger;
         this.mediator = mediator;
         this.messagesDbContext = messagesDbContext;
-        // this.publishEndpoint = publishEndpoint;
+        this.publishEndpoint = publishEndpoint;
     }
 
     public Task PublishMessageAsync<TMessageEnvelope>(
@@ -104,7 +105,6 @@ public class MessageProcessor : IMessageProcessor
 
                 await this.ChangeMessageStatusAsync(message, ct);
                 break;
-
         }
     }
 
@@ -139,8 +139,6 @@ public class MessageProcessor : IMessageProcessor
             new InsertOneOptions(),
             ct);
 
-        await this.messagesDbContext.SaveChangesAsync(ct);
-
         this.logger.LogInformation(
             "Message with id: {MessageID} and delivery type: {DeliveryType} saved in persistence message store.",
             id,
@@ -160,10 +158,10 @@ public class MessageProcessor : IMessageProcessor
 
         if (data is not IEvent) return false;
 
-        // await this.publishEndpoint.Publish(data, context =>
-        // {
-        //     foreach (var header in messageEnvelope.Headers) context.Headers.Set(header.Key, header.Value);
-        // }, cancellationToken);
+        await this.publishEndpoint.Publish(data, context =>
+        {
+            foreach (var header in messageEnvelope.Headers) context.Headers.Set(header.Key, header.Value);
+        }, cancellationToken);
 
         this.logger.LogInformation(
             "Message with id: {MessageId} and delivery type: {DeliveryType} processed from the persistence message store.",
@@ -201,7 +199,5 @@ public class MessageProcessor : IMessageProcessor
 
         message.Version++;
         await this.messagesDbContext.Messages.ReplaceOneAsync(m => m.Id == message.Id, message, new ReplaceOptions(), ct);
-
-        await this.messagesDbContext.SaveChangesAsync(ct);
     }
 }

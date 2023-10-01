@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using RestaurantReservation.Core.Model;
 
 namespace RestaurantReservation.Core.MessageProcessor;
@@ -6,13 +7,16 @@ namespace RestaurantReservation.Core.MessageProcessor;
 public class Message : IVersion
 {
     [BsonId]
+    [BsonRepresentation(BsonType.String)]
     public Guid Id { get; private set; }
     public string DataType { get; private set; }
     public string Data { get; private set; }
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
     public DateTime Created { get; private set; }
     public int RetryCount { get; private set; }
+    [BsonRepresentation(BsonType.String)]
     public MessageStatus MessageStatus { get; private set; }
+    [BsonRepresentation(BsonType.String)]
     public MessageDeliveryType DeliveryType { get; private set; }
     public long Version { get; set; }
 

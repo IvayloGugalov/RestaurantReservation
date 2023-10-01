@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using RestaurantReservation.Core.EFCore;
+using RestaurantReservation.Core.MassTransit;
 using RestaurantReservation.Core.Mongo;
 
 namespace RestaurantReservation.Core.Web;
@@ -26,14 +27,14 @@ public static class HealthCheckExtension
 
         var appOptions = configuration.GetSection(nameof(AppOptions)).Get<AppOptions>();
         var postgresOptions = configuration.GetSection(nameof(PostgresOptions)).Get<PostgresOptions>();
-        // var rabbitMqOptions = services.GetOptions<RabbitMqOptions>(nameof(RabbitMqOptions));
+        var rabbitMqOptions = services.GetOptions<RabbitMqOptions>(nameof(RabbitMqOptions));
         var mongoOptions = services.GetOptions<MongoOptions>(nameof(MongoOptions));
         // var logOptions = configuration.GetSection(nameof(LogOptions)).Get<LogOptions>();
 
-        var healthChecksBuilder = services.AddHealthChecks();
-        // .AddRabbitMQ(
-        //     rabbitConnectionString:
-        //     $"amqp://{rabbitMqOptions.UserName}:{rabbitMqOptions.Password}@{rabbitMqOptions.HostName}")
+        var healthChecksBuilder = services.AddHealthChecks()
+            .AddRabbitMQ(
+                rabbitConnectionString:
+                $"amqp://{rabbitMqOptions.UserName}:{rabbitMqOptions.Password}@{rabbitMqOptions.HostName}");
         // .AddElasticsearch(logOptions.Elastic.ElasticServiceUrl);
 
         if (mongoOptions.ConnectionString is not null) healthChecksBuilder.AddMongoDb(mongoOptions.ConnectionString, mongoOptions.DatabaseName);

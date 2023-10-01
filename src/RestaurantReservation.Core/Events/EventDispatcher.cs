@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using RestaurantReservation.Core.MessageProcessor;
 using RestaurantReservation.Core.Web;
 
 namespace RestaurantReservation.Core.Events;
@@ -10,17 +11,20 @@ public class EventDispatcher : IEventDispatcher
 {
     private readonly ILogger<EventDispatcher> logger;
     private readonly IEventMapper eventMapper;
+    private readonly IMessageProcessor messageProcessor;
     private readonly IServiceScopeFactory serviceScopeFactory;
     private readonly IHttpContextAccessor httpContextAccessor;
 
     public EventDispatcher(
         ILogger<EventDispatcher> logger,
         IEventMapper eventMapper,
+        IMessageProcessor messageProcessor,
         IServiceScopeFactory serviceScopeFactory,
         IHttpContextAccessor httpContextAccessor)
     {
         this.logger = logger;
         this.eventMapper = eventMapper;
+        this.messageProcessor = messageProcessor;
         this.serviceScopeFactory = serviceScopeFactory;
         this.httpContextAccessor = httpContextAccessor;
     }
@@ -54,7 +58,7 @@ public class EventDispatcher : IEventDispatcher
 
         foreach (var internalMessage in internalMessages)
         {
-            // await _persistMessageProcessor.AddInternalMessageAsync(internalMessage, ct);
+            await this.messageProcessor.AddInternalMessageAsync(internalMessage, ct);
         }
 
         return;
@@ -63,7 +67,7 @@ public class EventDispatcher : IEventDispatcher
         {
             foreach (var integrationEvent in integrationEvents)
             {
-                // publish message
+                await this.messageProcessor.PublishMessageAsync(new MessageEnvelope(integrationEvent, this.SetHeaders()), ct);
             }
         }
     }

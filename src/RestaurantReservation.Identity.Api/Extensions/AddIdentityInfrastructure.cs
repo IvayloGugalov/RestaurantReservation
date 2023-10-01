@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using RestaurantReservation.Core.Events;
+using RestaurantReservation.Core.MassTransit;
 using RestaurantReservation.Core.MessageProcessor;
 using RestaurantReservation.Core.Validation;
 using RestaurantReservation.Identity.Configuration;
@@ -27,13 +28,14 @@ public static class AddIdentityInfrastructure
         builder.Services
             .AddEndpointsApiExplorer()
             .AddCustomMediatR()
-            .AddCustomDbContext<IdentityContext>()
+            .AddCustomMassTransit(builder.Environment, typeof(IdentityRoot).Assembly)
             .AddJwt()
             .AddCustomRateLimiter()
             .AddCustomHealthCheck(configuration)
             .AddProblemDetails()
             .AddValidatorsFromAssembly(typeof(IdentityRoot).Assembly)
             .AddCustomVersioning()
+            .AddCustomDbContext<IdentityContext>()
             .AddCustomSwagger(configuration, typeof(IdentityRoot).Assembly);
 
         builder

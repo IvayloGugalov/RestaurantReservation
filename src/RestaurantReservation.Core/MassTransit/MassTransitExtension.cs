@@ -10,11 +10,10 @@ namespace RestaurantReservation.Core.MassTransit;
 
 public static class MassTransitExtension
 {
-
     public static IServiceCollection AddCustomMassTransit(this IServiceCollection services,
         IWebHostEnvironment env, Assembly assembly)
     {
-        // services.AddValidateOptions<RabbitMqOptions>();
+        services.AddValidateOptions<RabbitMqOptions>();
 
         if (env.IsEnvironment("test"))
         {
@@ -25,33 +24,33 @@ public static class MassTransitExtension
         }
         else
         {
-            services.AddMassTransit(configure => { SetupMasstransitConfigurations(services, configure, assembly); });
+            services.AddMassTransit(configure => SetupMasstransitConfigurations(services, configure, assembly));
         }
 
         return services;
     }
 
-    private static void SetupMasstransitConfigurations(IServiceCollection services,
-        IBusRegistrationConfigurator configure, Assembly assembly)
+    private static void SetupMasstransitConfigurations(
+        IServiceCollection services, IBusRegistrationConfigurator configure, Assembly assembly)
     {
         configure.AddConsumers(assembly);
         configure.AddSagaStateMachines(assembly);
         configure.AddSagas(assembly);
         configure.AddActivities(assembly);
 
-        configure.UsingInMemory((context, configurator) =>
+        configure.UsingRabbitMq((context, configurator) =>
         {
-            // var rabbitMqOptions = services.GetOptions<RabbitMqOptions>(nameof(RabbitMqOptions));
+            var rabbitMqOptions = services.GetOptions<RabbitMqOptions>(nameof(RabbitMqOptions));
 
-            // configurator.Host(rabbitMqOptions?.HostName, rabbitMqOptions?.Port ?? 5672, "/", h =>
-            // {
-            //     h.Username(rabbitMqOptions?.UserName);
-            //     h.Password(rabbitMqOptions?.Password);
-            // });
-            //
-            // configurator.ConfigureEndpoints(context);
-            //
-            // configurator.UseMessageRetry(AddRetryConfiguration);
+            configurator.Host(rabbitMqOptions?.HostName, rabbitMqOptions?.Port ?? 5672, "/", h =>
+            {
+                h.Username(rabbitMqOptions?.UserName);
+                h.Password(rabbitMqOptions?.Password);
+            });
+
+            configurator.ConfigureEndpoints(context);
+
+            configurator.UseMessageRetry(AddRetryConfiguration);
         });
     }
 
