@@ -10,7 +10,7 @@ public record ResponseCreateReservationDto(Guid Id);
 
 public record CreateReservation(
         Guid TableId, Guid CustomerId, DateTime ReservationDate, ushort Occupants)
-    : ICommand<CreateReservationResult>, IDomainEvent
+    : ICommand<CreateReservationResult>, IEvent
 {
     public Guid Id { get; } = NewId.NextGuid();
 };

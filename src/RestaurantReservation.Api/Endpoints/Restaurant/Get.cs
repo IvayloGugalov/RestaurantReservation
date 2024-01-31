@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RestaurantReservation.Core.Web.MinimalApi;
 
 namespace RestaurantReservation.Api.Endpoints.Restaurant;
 

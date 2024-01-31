@@ -1,6 +1,7 @@
 ﻿global using RestaurantReservation.Core.CQRS;
 global using RestaurantReservation.Core.Events;
 global using RestaurantReservation.Core.Model;
+global using RestaurantReservation.Core.Mongo;
 
 global using RestaurantReservation.Domain.Common.ValueObjects;
 

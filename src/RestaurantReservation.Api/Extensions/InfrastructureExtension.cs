@@ -5,7 +5,6 @@ using RestaurantReservation.Core.MassTransit;
 using RestaurantReservation.Core.Mongo;
 using RestaurantReservation.Core.Mongo.Data;
 using RestaurantReservation.Core.Web;
-using RestaurantReservation.Core.Web.MinimalApi;
 using RestaurantReservation.Core.Web.Swagger;
 using RestaurantReservation.Infrastructure.Mongo.Data;
 using RestaurantReservation.Infrastructure.Mongo.Seeders;

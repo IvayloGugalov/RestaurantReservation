@@ -17,9 +17,4 @@
         <ProjectReference Include="..\RestaurantReservation.Core\RestaurantReservation.Core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Common\Enums" />
-        <Folder Include="CustomerAggregate\Handlers" />
-    </ItemGroup>
-
 </Project>

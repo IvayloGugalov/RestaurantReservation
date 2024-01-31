@@ -4,13 +4,13 @@ public class Reservation : AggregateRoot<ReservationId>
 {
     public static readonly TimeSpan MIN_STAY = TimeSpan.FromMinutes(90);
 
-    public RestaurantId RestaurantId { get; set; } = null!;
-    public CustomerId CustomerId { get; private init; } = null!;
-    public TableId TableId { get; private init; } = null!;
-    public DateTime ReservationDate { get; private init; }
-    public ushort Occupants { get; private init; }
+    public RestaurantId RestaurantId { get; private set; } = null!;
+    public CustomerId CustomerId { get; private set; } = null!;
+    public TableId TableId { get; private set; } = null!;
+    public DateTime ReservationDate { get; private set; }
+    public ushort Occupants { get; private set; }
     public ReservationStatus Status { get; private set; }
-    public ReviewId? ReviewId { get; set; }
+    public ReviewId? ReviewId { get; private set; }
 
     private Reservation() { }
 
@@ -22,9 +22,7 @@ public class Reservation : AggregateRoot<ReservationId>
         DateTime reservationDate,
         ushort occupants)
     {
-        if (table.Capacity < occupants) throw new TableLimitOfPeopleBreachedException(table.Capacity, occupants);
-        // if (table.Reservations.All(r => r.ReservationDate.Add(MIN_STAY) < reservationDate))
-        //     throw new ReservationConflictException();
+        CanUseTableForReservation(table, reservationDate, occupants);
 
         var reservation = new Reservation
         {
@@ -40,28 +38,47 @@ public class Reservation : AggregateRoot<ReservationId>
         return reservation;
     }
 
-    // TODO: Make a generic ReservationUpdater method
-    public void Confirm()
+    public void Update(
+        ReservationId reservationId,
+        RestaurantId restaurantId,
+        Table table,
+        CustomerId customerId,
+        ReservationStatus reservationStatus,
+        DateTime reservationDate,
+        ushort occupants,
+        ReviewId? reviewId)
     {
-        // Add domain-specific logic to confirm the reservation
-        // e.g., Check availability, update status, etc.
+        CanUseTableForReservation(table, reservationDate, occupants);
 
-        this.Status = ReservationStatus.Confirmed;
+        this.Id = reservationId;
+        this.RestaurantId = restaurantId;
+        this.TableId = table.Id;
+        this.CustomerId = customerId;
+        this.ReservationDate = reservationDate;
+        this.Occupants = occupants;
+        this.ReviewId = reviewId;
 
-        // Raise domain events or perform other actions
+        if (this.Status != reservationStatus && reservationStatus > this.Status)
+        {
+            this.Status = reservationStatus;
+        }
+
+        var @event = new UpdateReservationDomainEvent(
+            reservationId,
+            restaurantId,
+            table.Id,
+            customerId,
+            reservationStatus,
+            reservationDate,
+            occupants,
+            reviewId);
+
+        this.AddDomainEvent(@event);
     }
 
-    public void Cancel()
+    private static void CanUseTableForReservation(Table table, DateTime reservationDate, ushort occupants)
     {
-        // Add domain-specific logic to cancel the reservation
-        // e.g., Handle cancellation policies, update status, etc.
-
-        this.Status = ReservationStatus.Canceled;
-
-        // Raise domain events or perform other actions
-    }
-
-    public void CompleteReservation()
-    {
+        if (table.Capacity < occupants) throw new TableLimitOfPeopleBreachedException(table.Capacity, occupants);
+        if (table.Reservations.All(r => r.ReservationDate.Add(MIN_STAY) < reservationDate)) throw new ReservationConflictException();
     }
 }

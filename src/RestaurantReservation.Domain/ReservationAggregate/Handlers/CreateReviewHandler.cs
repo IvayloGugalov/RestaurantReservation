@@ -1,6 +1,4 @@
-﻿using RestaurantReservation.Core.Mongo;
-
-namespace RestaurantReservation.Domain.ReservationAggregate.Handlers;
+﻿namespace RestaurantReservation.Domain.ReservationAggregate.Handlers;
 
 public class CreateReviewHandler : ICommandHandler<AddReview, CreateReviewResult>
 {

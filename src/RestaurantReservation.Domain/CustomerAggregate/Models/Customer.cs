@@ -48,14 +48,14 @@ public class Customer : AggregateRoot<CustomerId>
         return true;
     }
 
-    public bool AddReservation(ReservationId reservationId)
+    public bool RemoveRestaurantFromFavorites(RestaurantId restaurantId)
     {
-        if (this.reservations.Contains(reservationId)) return false;
+        if (this.favouriteRestaurants.Contains(restaurantId)) return false;
 
-        this.reservations.Add(reservationId);
+        this.favouriteRestaurants.Remove(restaurantId);
 
-        // var @event = new RestaurantAddedToFavoritesDomainEvent(reservation);
-        // this.AddDomainEvent(@event);
+        var @event = new RestaurantRemovedFromFavorites(restaurantId);
+        this.AddDomainEvent(@event);
 
         return true;
     }

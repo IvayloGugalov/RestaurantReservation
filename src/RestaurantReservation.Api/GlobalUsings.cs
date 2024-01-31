@@ -3,6 +3,8 @@
 global using Asp.Versioning;
 global using MediatR;
 
+global using RestaurantReservation.Core.Web.MinimalApi;
+
 global using RestaurantReservation.Domain.CustomerAggregate.Events;
 global using RestaurantReservation.Domain.CustomerAggregate.Mappings;
 

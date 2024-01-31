@@ -1,24 +1,24 @@
 ﻿namespace RestaurantReservation.Api.Endpoints.Reservation;
 
-public class AddReview : IMinimalApiEndpoint
+public class Update : IMinimalApiEndpoint
 {
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
-        builder.MapPost($"{EndpointConfig.BaseApiPath}/reservation/add-review",
-                async (RequestAddReviewDto request, IMediator mediator, CancellationToken ct) =>
+        builder.MapPut($"{EndpointConfig.BaseApiPath}/reservation/update",
+                async (RequestUpdateReservation request, IMediator mediator, CancellationToken ct) =>
                 {
                     var command = request.Map();
                     var result = await mediator.Send(command, ct);
-                    var response = new ResponseAddReviewDto(result.Id);
+                    var response = result.Map();
                     return Results.Ok(response);
                 })
             .WithOpenApi(operation => new OpenApiOperation(operation)
             {
-                Description = "Add Review to Reservation",
-                Summary = "Add Review to Reservation",
+                Description = "Update Reservation",
+                Summary = "Update Reservation",
             })
-            .WithName("Add Review to Reservation")
-            .Produces<ResponseAddReviewDto>()
+            .WithName("Update Reservation")
+            .Produces<ResponseUpdateReservation>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .WithApiVersionSet(builder.NewApiVersionSet("Reservation").Build())
             .HasApiVersion(new ApiVersion(1, 0));

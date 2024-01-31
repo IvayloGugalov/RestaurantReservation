@@ -1,6 +1,4 @@
-﻿using RestaurantReservation.Core.Web.MinimalApi;
-
-namespace RestaurantReservation.Api.Endpoints.Customer;
+﻿namespace RestaurantReservation.Api.Endpoints.Customer;
 
 public class Create : IMinimalApiEndpoint
 {

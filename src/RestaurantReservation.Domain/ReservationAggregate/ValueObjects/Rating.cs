@@ -1,4 +1,4 @@
-﻿namespace RestaurantReservation.Domain.ReservationAggregate.Models;
+﻿namespace RestaurantReservation.Domain.ReservationAggregate.ValueObjects;
 
 public record Rating
 {
