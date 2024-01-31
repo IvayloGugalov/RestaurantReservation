@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace RestaurantReservation.Core.Web.Swagger;
 
 public class SwaggerDefaultValues : IOperationFilter
 {
+    private readonly JsonSerializerOptions options = new()
+        { ReferenceHandler = ReferenceHandler.IgnoreCycles };
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
         var apiDescription = context.ApiDescription;
@@ -44,13 +47,10 @@ public class SwaggerDefaultValues : IOperationFilter
             if (parameter.Schema.Default == null && description.DefaultValue != null)
             {
                 // REF: https://github.com/Microsoft/aspnet-api-versioning/issues/429#issuecomment-605402330
-                var json = JsonConvert.SerializeObject(
+                var json = JsonSerializer.Serialize(
                     description.DefaultValue,
-                    description.ModelMetadata?.ModelType,
-                    new JsonSerializerSettings
-                    {
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                    });
+                    description.ModelMetadata?.ModelType!,
+                    options);
                 parameter.Schema.Default = OpenApiAnyFactory.CreateFromJson(json);
             }
 
