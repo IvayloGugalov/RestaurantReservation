@@ -11,6 +11,7 @@ Console.WriteLine(FiggleFonts.Slant.Render(appOptions.Name ?? throw new InvalidO
 builder.AddSerilog();
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddCustomRateLimiter();
 
 builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("Yarp"));
 
@@ -24,7 +25,7 @@ if (!env.IsProduction())
 app.UseSerilogRequestLogging();
 app.UseCorrelationId();
 app.UseRouting();
-// app.UseRateLimiter();
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapReverseProxy();
