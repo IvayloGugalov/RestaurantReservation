@@ -18,8 +18,4 @@
       <ProjectReference Include="..\RestaurantReservation.Domain\RestaurantReservation.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Repositories\" />
-    </ItemGroup>
-
 </Project>
