@@ -1,1 +1,16 @@
-﻿https://localhost:7218/identity/api/v1/identity/users
+﻿@version = 1
+
+### Fetch users
+GET {{host}}/identity/v{{version}}/users
+
+### Create a new user
+POST {{host}}/identity/v{{version}}/register-user
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "password": "securePassword",
+  "confirmPassword": "securePassword"
+}

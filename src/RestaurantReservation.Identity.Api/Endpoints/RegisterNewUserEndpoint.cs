@@ -1,7 +1,5 @@
 ﻿using Asp.Versioning;
-using RestaurantReservation.Core.Web.MinimalApi;
 using RestaurantReservation.Identity.DTOs;
-using RestaurantReservation.Identity.Services;
 using Microsoft.OpenApi.Models;
 
 namespace RestaurantReservation.Identity.Api.Endpoints;
@@ -10,7 +8,7 @@ public class RegisterNewUserEndpoint : IMinimalApiEndpoint
 {
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
     {
-        builder.MapPost($"{EndpointConfig.BaseApiPath}/identity/register-user", async (
+        builder.MapPost($"{EndpointConfig.BaseApiPath}/register-user", async (
                 RegisterNewUserRequestDto request, IUserService userService, CancellationToken ct) =>
             {
                 var result = await userService.RegisterNewUserAsync(request, ct);

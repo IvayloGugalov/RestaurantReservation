@@ -2,8 +2,10 @@
 using RestaurantReservation.Core.Events;
 using RestaurantReservation.Core.MassTransit;
 using RestaurantReservation.Core.MessageProcessor;
+using RestaurantReservation.Core.Mongo.Data;
 using RestaurantReservation.Core.Validation;
 using RestaurantReservation.Identity.Configuration;
+using RestaurantReservation.Identity.Data.Seeders;
 
 namespace RestaurantReservation.Identity.Api.Extensions;
 
@@ -44,6 +46,7 @@ public static class AddIdentityInfrastructure
             .AddPersistMessageProcessor(env);
         builder.Services.AddTransient<IUserService, UserService>();
         builder.Services.AddScoped<IEventDispatcher, EventDispatcher>();
+        builder.Services.AddScoped<IDataSeeder, RoleAndUserSeeder>();
 
         builder.Services.Configure<ForwardedHeadersOptions>(options =>
         {
@@ -79,8 +82,6 @@ public static class AddIdentityInfrastructure
         app.UseCorrelationId();
         app.UseCustomHealthCheck();
         app.UseIdentityServer();
-
-        app.MapGet("/", x => x.Response.WriteAsync("Identity"));
 
         if (!env.IsProduction())
         {

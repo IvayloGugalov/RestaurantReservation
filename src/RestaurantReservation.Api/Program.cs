@@ -16,6 +16,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseCustomSwagger();
+    app.MapGet("/api/v1", () => "api");
 }
 
 app.UseSerilogRequestLogging(options => { options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest; });
@@ -30,6 +31,5 @@ app.UseOutputCache();
 
 Serializers.RegisterAll();
 app.UseMigration<AppMongoDbContext>(app.Environment);
-// app.UseHttpsRedirection();
 
 app.Run();

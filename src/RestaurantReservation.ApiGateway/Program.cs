@@ -16,21 +16,17 @@ builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSecti
 
 var app = builder.Build();
 
+if (!env.IsProduction())
+{
+    app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
+}
+
 app.UseSerilogRequestLogging();
 app.UseCorrelationId();
 app.UseRouting();
-app.UseRateLimiter();
-app.UseHttpsRedirection();
+// app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
-
-#pragma warning disable ASP0014
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapReverseProxy();
-});
-#pragma warning restore ASP0014
-
-app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
+app.MapReverseProxy();
 
 app.Run();
